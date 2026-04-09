@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#c8a0f0",
+                    "tertiary-fixed": "#e8d0ff",
+                    "on-surface-variant": "#a0b4c4",
+                    "on-primary-fixed": "#001f2e",
+                    "tertiary-fixed-dim": "#c8a0f0",
+                    "surface-container-highest": "#202c42",
+                    "on-tertiary-fixed-variant": "#4d2a73",
+                    "secondary-fixed-dim": "#88b4cc",
+                    "surface-tint": "#7dd3fc",
+                    "surface-container": "#141c2e",
+                    "on-error-container": "#ffb3b3",
+                    "outline-variant": "#2a3a48",
+                    "outline": "#4a6070",
+                    "on-tertiary-container": "#e8d0ff",
+                    "inverse-on-surface": "#0a0e1a",
+                    "primary-fixed": "#c8eaff",
+                    "on-background": "#e0e8f0",
+                    "tertiary-container": "#3d2060",
+                    "surface": "#0f1524",
+                    "secondary-container": "#1a3a4e",
+                    "on-tertiary-fixed": "#1a002e",
+                    "background": "#0a0e1a",
+                    "inverse-surface": "#e0e8f0",
+                    "on-tertiary": "#1a002e",
+                    "on-primary-fixed-variant": "#004d73",
+                    "on-secondary-fixed": "#0d1f2b",
+                    "on-secondary-container": "#c0d8e8",
+                    "error": "#ff6b6b",
+                    "primary-container": "#0e4d6e",
+                    "on-surface": "#e0e8f0",
+                    "secondary-fixed": "#c0d8e8",
+                    "inverse-primary": "#0a4c6e",
+                    "primary": "#7dd3fc",
+                    "surface-container-lowest": "#0a0e1a",
+                    "on-error": "#1a0000",
+                    "on-secondary": "#001f2e",
+                    "on-primary-container": "#c8eaff",
+                    "surface-dim": "#0f1524",
+                    "secondary": "#88b4cc",
+                    "surface-variant": "#1a2438",
+                    "on-primary": "#001f2e",
+                    "surface-container-high": "#1a2438",
+                    "surface-container-low": "#111828",
+                    "surface-bright": "#1a2438",
+                    "on-secondary-fixed-variant": "#2a4a5e",
+                    "error-container": "#3d1414",
+                    "primary-fixed-dim": "#7dd3fc"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "1rem",
+                    "xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(15, 21, 36, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(125, 211, 252, 0.1);
+        }
+        .glass-panel-elevated {
+            background: rgba(15, 21, 36, 0.75);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(125, 211, 252, 0.15);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary/30">
+<div class="max-w-[1300px] mx-auto flex min-h-screen">
+<!-- Left Column: SideNavBar (Shared Component) -->
+<aside class="hidden md:block w-72 h-screen sticky top-0 border-r border-sky-300/10 bg-slate-950/60 backdrop-blur-xl shadow-[0_0_30px_rgba(125,211,252,0.05)]">
+<div class="flex flex-col h-full py-4 px-6 gap-2">
+<div class="mb-6 px-2">
+<span class="text-2xl font-black text-sky-300 tracking-tight">Glacier</span>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-4 py-3 px-4 text-sky-300 font-bold bg-sky-300/10 rounded-full active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-inter text-base">首页</span>
+</a>
+<a class="flex items-center gap-4 py-3 px-4 text-slate-400 font-regular hover:bg-slate-800/50 transition-colors duration-200 active:scale-95 transition-transform rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-inter text-base">探索</span>
+</a>
+<a class="flex items-center gap-4 py-3 px-4 text-slate-400 font-regular hover:bg-slate-800/50 transition-colors duration-200 active:scale-95 transition-transform rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-inter text-base">通知</span>
+</a>
+<a class="flex items-center gap-4 py-3 px-4 text-slate-400 font-regular hover:bg-slate-800/50 transition-colors duration-200 active:scale-95 transition-transform rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-inter text-base">个人资料</span>
+</a>
+<a class="flex items-center gap-4 py-3 px-4 text-slate-400 font-regular hover:bg-slate-800/50 transition-colors duration-200 active:scale-95 transition-transform rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+<span class="font-inter text-base">撰写</span>
+</a>
+</nav>
+<div class="mt-4">
+<button class="w-full py-3.5 bg-primary text-on-primary-fixed font-black text-lg rounded-full active:scale-95 transition-transform shadow-lg shadow-primary/20">
+                        发布
+                    </button>
+</div>
+<div class="mt-auto flex items-center gap-3 p-3 rounded-full hover:bg-slate-800/50 transition-colors">
+<img alt="User profile" class="w-10 h-10 rounded-full border border-sky-300/20" data-alt="close-up portrait of a professional man with clean features and friendly expression on a dark studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAahxlPSnc2kPCa_wx3DYl0vZ6Qw3Abrw63qXCAZI97v7BoQvN9Is3N0lWWdYEc0dkZgiPedXDAAX-fnsZ-2IZC7Es6prf64ogr9UIuScWZhxgHU3jMGrjb5EwE6g44DRBHb_GDwpqE1dlxAvNIme2hlxScgQ94awZKst010e1BBKFr3h_Gi13o08h6OOceGmzggrw_VzfYJs7SMzGQYNfD13fhpFM6SFJwRBDYbV22wxzVC7HazM1vOV7VLgxwIqneNGg83Hnm7BI"/>
+<div class="flex flex-col">
+<span class="font-bold text-sm text-on-surface">Glacier</span>
+<span class="text-xs text-on-surface-variant">@glacier_user</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Center Column: Public Feed -->
+<main class="flex-1 min-w-0 border-r border-sky-300/10">
+<!-- TopNavBar (Shared Component) -->
+<header class="sticky top-0 z-50 bg-slate-950/75 backdrop-blur-2xl border-b border-sky-300/10">
+<div class="flex justify-between items-center px-4 py-2 w-full h-14">
+<div class="flex gap-8 h-full items-end">
+<a class="text-sky-300 border-b-2 border-sky-300 pb-2 font-inter text-sm font-medium cursor-pointer transition-opacity active:opacity-70" href="#">为您推荐</a>
+<a class="text-slate-400 pb-2 font-inter text-sm font-medium hover:text-sky-200 cursor-pointer transition-opacity active:opacity-70" href="#">正在关注</a>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-sky-300 cursor-pointer" data-icon="settings">settings</span>
+</div>
+</div>
+</header>
+<!-- Feed Content -->
+<div class="flex flex-col">
+<!-- Guest CTA Banner -->
+<section class="m-4 p-6 glass-panel-elevated rounded-xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-primary/20 transition-colors"></div>
+<div class="relative z-10">
+<h2 class="text-2xl font-black text-on-surface tracking-tight mb-2">加入冰川社交网络</h2>
+<p class="text-on-surface-variant mb-6 max-w-md">最为空灵的社交体验。保持冷静，与全球趋势实时连接。</p>
+<div class="flex flex-wrap gap-3">
+<button class="px-6 py-2.5 bg-primary text-on-primary-fixed font-bold rounded-full hover:brightness-110 active:scale-95 transition-all">创建账号</button>
+<button class="px-6 py-2.5 bg-transparent border border-sky-300/30 text-sky-300 font-bold rounded-full hover:bg-sky-300/10 active:scale-95 transition-all">登录</button>
+</div>
+</div>
+</section>
+<!-- Post Item 1 -->
+<article class="p-4 border-b border-sky-300/10 hover:bg-surface-variant/30 transition-colors cursor-pointer">
+<div class="flex gap-3">
+<img class="w-12 h-12 rounded-full border border-sky-300/10" data-alt="portrait of a young explorer in a blue jacket with a snowy mountain landscape in the distant background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZ3q2G58XqO5C5Y88I-Q2nJbvv9QTBZ74gr7TFb6FOCAub5O3AMWBJlikpsHbyIV7IcVyYgwpYxXf_7H1b_I2XLv13Cy3JC2c_xLO4qhZVcvueQL4n0lZUTSD1g1i4S1rNe5NTrcHG23GOnmLqPJMHhBUMobsF0bi2j7qkblFUhN6UATOsDr-6s7d8DFTP9sLmlWzhQnDlXnY4fQLErHNssJK1-Lr4RS7r9M8DKuqpm5dYVw4pauIwU4XhD7GfY3KCfYusxfhYfUs"/>
+<div class="flex-1">
+<div class="flex items-center gap-1 mb-1">
+<span class="font-bold text-on-surface">北极探险家</span>
+<span class="text-on-surface-variant text-sm">@arctic_exp • 2小时前</span>
+</div>
+<p class="text-on-surface mb-3 leading-relaxed">刚刚见证了冰川上最令人惊叹的极光。天空变成了深紫色和青色。大自然才是终极艺术家。❄️✨</p>
+<div class="rounded-xl overflow-hidden glass-panel mb-3 aspect-video">
+<img class="w-full h-full object-cover" data-alt="stunning northern lights aurora borealis shimmering in green and violet over a frozen arctic lake and jagged peaks" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApL4253cVmZ19BqObD5UDeRQok-fFYqTJkui8ezbu1soAOC1PQTUW5RhgeovGaNLECX7acoAfGoDgNtxHE2D87HSGF_ihwnA8bTFSG4ceNzAQLtO3z4y8vXA2rysnMJ7NI7mVAWcu47Q5HgyKHIqCb6ZGcB1X0T6MiSKK1S0Jx_WWw_qZgFhje6Z1Rg2zDqs5rNjvtslp6FtIdlKzClbrj8-xxpP91zGSI57zx1W_5f7lNsuL1vgTei9i9Azt3UAut5IshWnVmfgQ"/>
+</div>
+<div class="flex justify-between max-w-md text-on-surface-variant">
+<button class="flex items-center gap-2 hover:text-sky-300 transition-colors group">
+<div class="p-2 rounded-full group-hover:bg-sky-300/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="chat_bubble">chat_bubble</span>
+</div>
+<span class="text-xs">124</span>
+</button>
+<button class="flex items-center gap-2 hover:text-emerald-400 transition-colors group">
+<div class="p-2 rounded-full group-hover:bg-emerald-400/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="repeat">repeat</span>
+</div>
+<span class="text-xs">45</span>
+</button>
+<button class="flex items-center gap-2 hover:text-rose-400 transition-colors group">
+<div class="p-2 rounded-full group-hover:bg-rose-400/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="favorite">favorite</span>
+</div>
+<span class="text-xs">1.2k</span>
+</button>
+<button class="flex items-center gap-2 hover:text-sky-300 transition-colors group">
+<div class="p-2 rounded-full group-hover:bg-sky-300/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="bar_chart">bar_chart</span>
+</div>
+<span class="text-xs">88k</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+<!-- Post Item 2 -->
+<article class="p-4 border-b border-sky-300/10 hover:bg-surface-variant/30 transition-colors cursor-pointer">
+<div class="flex gap-3">
+<img class="w-12 h-12 rounded-full border border-sky-300/10" data-alt="profile photo of a young creative professional with a warm smile and blue glasses on a clean neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-d0A-tyDcQIUWhzxkcIdDut4DU7-E9w9g8sD4tnP9A4Mq4Uo-UkSSTxEYJ6AFtJ8e3yuKH4vhDeG_j_nBHQcgFOuLIAAf_V90v_swxuaKC9kvBXyWzgWJFexfR46pCFK4egaZer8s-YVjL9coh_TofaIP5fJs27GRfAUhxkwRisiJutsAHxIPeaYzZiK7Za96tIqBNsAi8N4WCpKwJpN09cAermh3mju0R_s4kspoyug3_eK9E17J43lZgYyI52WtBeBhqzVbqzA"/>
+<div class="flex-1">
+<div class="flex items-center gap-1 mb-1">
+<span class="font-bold text-on-surface">每日设计</span>
+<span class="text-on-surface-variant text-sm">@designdaily • 4小时前</span>
+</div>
+<p class="text-on-surface mb-3 leading-relaxed">玻璃拟态不仅仅是一种趋势，它是在平面世界中创造深度和层次感。今天看到的一些新 UI 概念感觉就像纯冰一样。🧊💻</p>
+<div class="grid grid-cols-2 gap-2 mb-3 h-64">
+<div class="rounded-xl overflow-hidden glass-panel h-full">
+<img class="w-full h-full object-cover" data-alt="abstract digital 3D render of soft flowing curves in navy and sky blue with a frosted glass texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9RWe24IcsIgGGrrFIPEuIhDMNa5fRxHooEYcMuwdkwPuyLSd_1HT_P_H9MRenjRxl7tYLGpKEyFm8aFQDbPd7F3i9HYkP1kYQzsG8nqdCvlDt5jVwE5UTqzckGB84X-y2KIxorB6x_l2kesZ6gZcRvinE34N30jnle95nPOmUkp4U_qfQ-wJ7HXYknNQX4ADMCkR-BjrNJRUIVN97uwdlG0sEHGwNTc9rK6ikRKcOczS7AAof-udH8YKGp5CQR0lrOuycv7No8Wk"/>
+</div>
+<div class="rounded-xl overflow-hidden glass-panel h-full">
+<img class="w-full h-full object-cover" data-alt="dynamic geometric composition of glowing light blue lines on a dark atmospheric background with subtle smoke effects" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQWWXUjAVqKSnego0d-x8c8PTo0n0UkSQpxs1HdOmDpHo0INCmAWXDQ0xT7yslVRF-rqKfZP1YeV7eqJ3f2_knj7NO4-fAnkzLu2X72X50WODmKxwSXeIB1oRhXS0Nk8SBznmSk65elxkrR8-7tBsXYgfOvK8g-rPEGIB3mVQPAzQGkWIDt76Juoxn1zQ6-z4f5tiyCMT__4d0pHWtAGYIFFWBXIbhqO0KhZ_E-YmBYWtdNmwNrWHHzOLTYwTV06nQuWdwMXF9cI8"/>
+</div>
+</div>
+<div class="flex justify-between max-w-md text-on-surface-variant">
+<button class="flex items-center gap-2 group"><span class="material-symbols-outlined text-[20px]" data-icon="chat_bubble">chat_bubble</span><span class="text-xs">42</span></button>
+<button class="flex items-center gap-2 group"><span class="material-symbols-outlined text-[20px]" data-icon="repeat">repeat</span><span class="text-xs">12</span></button>
+<button class="flex items-center gap-2 group"><span class="material-symbols-outlined text-[20px]" data-icon="favorite">favorite</span><span class="text-xs">850</span></button>
+<button class="flex items-center gap-2 group"><span class="material-symbols-outlined text-[20px]" data-icon="bar_chart">bar_chart</span><span class="text-xs">12k</span></button>
+</div>
+</div>
+</div>
+</article>
+<!-- Post Item 3 (Text only) -->
+<article class="p-4 border-b border-sky-300/10 hover:bg-surface-variant/30 transition-colors cursor-pointer">
+<div class="flex gap-3">
+<div class="w-12 h-12 rounded-full border border-sky-300/10 flex items-center justify-center bg-tertiary/10">
+<span class="material-symbols-outlined text-tertiary" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-1 mb-1">
+<span class="font-bold text-on-surface">科技耳语者</span>
+<span class="text-on-surface-variant text-sm">@techwhisper • 6小时前</span>
+</div>
+<p class="text-on-surface mb-3 leading-relaxed">向本地化 AI 处理的转变将改变我们所知道的硬件隐私的一切。很高兴看到 Glacier 在这方面的进展。#未来科技 #GlacierOS</p>
+<div class="flex justify-between max-w-md text-on-surface-variant">
+<button class="flex items-center gap-2 group"><span class="material-symbols-outlined text-[20px]" data-icon="chat_bubble">chat_bubble</span><span class="text-xs">18</span></button>
+<button class="flex items-center gap-2 group"><span class="material-symbols-outlined text-[20px]" data-icon="repeat">repeat</span><span class="text-xs">5</span></button>
+<button class="flex items-center gap-2 group"><span class="material-symbols-outlined text-[20px]" data-icon="favorite">favorite</span><span class="text-xs">230</span></button>
+<button class="flex items-center gap-2 group"><span class="material-symbols-outlined text-[20px]" data-icon="bar_chart">bar_chart</span><span class="text-xs">5.4k</span></button>
+</div>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- Right Column: Sidebar -->
+<aside class="hidden lg:block w-80 p-4 sticky top-0 h-screen overflow-y-auto">
+<!-- Search -->
+<div class="relative mb-4">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
+</div>
+<input class="w-full bg-surface-container border-none rounded-full py-2.5 pl-12 pr-4 text-sm text-on-surface focus:ring-1 focus:ring-sky-300 placeholder:text-on-surface-variant" placeholder="搜索 Glacier" type="text"/>
+</div>
+<!-- Trends Panel -->
+<section class="glass-panel rounded-2xl mb-4 overflow-hidden">
+<div class="px-4 py-3">
+<h3 class="text-xl font-black text-on-surface tracking-tight">为您推荐的趋势</h3>
+</div>
+<div class="flex flex-col">
+<a class="px-4 py-3 hover:bg-surface-variant/50 transition-colors" href="#">
+<div class="flex justify-between">
+<span class="text-xs text-on-surface-variant">科技 • 热度上升</span>
+<span class="material-symbols-outlined text-xs" data-icon="more_horiz">more_horiz</span>
+</div>
+<div class="font-bold text-on-surface">#ArcticWeb3</div>
+<div class="text-xs text-on-surface-variant">4.52万 条帖子</div>
+</a>
+<a class="px-4 py-3 hover:bg-surface-variant/50 transition-colors" href="#">
+<div class="flex justify-between">
+<span class="text-xs text-on-surface-variant">南极洲趋势</span>
+<span class="material-symbols-outlined text-xs" data-icon="more_horiz">more_horiz</span>
+</div>
+<div class="font-bold text-on-surface">极光季节</div>
+<div class="text-xs text-on-surface-variant">12.8万 条帖子</div>
+</a>
+<a class="px-4 py-3 hover:bg-surface-variant/50 transition-colors" href="#">
+<div class="flex justify-between">
+<span class="text-xs text-on-surface-variant">UI 设计 • 热门</span>
+<span class="material-symbols-outlined text-xs" data-icon="more_horiz">more_horiz</span>
+</div>
+<div class="font-bold text-on-surface">#玻璃拟态</div>
+<div class="text-xs text-on-surface-variant">8,432 条帖子</div>
+</a>
+<a class="px-4 py-3 hover:bg-surface-variant/50 transition-colors" href="#">
+<div class="flex justify-between">
+<span class="text-xs text-on-surface-variant">新闻 • 热门</span>
+<span class="material-symbols-outlined text-xs" data-icon="more_horiz">more_horiz</span>
+</div>
+<div class="font-bold text-on-surface">Glacier App 发布</div>
+<div class="text-xs text-on-surface-variant">120万 条帖子</div>
+</a>
+<a class="px-4 py-3 text-sky-300 hover:bg-surface-variant/50 transition-colors text-sm" href="#">
+                        显示更多
+                    </a>
+</div>
+</section>
+<!-- Who to follow -->
+<section class="glass-panel rounded-2xl mb-4 overflow-hidden">
+<div class="px-4 py-3">
+<h3 class="text-xl font-black text-on-surface tracking-tight">推荐关注</h3>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center justify-between px-4 py-3 hover:bg-surface-variant/50 transition-colors">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full" data-alt="profile headshot of a smiling woman in a yellow sweater with bright studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiDkBvTTzf90BCHxOvxl9HHqLr2FP5-qGELuVhI5-16YMPolvNfRahzUnNofr8_zb8MrHusBjWQugYh4mVmT0Ff0BQNObhV6zx2JyTiwa-intRMe2gfwKtM7WYSBFgfNhKur_dVR1Z7wP2NGAp0DFeoPk6WCXzaJCFIXDcq8uETWuEam1nMN-HQI0fg8yaJbTtM00AydPRGPPwbk4vBYBt-6U2jvqudiOyHOk-mgg6HA-YkXIb-mxU-cm5kyYCsUmKvHUsIJndcsM"/>
+<div class="flex flex-col">
+<span class="font-bold text-sm text-on-surface leading-none">Sarah Frost</span>
+<span class="text-xs text-on-surface-variant">@sfrost_design</span>
+</div>
+</div>
+<button class="bg-on-surface text-background px-4 py-1.5 rounded-full text-xs font-bold hover:opacity-90 transition-opacity">关注</button>
+</div>
+<div class="flex items-center justify-between px-4 py-3 hover:bg-surface-variant/50 transition-colors">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full" data-alt="close-up portrait of a thoughtful man with a beard looking slightly away on a dark blue background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxI6cP7KRoDS3mLnNTfzrkBF30pZByFBkS7ux3Dlj2QzKMki1NTW7LtbC8LfqOsKP1lCsOFBSGxSrofQFGUGqFtI0ZWacJasMiPxAxD1wRvvSw7csKSl0cc3KJdWfUHg-nrxsfgixknYqQKp9RAoQJUkMhpXpWMMMD0q1OKag6m0AgLsJGP16yvnHhN8K_l5j6yEoGotLQVAFPs5A4zSnsBriifGVCt7ZawXmblujRWeckf_QMfpBNX-KKL7iCxztw8YlKEm9GLDU"/>
+<div class="flex flex-col">
+<span class="font-bold text-sm text-on-surface leading-none">Cold Code</span>
+<span class="text-xs text-on-surface-variant">@coldcode_dev</span>
+</div>
+</div>
+<button class="bg-on-surface text-background px-4 py-1.5 rounded-full text-xs font-bold hover:opacity-90 transition-opacity">关注</button>
+</div>
+</div>
+<a class="block px-4 py-3 text-sky-300 hover:bg-surface-variant/50 transition-colors text-sm" href="#">
+                    显示更多
+                </a>
+</section>
+<!-- Footer links -->
+<footer class="px-4 text-xs text-on-surface-variant flex flex-wrap gap-x-3 gap-y-1">
+<a class="hover:underline" href="#">服务条款</a>
+<a class="hover:underline" href="#">隐私政策</a>
+<a class="hover:underline" href="#">Cookie 政策</a>
+<a class="hover:underline" href="#">无障碍性</a>
+<a class="hover:underline" href="#">广告信息</a>
+<span>© 2024 Glacier Inc.</span>
+</footer>
+</aside>
+</div>
+<!-- Mobile Navigation (Shared Component Integration) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 glass-panel-elevated border-t border-sky-300/10 z-[100]">
+<div class="flex justify-around items-center py-3">
+<a class="flex flex-col items-center gap-1 text-sky-300 font-bold" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</a>
+</div>
+</nav>
+<!-- Mobile FAB -->
+<button class="md:hidden fixed bottom-20 right-4 w-14 h-14 bg-primary text-on-primary-fixed rounded-full flex items-center justify-center shadow-xl shadow-primary/30 z-[110] active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</body></html>

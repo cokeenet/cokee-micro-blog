@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Glacier | 首页</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#c8a0f0",
+                    "tertiary-fixed": "#e8d0ff",
+                    "on-surface-variant": "#a0b4c4",
+                    "on-primary-fixed": "#001f2e",
+                    "tertiary-fixed-dim": "#c8a0f0",
+                    "surface-container-highest": "#202c42",
+                    "on-tertiary-fixed-variant": "#4d2a73",
+                    "secondary-fixed-dim": "#88b4cc",
+                    "surface-tint": "#7dd3fc",
+                    "surface-container": "#141c2e",
+                    "on-error-container": "#ffb3b3",
+                    "outline-variant": "#2a3a48",
+                    "outline": "#4a6070",
+                    "on-tertiary-container": "#e8d0ff",
+                    "inverse-on-surface": "#0a0e1a",
+                    "primary-fixed": "#c8eaff",
+                    "on-background": "#e0e8f0",
+                    "tertiary-container": "#3d2060",
+                    "surface": "#0f1524",
+                    "secondary-container": "#1a3a4e",
+                    "on-tertiary-fixed": "#1a002e",
+                    "background": "#0a0e1a",
+                    "inverse-surface": "#e0e8f0",
+                    "on-tertiary": "#1a002e",
+                    "on-primary-fixed-variant": "#004d73",
+                    "on-secondary-fixed": "#0d1f2b",
+                    "on-secondary-container": "#c0d8e8",
+                    "error": "#ff6b6b",
+                    "primary-container": "#0e4d6e",
+                    "on-surface": "#e0e8f0",
+                    "secondary-fixed": "#c0d8e8",
+                    "inverse-primary": "#0a4c6e",
+                    "primary": "#7dd3fc",
+                    "surface-container-lowest": "#0a0e1a",
+                    "on-error": "#1a0000",
+                    "on-secondary": "#001f2e",
+                    "on-primary-container": "#c8eaff",
+                    "surface-dim": "#0f1524",
+                    "secondary": "#88b4cc",
+                    "surface-variant": "#1a2438",
+                    "on-primary": "#001f2e",
+                    "surface-container-high": "#1a2438",
+                    "surface-container-low": "#111828",
+                    "surface-bright": "#1a2438",
+                    "on-secondary-fixed-variant": "#2a4a5e",
+                    "error-container": "#3d1414",
+                    "primary-fixed-dim": "#7dd3fc"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "1rem",
+                    "xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(15, 21, 36, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(125, 211, 252, 0.1);
+        }
+        .glass-elevated {
+            background: rgba(15, 21, 36, 0.75);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(125, 211, 252, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<div class="max-w-[1280px] mx-auto flex min-h-screen relative">
+<!-- SideNavBar (Left Column) -->
+<aside class="w-64 h-screen sticky top-0 border-r border-sky-300/10 bg-slate-950/60 backdrop-blur-xl flex flex-col py-4 px-6 gap-2 shadow-[0_0_30px_rgba(125,211,252,0.05)]">
+<div class="mb-8 px-2">
+<span class="text-2xl font-black text-sky-300 tracking-tight">Glacier</span>
+</div>
+<nav class="flex flex-col gap-1 flex-1">
+<!-- Home is Active -->
+<a class="flex items-center gap-4 px-4 py-3 text-sky-300 font-bold bg-sky-300/10 rounded-full active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-inter text-base">首页</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-400 font-regular hover:bg-slate-800/50 transition-colors duration-200 active:scale-95 transition-transform rounded-full" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-inter text-base">探索</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-400 font-regular hover:bg-slate-800/50 transition-colors duration-200 active:scale-95 transition-transform rounded-full" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-inter text-base">通知</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-400 font-regular hover:bg-slate-800/50 transition-colors duration-200 active:scale-95 transition-transform rounded-full" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-inter text-base">个人资料</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-400 font-regular hover:bg-slate-800/50 transition-colors duration-200 active:scale-95 transition-transform rounded-full" href="#">
+<span class="material-symbols-outlined">edit</span>
+<span class="font-inter text-base">撰写</span>
+</a>
+</nav>
+<button class="w-full bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 py-3 rounded-full font-bold text-lg active:scale-95 transition-transform shadow-[0_0_20px_rgba(125,211,252,0.1)]">
+                发布
+            </button>
+<div class="mt-auto flex items-center gap-3 p-2 rounded-full hover:bg-slate-800/50 transition-colors">
+<img alt="User profile" class="w-10 h-10 rounded-full object-cover" data-alt="portrait of a young man with a slight smile in soft cinematic lighting against a dark blurred background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNq4dzb9_ReNIS5p8mfb-Nfgbt0P81qQ518SVfFIbEbr3PUVXbKRMywic5X9cqJd78u6-i5k-7Gm4GQsQIrnXzqDw_P4mJQ7PDawwc0HGztTz5FCmAUVQTE6FcyFC4leW9d6Z_UlBaSwczF8uG62aWY8hchubHKgwus8kF0heL-l_Bp11Dn0Li_P9DYiY8AC_ISjZ-XQF187Qfd4_pkF1Jp3i2Wf6alHTPKKOoAibEZp9Gw5NSfOCakEvBSetHjSLJy25ZQImESL4"/>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-on-surface">Glacier</span>
+<span class="text-xs text-on-surface-variant">@glacier_user</span>
+</div>
+</div>
+</aside>
+<!-- Main Content (Center Column) -->
+<main class="flex-1 min-w-[600px] border-r border-sky-300/10">
+<!-- TopNavBar (Sticky) -->
+<header class="sticky top-0 z-50 bg-slate-950/75 backdrop-blur-2xl border-b border-sky-300/10 flex justify-between items-center px-4 py-2 w-full">
+<div class="flex items-center gap-8">
+<span class="text-xl font-black text-sky-300">首页</span>
+<div class="flex gap-6">
+<button class="text-sky-300 border-b-2 border-sky-300 pb-2 font-inter text-sm font-medium cursor-pointer transition-opacity active:opacity-70">推荐</button>
+<button class="text-slate-400 pb-2 font-inter text-sm font-medium hover:text-sky-200 cursor-pointer transition-opacity active:opacity-70">关注</button>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-sky-300 cursor-pointer transition-colors">settings</span>
+</div>
+</header>
+<!-- Post Composer -->
+<div class="p-4 border-b border-sky-300/10 glass-panel">
+<div class="flex gap-4">
+<img alt="User profile" class="w-12 h-12 rounded-full object-cover" data-alt="portrait of a young man with a slight smile in soft cinematic lighting against a dark blurred background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxfTYrFELFsDgsd61rV-Ms5-h3LCLzFSKlVkoraqihw0guzCaIGZo99RLw-Oqbp6quPDyzksN7kbWBEWn8ZStKJm7bGaPb6lwqUNRk98Cb6T83teJlDWY2bTEZGM_ZJhzjqOGkgbfv-V10OatFCdeMnrgJU-Tyg4MCZpGw3N6HZcf8TlaRwMBnDOuLnfDL5srPMF82hWT6TIqfHbTM437L1Zy1_lldd8UH9CSQFIBzWGRH5tuBmreXI4U5E3WLfMRA8Hdyy4OwFVk"/>
+<div class="flex-1">
+<textarea class="w-full bg-transparent border-none focus:ring-0 text-xl placeholder:text-on-surface-variant text-on-surface resize-none h-20" placeholder="有什么新鲜事？"></textarea>
+<div class="flex justify-between items-center mt-2 pt-2 border-t border-sky-300/5">
+<div class="flex gap-1">
+<button class="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors">
+<span class="material-symbols-outlined">image</span>
+</button>
+<button class="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors">
+<span class="material-symbols-outlined">gif_box</span>
+</button>
+<button class="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors">
+<span class="material-symbols-outlined">ballot</span>
+</button>
+<button class="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors">
+<span class="material-symbols-outlined">sentiment_satisfied</span>
+</button>
+</div>
+<button class="bg-primary text-on-primary-fixed px-6 py-2 rounded-full font-bold opacity-50 cursor-not-allowed">
+                                发布
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Feed -->
+<div class="divide-y divide-sky-300/10">
+<!-- Post 1 -->
+<article class="p-4 hover:bg-white/5 transition-colors cursor-pointer glass-panel border-none rounded-none">
+<div class="flex gap-3">
+<img alt="Aurora Borealis" class="w-10 h-10 rounded-full object-cover" data-alt="portrait of a woman with long wavy hair smiling gently in soft outdoor natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDF5WBXDPGHDWthm74WoWwF87H8R2AbXf3uz_dG5m3GUQ4TgXzCEUVvxADuPLqDezkou0WVc2PyTrf7QYoILa8mGJeo7orgmtyQH5jDs_SvWWXTC1HFhlvQWSK0y2vE-UqAxOMFW-EeKoDGJdrYCPheIdtdrWDcZQLiQqDgJJTHGauPuqO822gA4IEPIWV8Ru9SVf-ItGjF1fNXVg6Qs1WLMrYW_HF9LHCYRDJOe18nuJf0z8czavWf2jUl9zllp3S-HrBZt62_xcc"/>
+<div class="flex-1">
+<div class="flex items-center gap-1">
+<span class="font-bold text-on-surface">Aurora Borealis</span>
+<span class="text-on-surface-variant text-sm">@aurora_sky · 2小时</span>
+</div>
+<p class="text-on-surface mt-1 leading-relaxed">
+                                看着数字波浪在 Glacier 界面中流淌。玻璃拟态的效果真是空灵。🧊✨
+                            </p>
+<div class="mt-3 rounded-xl overflow-hidden glass-elevated">
+<img alt="Icy landscape" class="w-full h-[300px] object-cover" data-alt="majestic arctic landscape with towering icebergs floating in deep blue water under a clear twilight sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD8Cti8WbQdS3wUiGmW99VjlsNefOu-m-lgbrsV-c5f2PDObMG17M2W8kpidtmNpD8y6k0GssiFIas7Pe0Q0-EjpjqfTZ2s_SHwTAg44uVFvXB_yihC-OqC2hMlPX8QK0slyBraD62M2XliAnnEqt_gbpk0nDzBS7eQLYX-95QS1ZrAcmRtSl9H69qtC5IO2-IM1pq9YNVRxuGo6ULpahN91I8PqmRuAGXal7BheWBAjrNORQP9CjAx42TW2_NT3kp4IXMcx2L8_E"/>
+</div>
+<div class="flex justify-between mt-4 max-w-md text-on-surface-variant">
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-xl group-hover:text-sky-400 group-hover:bg-sky-400/10 p-2 rounded-full transition-colors">chat_bubble</span>
+<span class="text-sm">24</span>
+</button>
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-xl group-hover:text-emerald-400 group-hover:bg-emerald-400/10 p-2 rounded-full transition-colors">repeat</span>
+<span class="text-sm">12</span>
+</button>
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-xl group-hover:text-rose-400 group-hover:bg-rose-400/10 p-2 rounded-full transition-colors">favorite</span>
+<span class="text-sm">156</span>
+</button>
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-xl group-hover:text-sky-400 group-hover:bg-sky-400/10 p-2 rounded-full transition-colors">share</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+<!-- Post 2 (Text only) -->
+<article class="p-4 hover:bg-white/5 transition-colors cursor-pointer glass-panel border-none rounded-none">
+<div class="flex gap-3">
+<img alt="Ice Architect" class="w-10 h-10 rounded-full object-cover" data-alt="close up headshot of a middle aged man with glasses and a friendly expression professional office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC49gTLDyMTdqsSHiVZDWenSaEnnLDotgiZY33dPpZh8LgMBVk3t46x4qiKI_-6T0OtIbKA1o0FJdhUBelU5lHTaVhOigvhM2p5xuz2sH1ilcsRko0E_leVOWjKELml05I-Xynz_5a-17sz-1_UQ54PEpj6pWy2lwExImaF46xkblyXxO7kwTZZEfqMapZUlMvU1kDKi_z4xMEt0niZ90NOVP06qCDgEoAF6XQwABZdNywkczxFbmgv7k2Wv4Jhz9pbXtp-wKKoGrs"/>
+<div class="flex-1">
+<div class="flex items-center gap-1">
+<span class="font-bold text-on-surface">Ice Architect</span>
+<span class="text-on-surface-variant text-sm">@structure_ice · 5小时</span>
+</div>
+<p class="text-on-surface mt-1 leading-relaxed">
+                                为未来而设计意味着拥抱透明度和深度。这个生态系统中表面的分层是现代 UI 设计的典范。 #Glacier #设计系统
+                            </p>
+<div class="flex justify-between mt-4 max-w-md text-on-surface-variant">
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-xl group-hover:text-sky-400 group-hover:bg-sky-400/10 p-2 rounded-full transition-colors">chat_bubble</span>
+<span class="text-sm">8</span>
+</button>
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-xl group-hover:text-emerald-400 group-hover:bg-emerald-400/10 p-2 rounded-full transition-colors">repeat</span>
+<span class="text-sm">42</span>
+</button>
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-xl group-hover:text-rose-400 group-hover:bg-rose-400/10 p-2 rounded-full transition-colors">favorite</span>
+<span class="text-sm">89</span>
+</button>
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-xl group-hover:text-sky-400 group-hover:bg-sky-400/10 p-2 rounded-full transition-colors">share</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+<!-- Post 3 (Bento Grid Style Gallery) -->
+<article class="p-4 hover:bg-white/5 transition-colors cursor-pointer glass-panel border-none rounded-none">
+<div class="flex gap-3">
+<img alt="Frost Photographer" class="w-10 h-10 rounded-full object-cover" data-alt="artistic portrait of a woman with freckles and intense blue eyes looking directly at camera with cinematic side light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfA83pjnYBZXcZsW-P_nMs3oBd1g6_lSaiaF8VMb85_ds2-LBI6XNj6vQWZd49rhjQP5um-e0jqMsne-2Te5VJAlw8LXwi4uSTN3GB25wIeBkHeNY9JMdv_9yfcqjewLCWrVZYeOpMZ_MPk5GxNlp_CsgV5s-m-ZFxhuwob1klKvyNL6myDcL3wwFbP0DNOQgEfLhwEc2WN_sHxdqvp6k25aYZ5WSYzSfQqEhMxAq3Tx5bSWnMSxCG-qZ95VOG6-FudLn700t3mPk"/>
+<div class="flex-1">
+<div class="flex items-center gap-1">
+<span class="font-bold text-on-surface">Frost Photo</span>
+<span class="text-on-surface-variant text-sm">@frost_lens · 8小时</span>
+</div>
+<p class="text-on-surface mt-1 leading-relaxed mb-3">
+                                晨光照在晶体结构上。绝对的魔法。🏔️
+                            </p>
+<div class="grid grid-cols-2 grid-rows-2 gap-2 h-80 rounded-xl overflow-hidden">
+<div class="row-span-2 rounded-lg overflow-hidden glass-elevated">
+<img class="w-full h-full object-cover" data-alt="wide shot of mountain peaks covered in snow during sunrise with orange and blue sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-eiUMSUx00RydEPoufHbqBe2vaF2DpPRADMCftWN_ol9_mJsrmffzKc1vrlMbvIEHQoTFCfiXx5hrwoLUClM3maQpH6B5X9au87fRMobu6m1jqh58XpXrLGFrjSA_v4Ys3bbY9ibdNhFyZaOrf4UVo-5B8CK7fNbEOCQ20Bej4zkVtQqnQsbjX6DgZk8BsPdJia6f9Ob3zTaisF7zABoYQaAB63B-FI8O2NzbJ7-W-PMFiPyQneORIjfBbjqrAMFmdCOEEWFwi3k"/>
+</div>
+<div class="rounded-lg overflow-hidden glass-elevated">
+<img class="w-full h-full object-cover" data-alt="clear mountain lake reflecting the surrounding forest and snowy mountains in still water" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyG1Wl7_bxHP8zG7tiO-QvCZMIDsmf2zAqKVcK3cl4Ov1aqbpEt6TWjwDKouijcqc-9J0joZof_bBCxjq67TMdHajsUQ9xdwPiagSmjH2NEZi2Y3Akv28-jDe5mo-09Ty5z6tLgE3Pmyriv-5l9FIO9-_uO3gxI6EUtPeRAFmtYPaAjKu-aKt9S950wb9GGiamEq_UgPOBmtidHY7iLAh6ZPvu-ZI8b71p43MN5ygYRv9G5fJCCFM9gHMjiViy_SUgBefKlZC8Kt8"/>
+</div>
+<div class="rounded-lg overflow-hidden glass-elevated">
+<img class="w-full h-full object-cover" data-alt="winding road through a dramatic mountain pass at dusk with car trail lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC94arhhnebMpfv6BeSw2Zq3ZA462YUHs1f1-SxPhYPplbYcx7d-SVedL0lfTRZKxOf8PG-_gr6h35F4-oYlAjrNrQVrroQcUKHIwZ5868r7Q9qsDIif5kyhWvG0Ws4TQaXT3H_z7IM8oiiMZsD8vaIw4pL9WaIHC8B04AsEFqpPs5RPeyMVVAEi7HdcyyHVUW3ubAtt0Vyac5RHdgntHwnb1gNmaq3t9HVi7LLmwP0mAhBI254Vj1lC_qmpai3C-etn4QyH-DBIGE"/>
+</div>
+</div>
+<div class="flex justify-between mt-4 max-w-md text-on-surface-variant">
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-xl group-hover:text-sky-400 group-hover:bg-sky-400/10 p-2 rounded-full transition-colors">chat_bubble</span>
+<span class="text-sm">112</span>
+</button>
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-xl group-hover:text-emerald-400 group-hover:bg-emerald-400/10 p-2 rounded-full transition-colors">repeat</span>
+<span class="text-sm">204</span>
+</button>
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-xl group-hover:text-rose-400 group-hover:bg-rose-400/10 p-2 rounded-full transition-colors">favorite</span>
+<span class="text-sm">1.4k</span>
+</button>
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-xl group-hover:text-sky-400 group-hover:bg-sky-400/10 p-2 rounded-full transition-colors">share</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- Trends & Suggestions (Right Column) -->
+<aside class="w-80 px-6 py-4 flex flex-col gap-6 sticky top-0 h-screen">
+<!-- Search -->
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-surface-container border border-outline-variant focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-full py-3 pl-12 pr-4 text-sm transition-all glass-panel" placeholder="搜索 Glacier" type="text"/>
+</div>
+<!-- Trends Card -->
+<section class="glass-elevated rounded-xl p-4 flex flex-col gap-4">
+<h2 class="text-xl font-black text-on-surface">为您推荐的趋势</h2>
+<div class="flex flex-col gap-4">
+<div class="group cursor-pointer">
+<div class="flex justify-between items-center text-xs text-on-surface-variant">
+<span>技术 · 趋势</span>
+<span class="material-symbols-outlined text-sm">more_horiz</span>
+</div>
+<p class="font-bold text-on-surface group-hover:text-primary transition-colors">#玻璃拟态</p>
+<span class="text-xs text-on-surface-variant">1.25万 博文</span>
+</div>
+<div class="group cursor-pointer">
+<div class="flex justify-between items-center text-xs text-on-surface-variant">
+<span>设计 · 趋势</span>
+<span class="material-symbols-outlined text-sm">more_horiz</span>
+</div>
+<p class="font-bold text-on-surface group-hover:text-primary transition-colors">冷光 UI</p>
+<span class="text-xs text-on-surface-variant">8,200 博文</span>
+</div>
+<div class="group cursor-pointer">
+<div class="flex justify-between items-center text-xs text-on-surface-variant">
+<span>天气 · 趋势</span>
+<span class="material-symbols-outlined text-sm">more_horiz</span>
+</div>
+<p class="font-bold text-on-surface group-hover:text-primary transition-colors">北极风暴</p>
+<span class="text-xs text-on-surface-variant">4.51万 博文</span>
+</div>
+<div class="group cursor-pointer">
+<div class="flex justify-between items-center text-xs text-on-surface-variant">
+<span>娱乐 · 趋势</span>
+<span class="material-symbols-outlined text-sm">more_horiz</span>
+</div>
+<p class="font-bold text-on-surface group-hover:text-primary transition-colors">#Glacier音乐</p>
+<span class="text-xs text-on-surface-variant">2,100 博文</span>
+</div>
+</div>
+<button class="text-primary text-sm font-medium hover:underline text-left">显示更多</button>
+</section>
+<!-- Who to follow Card -->
+<section class="glass-elevated rounded-xl p-4 flex flex-col gap-4">
+<h2 class="text-xl font-black text-on-surface">推荐关注</h2>
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="portrait of a smiling man with a beard and trendy glasses in high-key studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_xPbETQFo-xXx8bMjI5hWJZTWOyQBKxc9SFgVJ9YHF7ROzwM6g6Sm82-gVCk1DFISI_A0RNgWsAAnLb33IfXwJ9dXemllOvKvHTjyVc1qEIp5tEGYDkrL1pVXDYNBw6NRC2wLYhNuLX82umqJxFCweuAObg4zxYzQQvb5DzWReCxo3RMUIKY4e0yz3CHN4cqvqVS-k9PvIgDsMPW-mWGAeoRSjr-D_RsqTSDJ4gn4871Q9ztwpctpJy2CTYwhraNnPu_yg54IpnI"/>
+<div class="flex flex-col overflow-hidden">
+<span class="font-bold text-sm text-on-surface truncate">Crystal Dev</span>
+<span class="text-xs text-on-surface-variant truncate">@crys_dev</span>
+</div>
+</div>
+<button class="bg-on-surface text-background px-4 py-1.5 rounded-full text-sm font-bold hover:bg-on-surface/90 transition-colors">关注</button>
+</div>
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="portrait of a woman with short colorful hair looking thoughtfully into distance with urban neon lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4GzhFzvTkW5J6SUV2kLu70DlUcFqcyOdD5xgarXRr5qR2dZshE9uZsuTK8OfadLu2RGi_AfehvZFKnbK0Q9HTYtgHRW5-A0zpcfm8oNkm-7QhnCOVDWAGglSxh0AH3maqKZK1kngJOEEniEllymhS_iFfPrV-KF_7JrBvLw9ELMeqE8nr0EjEVn6QTGrdoJxdYa4t1vYpnbNC7R2MY09fFSXwrb2BGLF-XTVmnWpdkV2VEtIo-5SD174QZr9N44FxJw_e6_G1pA8"/>
+<div class="flex flex-col overflow-hidden">
+<span class="font-bold text-sm text-on-surface truncate">Prism Artist</span>
+<span class="text-xs text-on-surface-variant truncate">@prism_art</span>
+</div>
+</div>
+<button class="bg-on-surface text-background px-4 py-1.5 rounded-full text-sm font-bold hover:bg-on-surface/90 transition-colors">关注</button>
+</div>
+</div>
+<button class="text-primary text-sm font-medium hover:underline text-left">显示更多</button>
+</section>
+<!-- Footer Links -->
+<footer class="flex flex-wrap gap-x-4 gap-y-2 px-4 text-xs text-on-surface-variant">
+<a class="hover:underline" href="#">服务条款</a>
+<a class="hover:underline" href="#">隐私政策</a>
+<a class="hover:underline" href="#">Cookie 政策</a>
+<a class="hover:underline" href="#">无障碍性</a>
+<a class="hover:underline" href="#">广告信息</a>
+<span>© 2024 Glacier Corp.</span>
+</footer>
+</aside>
+</div>
+</body></html>

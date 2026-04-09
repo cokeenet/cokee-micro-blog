@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Cokee.MicroBlog.Api/Cokee.MicroBlog.Api.csproj" />
+  <Project Path="Cokee.MicroBlog.Application/Cokee.MicroBlog.Application.csproj" />
+  <Project Path="Cokee.MicroBlog.Domain/Cokee.MicroBlog.Domain.csproj" />
+  <Project Path="Cokee.MicroBlog.Infrastructure/Cokee.MicroBlog.Infrastructure.csproj" />
+</Solution>
