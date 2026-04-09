@@ -11,7 +11,7 @@ export default function AdminDashboard() {
 <aside className="w-64 h-screen sticky top-0 border-r border-sky-300/10 bg-slate-950/60 backdrop-blur-xl shadow-[0_0_30px_rgba(125,211,252,0.05)] hidden md:flex flex-col py-4 px-6 gap-2">
 <div className="mb-8 px-2">
 <h1 className="text-2xl font-black text-sky-300 tracking-tight">Glacier</h1>
-<p className="text-xs text-slate-400">@glacier_admin</p>
+<p className="text-xs text-slate-500 dark:text-slate-400">@glacier_admin</p>
 </div>
 <nav className="flex-1 flex flex-col gap-2">
 
@@ -19,26 +19,26 @@ export default function AdminDashboard() {
 <span className="material-symbols-outlined" data-icon="dashboard">dashboard</span>
 <span className="font-inter text-base">概览</span>
 </a>
-<a className="flex items-center gap-3 px-4 py-3 text-slate-400 font-regular hover:bg-slate-800/50 transition-colors duration-200 rounded-full active:scale-95" href="#">
+<a className="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 font-regular hover:bg-slate-50 dark:bg-slate-800/50 transition-colors duration-200 rounded-full active:scale-95" href="#">
 <span className="material-symbols-outlined" data-icon="group">group</span>
-<span className="font-inter text-base">用户管理</span>
+<span className="font-inter text-base">用户</span>
 </a>
-<a className="flex items-center gap-3 px-4 py-3 text-slate-400 font-regular hover:bg-slate-800/50 transition-colors duration-200 rounded-full active:scale-95" href="#">
+<a className="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 font-regular hover:bg-slate-50 dark:bg-slate-800/50 transition-colors duration-200 rounded-full active:scale-95" href="#">
 <span className="material-symbols-outlined" data-icon="gavel">gavel</span>
 <span className="font-inter text-base">内容审核</span>
 </a>
-<a className="flex items-center gap-3 px-4 py-3 text-slate-400 font-regular hover:bg-slate-800/50 transition-colors duration-200 rounded-full active:scale-95" href="#">
+<a className="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 font-regular hover:bg-slate-50 dark:bg-slate-800/50 transition-colors duration-200 rounded-full active:scale-95" href="#">
 <span className="material-symbols-outlined" data-icon="analytics">analytics</span>
 <span className="font-inter text-base">数据统计</span>
 </a>
-<a className="flex items-center gap-3 px-4 py-3 text-slate-400 font-regular hover:bg-slate-800/50 transition-colors duration-200 rounded-full active:scale-95" href="#">
+<a className="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 font-regular hover:bg-slate-50 dark:bg-slate-800/50 transition-colors duration-200 rounded-full active:scale-95" href="#">
 <span className="material-symbols-outlined" data-icon="settings">settings</span>
 <span className="font-inter text-base">设置</span>
 </a>
 </nav>
 <div className="mt-auto pt-6 border-t border-sky-300/10 flex items-center gap-3 px-2">
 <div className="w-10 h-10 rounded-full bg-primary-container overflow-hidden ring-1 ring-sky-300/20">
-<img alt="管理员用户头像" className="w-full h-full object-cover" data-alt="close-up portrait of a professional man with a neutral expression in a soft-lit studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqLRq9OVsqnECliTqLmaV5dyTL5xCoq5DZGgEInKePN9gsGS2A6OfY1xsKEJl4ESPH0a7lznsMgNKlLKhbuw7ssDInxiYTdaZZzJM-9TdR1CpouT8lZeitpTkmpeiMt_5AxeENoBoEXSf7oEjhg_zMYjWOSKYLi04Ye25RDZ0F8XC-f07ocF3XadQUo7T6RxmpXrANu7jZbiKCtlW9MV9FCoOazLI1bvbvOQhHegB7kpRA8BP6h4mU0Lxd9RYLrL64ma8GTaYG2Yw"/>
+<img alt="员用户头像" className="w-full h-full object-cover" data-alt="close-up portrait of a professional man with a neutral expression in a soft-lit studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqLRq9OVsqnECliTqLmaV5dyTL5xCoq5DZGgEInKePN9gsGS2A6OfY1xsKEJl4ESPH0a7lznsMgNKlLKhbuw7ssDInxiYTdaZZzJM-9TdR1CpouT8lZeitpTkmpeiMt_5AxeENoBoEXSf7oEjhg_zMYjWOSKYLi04Ye25RDZ0F8XC-f07ocF3XadQUo7T6RxmpXrANu7jZbiKCtlW9MV9FCoOazLI1bvbvOQhHegB7kpRA8BP6h4mU0Lxd9RYLrL64ma8GTaYG2Yw"/>
 </div>
 <div className="flex-1 min-w-0">
 <p className="text-sm font-bold text-on-surface truncate">Admin Core</p>
@@ -55,7 +55,7 @@ export default function AdminDashboard() {
 </div>
 <div className="hidden md:flex items-center gap-6">
 <button className="text-sky-300 border-b-2 border-sky-300 pb-1 font-inter text-sm font-medium cursor-pointer transition-opacity active:opacity-70">全局视图</button>
-<button className="text-slate-400 pb-1 font-inter text-sm font-medium hover:text-sky-200 cursor-pointer transition-opacity active:opacity-70">区域警报</button>
+<button className="text-slate-500 dark:text-slate-400 pb-1 font-inter text-sm font-medium hover:text-sky-200 cursor-pointer transition-opacity active:opacity-70">区域警报</button>
 </div>
 </div>
 <div className="flex items-center gap-4">
@@ -63,10 +63,10 @@ export default function AdminDashboard() {
 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm" data-icon="search">search</span>
 <input className="bg-surface-container-low border border-sky-300/10 rounded-full py-1.5 pl-9 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-sky-300/30 w-64 placeholder:text-slate-500" placeholder="搜索日志、用户..." type="text"/>
 </div>
-<button className="w-10 h-10 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-800/50 active:scale-95 transition-all">
+<button className="w-10 h-10 flex items-center justify-center rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:bg-slate-800/50 active:scale-95 transition-all">
 <span className="material-symbols-outlined" data-icon="notifications">notifications</span>
 </button>
-<button className="w-10 h-10 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-800/50 active:scale-95 transition-all">
+<button className="w-10 h-10 flex items-center justify-center rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:bg-slate-800/50 active:scale-95 transition-all">
 <span className="material-symbols-outlined" data-icon="tune">tune</span>
 </button>
 </div>
@@ -197,7 +197,7 @@ export default function AdminDashboard() {
 </div>
 </div>
 </td>
-<td className="px-6 py-4">发布新帖: "Morning in..."</td>
+<td className="px-6 py-4">新帖: "Morning in..."</td>
 <td className="px-6 py-4 text-on-surface-variant">2 分钟前</td>
 <td className="px-6 py-4">
 <span className="inline-flex items-center gap-1.5 text-emerald-400">
@@ -254,7 +254,7 @@ export default function AdminDashboard() {
 </div>
 </div>
 </td>
-<td className="px-6 py-4">更新了个人资料设置</td>
+<td className="px-6 py-4">更新了设置</td>
 <td className="px-6 py-4 text-on-surface-variant">1 小时前</td>
 <td className="px-6 py-4">
 <span className="inline-flex items-center gap-1.5 text-emerald-400">

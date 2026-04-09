@@ -107,14 +107,26 @@
 
 @layer components {
     .glass-panel {
+        background: #ffffff;
+        border: 1px solid #f1f5f9;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .dark .glass-panel {
         background: rgba(15, 21, 36, 0.6);
         backdrop-filter: blur(16px);
         border: 1px solid rgba(125, 211, 252, 0.1);
+        box-shadow: none;
     }
 
     .glass-elevated {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .dark .glass-elevated {
         background: rgba(15, 21, 36, 0.75);
         backdrop-filter: blur(24px);
         border: 1px solid rgba(125, 211, 252, 0.15);
+        box-shadow: none;
     }
 }
