@@ -9,7 +9,8 @@ export default function ComposePage() {
     const navigate = useNavigate();
     const location = useLocation();
     const [content, setContent] = useState('');
-    const [visibility, setVisibility] = useState('所有人可以回复');
+    const [replyPermission, setReplyPermission] = useState('所有人可以回复');
+    const [postVisibility, setPostVisibility] = useState('公开');
     const [submitting, setSubmitting] = useState(false);
 
     const canSubmit = useMemo(() => content.trim().length > 0 && !submitting, [content, submitting]);
@@ -30,7 +31,7 @@ export default function ComposePage() {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify({ content, type: 0 })
+                body: JSON.stringify({ content, type: 0, replyPermission, visibility: postVisibility })
             });
 
             if (!res.ok) {
@@ -54,27 +55,55 @@ export default function ComposePage() {
                         <span className="text-sm text-on-surface-variant">Web端</span>
                     </div>
 
-                    <Dropdown>
-                        <Button variant="secondary" className="mb-4">
-                            {visibility}
-                        </Button>
-                        <Dropdown.Popover>
-                            <Dropdown.Menu
-                                aria-label="可见性"
-                                onAction={(key) => setVisibility(String(key))}
-                            >
-                                <Dropdown.Item id="所有人可以回复" textValue="所有人可以回复">
-                                    <Label>所有人可以回复</Label>
-                                </Dropdown.Item>
-                                <Dropdown.Item id="我关注的人可以回复" textValue="我关注的人可以回复">
-                                    <Label>我关注的人可以回复</Label>
-                                </Dropdown.Item>
-                                <Dropdown.Item id="仅提及的人可以回复" textValue="仅提及的人可以回复">
-                                    <Label>仅提及的人可以回复</Label>
-                                </Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown.Popover>
-                    </Dropdown>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                        <Dropdown>
+                            <Button variant="secondary" className="px-3 flex items-center gap-1">
+                                <span className="material-symbols-outlined text-[18px]">public</span>
+                                {postVisibility}
+                            </Button>
+                            <Dropdown.Popover>
+                                <Dropdown.Menu
+                                    aria-label="帖子可见性"
+                                    onAction={(key) => setPostVisibility(String(key))}
+                                >
+                                    <Dropdown.Item id="公开" textValue="公开">
+                                        <Label>公开</Label>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item id="粉丝" textValue="粉丝">
+                                        <Label>粉丝</Label>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item id="好友圈" textValue="好友圈">
+                                        <Label>好友圈</Label>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item id="仅自己可见" textValue="仅自己可见">
+                                        <Label>仅自己可见</Label>
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown.Popover>
+                        </Dropdown>
+
+                        <Dropdown>
+                            <Button variant="secondary" className="px-3">
+                                {replyPermission}
+                            </Button>
+                            <Dropdown.Popover>
+                                <Dropdown.Menu
+                                    aria-label="可见性"
+                                    onAction={(key) => setReplyPermission(String(key))}
+                                >
+                                    <Dropdown.Item id="所有人可以回复" textValue="所有人可以回复">
+                                        <Label>所有人可以回复</Label>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item id="我关注的人可以回复" textValue="我关注的人可以回复">
+                                        <Label>我关注的人可以回复</Label>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item id="仅提及的人可以回复" textValue="仅提及的人可以回复">
+                                        <Label>仅提及的人可以回复</Label>
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown.Popover>
+                        </Dropdown>
+                    </div>
 
                     <TextArea rows={8} placeholder="分享你的想法..." value={content} onChange={(e) => setContent(e.target.value)} />
 
