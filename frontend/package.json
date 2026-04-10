@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "frontend",
   "type": "module",
   "version": "1.0.0",
@@ -12,7 +12,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "@heroui/react": "^3.0.2",
     "@heroui/system": "^2.4.28",

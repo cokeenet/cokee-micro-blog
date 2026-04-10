@@ -1,21 +1,47 @@
 import AdminDashboard from './pages/AdminDashboard';
 import Login from './pages/Login';
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router';
+import { useState, useEffect } from 'react';
+import { Routes, Route } from 'react-router';
 import { AppLayout } from './layouts/AppLayout';
 import { useAuth } from './hooks/useAuth';
 
 const Home = () => {
-    const { user, token } = useAuth();
+    const { token } = useAuth();
     const [posts, setPosts] = useState<any[]>([]);
     const [content, setContent] = useState('');
+    const [activeFeed, setActiveFeed] = useState<'recommended' | 'following'>('recommended');
+
+    const loadPosts = async (feed: 'recommended' | 'following') => {
+        if (feed === 'following' && !token) {
+            setPosts([]);
+            return;
+        }
+
+        const endpoint = feed === 'following'
+            ? 'http://localhost:5246/api/posts/following'
+            : 'http://localhost:5246/api/posts';
+
+        const headers: Record<string, string> = {};
+        if (feed === 'following' && token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        try {
+            const res = await fetch(endpoint, { headers });
+            if (!res.ok) {
+                throw new Error(`加载失败: ${res.status}`);
+            }
+            const data = await res.json();
+            setPosts(data);
+        } catch (err) {
+            console.error(err);
+            setPosts([]);
+        }
+    };
 
     useEffect(() => {
-        fetch('http://localhost:5246/api/posts')
-            .then(res => res.json())
-            .then(data => setPosts(data))
-            .catch(err => console.error(err));
-    }, []);
+        loadPosts(activeFeed);
+    }, [activeFeed, token]);
 
     const handlePost = async () => {
         if (!content.trim()) return;
@@ -30,9 +56,7 @@ const Home = () => {
             });
             if (res.ok) {
                 setContent('');
-                const newPost = await res.json();
-                newPost.authorUsername = `@${user?.username}`;
-                setPosts([newPost, ...posts]);
+                await loadPosts(activeFeed);
             } else {
                 alert('发送失败，请检查登录状态');
             }
@@ -48,10 +72,20 @@ const Home = () => {
                 <div className="flex items-center gap-8">
                     <span className="text-xl font-black text-sky-500 dark:text-sky-300">首页</span>
                     <div className="flex gap-6">
-                        <button className="text-sky-500 dark:text-sky-300 border-b-2 border-sky-300 pb-2 font-inter text-sm font-medium cursor-pointer transition-opacity active:opacity-70">
+                        <button
+                            onClick={() => setActiveFeed('recommended')}
+                            className={`${activeFeed === 'recommended'
+                                ? 'text-sky-500 dark:text-sky-300 border-b-2 border-sky-300'
+                                : 'text-slate-600 dark:text-slate-400'} pb-2 font-inter text-sm font-medium cursor-pointer transition-opacity active:opacity-70`}
+                        >
                             推荐
                         </button>
-                        <button className="text-slate-600 dark:text-slate-400 pb-2 font-inter text-sm font-medium hover:text-sky-600 dark:hover:text-sky-200 cursor-pointer transition-opacity active:opacity-70">
+                        <button
+                            onClick={() => setActiveFeed('following')}
+                            className={`${activeFeed === 'following'
+                                ? 'text-sky-500 dark:text-sky-300 border-b-2 border-sky-300'
+                                : 'text-slate-600 dark:text-slate-400'} pb-2 font-inter text-sm font-medium hover:text-sky-600 dark:hover:text-sky-200 cursor-pointer transition-opacity active:opacity-70`}
+                        >
                             关注
                         </button>
                     </div>
@@ -115,7 +149,7 @@ const Home = () => {
                                         {post.authorUsername?.replace('@', '') || 'Unknown User'}
                                     </span>
                                     <span className="text-slate-500 dark:text-on-surface-variant text-sm">
-                                        {post.authorUsername} �� {new Date(post.createdAt || Date.now()).toLocaleDateString()}
+                                        {post.authorUsername}  {new Date(post.createdAt || Date.now()).toLocaleDateString()}
                                     </span>
                                 </div>
                                 <p className="text-slate-800 dark:text-on-surface mt-1 leading-relaxed mb-3 whitespace-pre-wrap">
@@ -144,7 +178,7 @@ const Home = () => {
                 ))}
                 {posts.length === 0 && (
                     <div className="p-8 text-center text-slate-500 dark:text-slate-400">
-                        ��û���˷�����������һ���ɣ�
+                        {activeFeed === 'following' && !token ? '请先登录后查看关注流' : '暂无内容'}
                     </div>
                 )}
             </div>

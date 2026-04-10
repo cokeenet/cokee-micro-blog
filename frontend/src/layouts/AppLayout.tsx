@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { useTheme } from '../hooks/useTheme';
+import { useAuth } from '../hooks/useAuth';
 
 interface AppLayoutProps {
     children: React.ReactNode;
@@ -9,6 +10,57 @@ interface AppLayoutProps {
 export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     const location = useLocation();
     const { theme, toggleTheme } = useTheme();
+    const { user, token } = useAuth();
+    const [trends, setTrends] = useState<any[]>([]);
+    const [suggestions, setSuggestions] = useState<any[]>([]);
+
+    const loadSidebarData = async () => {
+        try {
+            const trendRes = await fetch('http://localhost:5246/api/trends');
+            const trendData = await trendRes.json();
+            setTrends(trendData);
+        } catch {
+            setTrends([]);
+        }
+
+        try {
+            const headers: Record<string, string> = {};
+            if (token) {
+                headers.Authorization = `Bearer ${token}`;
+            }
+
+            const suggestionRes = await fetch('http://localhost:5246/api/users/suggestions', { headers });
+            const suggestionData = await suggestionRes.json();
+            setSuggestions(suggestionData);
+        } catch {
+            setSuggestions([]);
+        }
+    };
+
+    useEffect(() => {
+        loadSidebarData();
+    }, [token]);
+
+    const handleFollow = async (targetUserId: string) => {
+        if (!token) {
+            alert('请先登录后再关注用户');
+            return;
+        }
+
+        const res = await fetch(`http://localhost:5246/api/users/${targetUserId}/follow`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        if (!res.ok) {
+            alert('关注失败，请稍后重试');
+            return;
+        }
+
+        await loadSidebarData();
+    };
 
     const navigation = [
         { name: '首页', path: '/', icon: 'home' },
@@ -68,11 +120,11 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                     </button>
                     <div className="mt-auto flex items-center gap-3 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-background font-bold">
-                            G
+                            {user?.displayName?.charAt(0).toUpperCase() || 'U'}
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-sm font-bold text-on-surface">GuGu User</span>
-                            <span className="text-xs text-on-surface-variant">@gugu_user</span>
+                            <span className="text-sm font-bold text-on-surface">{user?.displayName || 'Loading...'}</span>
+                            <span className="text-xs text-on-surface-variant">@{user?.username || 'loading'}</span>
                         </div>
                         <span className="material-symbols-outlined ml-auto text-on-surface-variant">more_horiz</span>
                     </div>
@@ -98,12 +150,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                     <section className="glass-elevated rounded-xl p-4 flex flex-col gap-4">
                         <h2 className="text-xl font-black text-on-surface">为您推荐的趋势</h2>
                         <div className="flex flex-col gap-4">
-                            {[
-                                { category: '技术', name: '#玻璃拟态', posts: '1.25万' },
-                                { category: '设计', name: '冷光 UI', posts: '8,200' },
-                                { category: '天气', name: '北极风暴', posts: '4.51万' },
-                                { category: '娱乐', name: '#GuGu音乐', posts: '2,100' },
-                            ].map((trend, i) => (
+                            {trends.length > 0 ? trends.map((trend: any, i) => (
                                 <div key={i} className="group cursor-pointer">
                                     <div className="flex justify-between items-center text-xs text-on-surface-variant">
                                         <span>{trend.category} · 趋势</span>
@@ -112,7 +159,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                                     <p className="font-bold text-on-surface group-hover:text-primary transition-colors">{trend.name}</p>
                                     <span className="text-xs text-on-surface-variant">{trend.posts} 博文</span>
                                 </div>
-                            ))}
+                            )) : <div className="text-sm text-slate-500 text-center py-4">暂无热门话题</div>}
                         </div>
                         <button className="text-primary text-sm font-medium hover:underline text-left">显示更多</button>
                     </section>
@@ -121,25 +168,25 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                     <section className="glass-elevated rounded-xl p-4 flex flex-col gap-4">
                         <h2 className="text-xl font-black text-on-surface">推荐关注</h2>
                         <div className="flex flex-col gap-4">
-                            {[
-                                { name: 'Crystal Dev', handle: '@crys_dev', letter: 'C' },
-                                { name: 'Prism Artist', handle: '@prism_art', letter: 'P' },
-                            ].map((user, i) => (
+                            {suggestions.length > 0 ? suggestions.map((user: any, i) => (
                                 <div key={i} className="flex items-center justify-between gap-2">
                                     <div className="flex items-center gap-2">
                                         <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center font-bold text-sky-200">
-                                            {user.letter}
+                                            {(user.displayName || user.name || 'U').charAt(0).toUpperCase()}
                                         </div>
                                         <div className="flex flex-col overflow-hidden">
-                                            <span className="font-bold text-sm text-on-surface truncate">{user.name}</span>
-                                            <span className="text-xs text-on-surface-variant truncate">{user.handle}</span>
+                                            <span className="font-bold text-sm text-on-surface truncate">{user.displayName || user.name}</span>
+                                            <span className="text-xs text-on-surface-variant truncate">@{user.username || user.handle?.replace('@', '')}</span>
                                         </div>
                                     </div>
-                                    <button className="bg-on-surface text-background px-4 py-1.5 rounded-full text-sm font-bold hover:bg-on-surface/90 transition-colors">
+                                    <button
+                                        onClick={() => handleFollow(user.id)}
+                                        className="bg-on-surface text-background px-4 py-1.5 rounded-full text-sm font-bold hover:bg-on-surface/90 transition-colors"
+                                    >
                                         关注
                                     </button>
                                 </div>
-                            ))}
+                            )) : <div className="text-sm text-slate-500 text-center py-4">暂无推荐关注</div>}
                         </div>
                         <button className="text-primary text-sm font-medium hover:underline text-left">显示更多</button>
                     </section>
