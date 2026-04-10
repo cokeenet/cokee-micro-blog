@@ -1,4 +1,4 @@
-import { Button, Card, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, TextArea } from '@heroui/react';
+import { Button, Card, Dropdown, Label, TextArea } from '@heroui/react';
 import { useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../hooks/useAuth';
@@ -55,19 +55,25 @@ export default function ComposePage() {
                     </div>
 
                     <Dropdown>
-                        <DropdownTrigger>
-                            <Button variant="secondary">
-                                {visibility}
-                            </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu
-                            aria-label="可见性"
-                            onAction={(key) => setVisibility(String(key))}
-                        >
-                            <DropdownItem key="所有人可以回复">所有人可以回复</DropdownItem>
-                            <DropdownItem key="我关注的人可以回复">我关注的人可以回复</DropdownItem>
-                            <DropdownItem key="仅提及的人可以回复">仅提及的人可以回复</DropdownItem>
-                        </DropdownMenu>
+                        <Button variant="secondary" className="mb-4">
+                            {visibility}
+                        </Button>
+                        <Dropdown.Popover>
+                            <Dropdown.Menu
+                                aria-label="可见性"
+                                onAction={(key) => setVisibility(String(key))}
+                            >
+                                <Dropdown.Item id="所有人可以回复" textValue="所有人可以回复">
+                                    <Label>所有人可以回复</Label>
+                                </Dropdown.Item>
+                                <Dropdown.Item id="我关注的人可以回复" textValue="我关注的人可以回复">
+                                    <Label>我关注的人可以回复</Label>
+                                </Dropdown.Item>
+                                <Dropdown.Item id="仅提及的人可以回复" textValue="仅提及的人可以回复">
+                                    <Label>仅提及的人可以回复</Label>
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown.Popover>
                     </Dropdown>
 
                     <TextArea rows={8} placeholder="分享你的想法..." value={content} onChange={(e) => setContent(e.target.value)} />
