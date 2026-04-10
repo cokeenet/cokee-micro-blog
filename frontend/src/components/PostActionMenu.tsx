@@ -1,4 +1,4 @@
-import { Dropdown, Label } from '@heroui/react';
+import { Dropdown, Label, Button } from '@heroui/react';
 
 interface PostActionMenuProps {
     isOwner: boolean;
@@ -31,14 +31,14 @@ export function PostActionMenu({ isOwner, onAction }: PostActionMenuProps) {
 
     return (
         <Dropdown>
-            <span
+            <Button
                 aria-label="博文菜单"
-                role="button"
-                tabIndex={0}
-                className="inline-flex cursor-pointer items-center rounded-full p-1.5 text-on-surface-variant transition hover:bg-white/40 dark:hover:bg-white/10 hover:text-on-surface"
+                isIconOnly
+                variant="ghost"
+                className="rounded-full border-none text-on-surface-variant transition hover:bg-black/5 dark:hover:bg-white/10 hover:text-on-surface"
             >
                 <span className="material-symbols-outlined text-lg">more_horiz</span>
-            </span>
+            </Button>
             <Dropdown.Popover>
                 <Dropdown.Menu aria-label="博文操作" onAction={(key) => onAction(String(key))}>
                     {actions.map((action) => (
