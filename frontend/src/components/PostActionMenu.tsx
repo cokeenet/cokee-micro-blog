@@ -1,4 +1,4 @@
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
+import { Dropdown, Label } from '@heroui/react';
 
 interface PostActionMenuProps {
     isOwner: boolean;
@@ -31,21 +31,23 @@ export function PostActionMenu({ isOwner, onAction }: PostActionMenuProps) {
 
     return (
         <Dropdown>
-            <DropdownTrigger>
-                <span
-                    aria-label="博文菜单"
-                    className="inline-flex cursor-pointer items-center rounded-full p-1.5 text-on-surface-variant transition hover:bg-white/40 dark:hover:bg-white/10 hover:text-on-surface"
-                >
-                    <span className="material-symbols-outlined text-lg">more_horiz</span>
-                </span>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="博文操作" onAction={(key) => onAction(String(key))}>
-                {actions.map((action) => (
-                    <DropdownItem key={action.key}>
-                        {action.label}
-                    </DropdownItem>
-                ))}
-            </DropdownMenu>
+            <span
+                aria-label="博文菜单"
+                role="button"
+                tabIndex={0}
+                className="inline-flex cursor-pointer items-center rounded-full p-1.5 text-on-surface-variant transition hover:bg-white/40 dark:hover:bg-white/10 hover:text-on-surface"
+            >
+                <span className="material-symbols-outlined text-lg">more_horiz</span>
+            </span>
+            <Dropdown.Popover>
+                <Dropdown.Menu aria-label="博文操作" onAction={(key) => onAction(String(key))}>
+                    {actions.map((action) => (
+                        <Dropdown.Item id={action.key} textValue={action.label}>
+                            <Label>{action.label}</Label>
+                        </Dropdown.Item>
+                    ))}
+                </Dropdown.Menu>
+            </Dropdown.Popover>
         </Dropdown>
     );
 }
