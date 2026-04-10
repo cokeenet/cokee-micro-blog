@@ -2,6 +2,7 @@ import { Button, Card, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Te
 import { useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../hooks/useAuth';
+import { API_BASE_URL } from '../config/api';
 
 export default function ComposePage() {
     const { token } = useAuth();
@@ -23,7 +24,7 @@ export default function ComposePage() {
 
         setSubmitting(true);
         try {
-            const res = await fetch('http://localhost:5246/api/posts', {
+            const res = await fetch(`${API_BASE_URL}/posts`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

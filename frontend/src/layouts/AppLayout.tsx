@@ -5,6 +5,7 @@ import HoverEffectCard from '../components/HoverEffectCard';
 import PageBackground from '../components/PageBackground';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../hooks/useTheme';
+import { API_BASE_URL } from '../config/api';
 
 interface AppLayoutProps {
     children: React.ReactNode;
@@ -20,7 +21,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
     const loadSidebarData = async () => {
         try {
-            const trendRes = await fetch('http://localhost:5246/api/trends');
+            const trendRes = await fetch(`${API_BASE_URL}/trends`);
             const trendData = await trendRes.json();
             setTrends(trendData);
         } catch {
@@ -31,7 +32,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             const headers: Record<string, string> = {};
             if (token) headers.Authorization = `Bearer ${token}`;
 
-            const suggestionRes = await fetch('http://localhost:5246/api/users/suggestions', { headers });
+            const suggestionRes = await fetch(`${API_BASE_URL}/users/suggestions`, { headers });
             const suggestionData = await suggestionRes.json();
             setSuggestions(suggestionData);
         } catch {
@@ -50,7 +51,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             return;
         }
 
-        const res = await fetch(`http://localhost:5246/api/users/${targetUserId}/follow`, {
+        const res = await fetch(`${API_BASE_URL}/users/${targetUserId}/follow`, {
             method: 'POST',
             headers: { Authorization: `Bearer ${token}` }
         });

@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router';
 import HoverEffectCard from '../components/HoverEffectCard';
 import PageBackground from '../components/PageBackground';
 import { useAuth } from '../hooks/useAuth';
+import { API_BASE_URL } from '../config/api';
 
 export default function Login() {
     const location = useLocation();
@@ -26,10 +27,10 @@ export default function Login() {
         setMessage('');
 
         try {
-            const endpoint = isRegister ? '/api/auth/register' : '/api/auth/login';
+            const endpoint = isRegister ? '/auth/register' : '/auth/login';
             const body = isRegister ? { username, email, passwordHash: password } : { username, password };
 
-            const res = await fetch(`http://localhost:5246${endpoint}`, {
+            const res = await fetch(`${API_BASE_URL}${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)

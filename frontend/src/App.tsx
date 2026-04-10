@@ -14,6 +14,7 @@ import ExplorePage from './pages/ExplorePage';
 import Login from './pages/Login';
 import NotificationsPage from './pages/NotificationsPage';
 import ProfilePage from './pages/ProfilePage';
+import { API_BASE_URL } from './config/api';
 
 type FeedType = 'recommended' | 'following';
 
@@ -25,7 +26,7 @@ const Home = () => {
     const [activeFeed, setActiveFeed] = useState<FeedType>('recommended');
 
     const endpoint = useMemo(
-        () => (activeFeed === 'following' ? 'http://localhost:5246/api/posts/following' : 'http://localhost:5246/api/posts'),
+        () => (activeFeed === 'following' ? `${API_BASE_URL}/posts/following` : `${API_BASE_URL}/posts`),
         [activeFeed]
     );
 

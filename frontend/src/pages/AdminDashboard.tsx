@@ -1,11 +1,29 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { Avatar } from '@heroui/react';
 import PageBackground from '../components/PageBackground';
+import { API_BASE_URL } from '../config/api';
 
 export default function AdminDashboard() {
     const [activeTab, setActiveTab] = useState('Overview');
     const [activeMenu, setActiveMenu] = useState('Dashboard');
+    const [stats, setStats] = useState<any>(null);
+    const [users, setUsers] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchDashboardData = async () => {
+            try {
+                const statsRes = await fetch(`${API_BASE_URL}/admin/stats`);
+                setStats(await statsRes.json());
+
+                const usersRes = await fetch(`${API_BASE_URL}/admin/users`);
+                setUsers(await usersRes.json());
+            } catch (err) {
+                console.error('Failed to load admin data:', err);
+            }
+        };
+        fetchDashboardData();
+    }, []);
 
     const menuItems = [
         { name: 'Dashboard', icon: 'space_dashboard' },
@@ -13,15 +31,6 @@ export default function AdminDashboard() {
         { name: 'Tracker', icon: 'checklist', badge: 'New' },
         { name: 'Analytics', icon: 'analytics' },
         { name: 'Settings', icon: 'settings' }
-    ];
-
-    const employees = [
-        { id: '#4586932', name: 'Kate Moore', email: 'kate@acme.com', role: 'Chief Executive Officer', type: 'Employee', grad: 'from-cyan-300 to-blue-500' },
-        { id: '#4586933', name: 'John Smith', email: 'john@acme.com', role: 'Chief Technology Officer', type: 'Employee', grad: 'from-blue-400 to-indigo-500' },
-        { id: '#4586934', name: 'Sara Johnson', email: 'sara@acme.com', role: 'Chief Marketing Officer', type: 'Employee', grad: 'from-emerald-300 to-teal-500' },
-        { id: '#4586935', name: 'Mike Wilson', email: 'mike@acme.com', role: 'VP of Engineering', type: 'Employee', grad: 'from-emerald-400 to-lime-500' },
-        { id: '#4586936', name: 'Alex Turner', email: 'alex@acme.com', role: 'Product Manager', type: 'Employee', grad: 'from-purple-400 to-indigo-500' },
-        { id: '#4586937', name: 'Emma Davis', email: 'emma@acme.com', role: 'Senior Designer', type: 'Employee', grad: 'from-pink-400 to-rose-500' }
     ];
 
     return (
@@ -133,39 +142,39 @@ export default function AdminDashboard() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                         <div className="glass-elevated rounded-panel p-5 flex flex-col gap-2">
                             <div className="flex justify-between items-start">
-                                <span className="text-on-surface-variant text-sm font-semibold">Revenue</span>
+                                <span className="text-on-surface-variant text-sm font-semibold">Total Users</span>
                                 <span className="text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                                    <span className="material-symbols-outlined text-[10px]">arrow_upward</span> 3.3%
+                                    <span className="material-symbols-outlined text-[10px]">group</span>
                                 </span>
                             </div>
-                            <span className="text-3xl font-black text-on-surface">$228,441</span>
+                            <span className="text-3xl font-black text-on-surface">{stats?.totalUsers || 0}</span>
                         </div>
                         <div className="glass-elevated rounded-panel p-5 flex flex-col gap-2">
                             <div className="flex justify-between items-start">
-                                <span className="text-on-surface-variant text-sm font-semibold">Expenses</span>
-                                <span className="text-[10px] bg-rose-500/15 text-rose-600 dark:text-rose-400 font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                                    <span className="material-symbols-outlined text-[10px]">arrow_downward</span> 3.3%
+                                <span className="text-on-surface-variant text-sm font-semibold">Total Posts</span>
+                                <span className="text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                                    <span className="material-symbols-outlined text-[10px]">article</span>
                                 </span>
                             </div>
-                            <span className="text-3xl font-black text-on-surface">$25,108</span>
+                            <span className="text-3xl font-black text-on-surface">{stats?.totalPosts || 0}</span>
                         </div>
                         <div className="glass-elevated rounded-panel p-5 flex flex-col gap-2">
                             <div className="flex justify-between items-start">
-                                <span className="text-on-surface-variant text-sm font-semibold">Sales</span>
+                                <span className="text-on-surface-variant text-sm font-semibold">Today Logins</span>
                                 <span className="text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                                    <span className="material-symbols-outlined text-[10px]">arrow_upward</span> 3.3%
+                                    <span className="material-symbols-outlined text-[10px]">login</span>
                                 </span>
                             </div>
-                            <span className="text-3xl font-black text-on-surface">458</span>
+                            <span className="text-3xl font-black text-on-surface">{stats?.todayLogins || 0}</span>
                         </div>
                         <div className="glass-elevated rounded-panel p-5 flex flex-col gap-2">
                             <div className="flex justify-between items-start">
-                                <span className="text-on-surface-variant text-sm font-semibold">Profit</span>
+                                <span className="text-on-surface-variant text-sm font-semibold">System Status</span>
                                 <span className="text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                                    <span className="material-symbols-outlined text-[10px]">arrow_upward</span> 4.1%
+                                    <span className="material-symbols-outlined text-[10px]">check_circle</span>
                                 </span>
                             </div>
-                            <span className="text-3xl font-black text-on-surface">$203,133</span>
+                            <span className="text-3xl font-black text-on-surface">API {stats?.apiGateway || '99.9%'}</span>
                         </div>
                     </div>
 
@@ -232,8 +241,8 @@ export default function AdminDashboard() {
                     {/* Data Table Toolbar */}
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 mt-8">
                         <div className="flex items-center gap-3">
-                            <h2 className="text-lg font-black text-on-surface">All Employees</h2>
-                            <span className="glass-chip px-2 py-0.5 rounded-full text-xs font-bold text-on-surface-variant">32</span>
+                            <h2 className="text-lg font-black text-on-surface">System Users</h2>
+                            <span className="glass-chip px-2 py-0.5 rounded-full text-xs font-bold text-on-surface-variant">{users.length}</span>
                         </div>
                         <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                             <button className="glass-chip px-3 py-1.5 rounded-card text-sm font-semibold flex items-center gap-1.5 hover:bg-surface-variant/50 transition-colors">
@@ -264,7 +273,7 @@ export default function AdminDashboard() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-outline-variant/30">
-                                {employees.map((emp) => (
+                                {users.map((emp: any) => (
                                     <tr key={emp.id} className="hover:bg-white/40 dark:hover:bg-white/5 transition-colors group cursor-pointer">
                                         <td className="px-6 py-4 font-bold text-on-surface flex items-center gap-2 h-[68px]">
                                             {emp.id}
@@ -275,13 +284,13 @@ export default function AdminDashboard() {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <Avatar className="shrink-0 w-8 h-8 shadow-glow-soft border-none bg-transparent">
-                                                    <Avatar.Fallback className={`bg-gradient-to-tr ${emp.grad} text-white font-bold text-xs`}>
-                                                        {emp.name.split(' ').map(n => n[0]).join('')}
+                                                    <Avatar.Fallback className={`bg-gradient-to-tr ${emp.grad || 'from-primary to-secondary'} text-white font-bold text-xs`}>
+                                                        {(emp.displayName || emp.username || emp.name || 'U').split(' ').map((n: string) => n[0]).join('').substring(0, 2)}
                                                     </Avatar.Fallback>
                                                 </Avatar>
                                                 <div className="flex flex-col min-w-0">
-                                                    <span className="font-bold text-on-surface leading-tight text-sm">{emp.name}</span>
-                                                    <span className="text-[12px] text-on-surface-variant leading-tight mt-0.5">{emp.email}</span>
+                                                    <span className="font-bold text-on-surface leading-tight text-sm">{emp.displayName || emp.name || emp.username}</span>
+                                                    <span className="text-[12px] text-on-surface-variant leading-tight mt-0.5">{emp.email || `${emp.username}@example.com`}</span>
                                                 </div>
                                             </div>
                                         </td>
