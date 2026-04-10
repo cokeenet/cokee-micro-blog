@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MySqlConnector;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(connectionString);
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
 // ----------------- JWT AUTHENTICATION -----------------
@@ -56,9 +59,33 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// Bootstrap local database in development so first run does not fail on missing DB.
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    if (!string.IsNullOrWhiteSpace(connectionString))
+    {
+        var csb = new MySqlConnectionStringBuilder(connectionString);
+        var databaseName = csb.Database;
+        csb.Database = string.Empty;
+
+        await using var conn = new MySqlConnection(csb.ConnectionString);
+        await conn.OpenAsync();
+
+        await using var cmd = conn.CreateCommand();
+        cmd.CommandText = $"CREATE DATABASE IF NOT EXISTS `{databaseName}`";
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    await db.Database.EnsureCreatedAsync();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

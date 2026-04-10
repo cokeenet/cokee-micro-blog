@@ -1,132 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Nunito:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+@import "@heroui/styles";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-:root {
-  --color-tertiary: #c8a0f0;
-  --color-tertiary-fixed: #e8d0ff;
-  --color-on-surface-variant: #475569;
-  --color-on-primary-fixed: #001f2e;
-  --color-tertiary-fixed-dim: #c8a0f0;
-  --color-surface-container-highest: #cbd5e1;
-  --color-on-tertiary-fixed-variant: #4d2a73;
-  --color-secondary-fixed-dim: #88b4cc;
-  --color-surface-tint: #7dd3fc;
-  --color-surface-container: #f8fafc;
-  --color-on-error-container: #ffb3b3;
-  --color-outline-variant: #cbd5e1;
-  --color-outline: #94a3b8;
-  --color-on-tertiary-container: #e8d0ff;
-  --color-inverse-on-surface: #0a0e1a;
-  --color-primary-fixed: #c8eaff;
-  --color-surface-container-low: #f8fafc;
-  --color-secondary-container: #183244;
-  --color-primary: #0ea5e9;
-  --color-secondary: #88b4cc;
-  --color-inverse-surface: #dbecfc;
-  --color-onError: #690005;
-  --color-on-secondary-container: #cde5ff;
-  --color-surface: #ffffff;
-  --color-surface-variant: #2a3a48;
-  --color-error: #ffb4ab;
-  --color-on-secondary-fixed-variant: #26485d;
-  --color-on-secondary: #00344b;
-  --color-tertiary-container: #4d2a73;
-  --color-on-tertiary: #330053;
-  --color-on-primary-container: #c8eaff;
-  --color-on-background: #0f172a;
-  --color-error-container: #93000a;
-  --color-secondary-fixed: #cde5ff;
-  --color-on-primary: #ffffff;
-  --color-surface-container-high: #e2e8f0;
-  --color-background: #f1f5f9;
-  --color-primary-container: #bae6fd;
-  --color-on-error: #690005;
-  --color-primary-fixed-dim: #7dd3fc;
-  --color-surface-container-lowest: #ffffff;
-  --color-on-surface: #0f172a;
-  --color-inverse-primary: #006493;
+@theme {
+    --color-primary: #ff7fac;
+    --color-secondary: #88c0d0;
+    --color-tertiary: #8f8cff;
+    --color-background: #f6f7ff;
+    --color-surface: #ffffff;
+    --color-surface-container: #fdfdff;
+    --color-surface-variant: #f3f5ff;
+    --color-on-background: #20263a;
+    --color-on-surface: #20263a;
+    --color-on-surface-variant: #5f6986;
+    --color-outline: #cfd8ee;
+    --color-outline-variant: #dce4f3;
+    --color-primary-fixed: #ffd9e7;
+    --color-on-primary-fixed: #3a1022;
+    --color-inverse-on-surface: #ffffff;
+    --radius-card: 1rem;
+    --radius-panel: 1.5rem;
 }
 
 .dark {
-  --color-tertiary: #c8a0f0;
-  --color-tertiary-fixed: #e8d0ff;
-  --color-on-surface-variant: #a0b4c4;
-  --color-on-primary-fixed: #001f2e;
-  --color-tertiary-fixed-dim: #c8a0f0;
-  --color-surface-container-highest: #202c42;
-  --color-on-tertiary-fixed-variant: #4d2a73;
-  --color-secondary-fixed-dim: #88b4cc;
-  --color-surface-tint: #7dd3fc;
-  --color-surface-container: #141c2e;
-  --color-on-error-container: #ffb3b3;
-  --color-outline-variant: #2a3a48;
-  --color-outline: #4a6070;
-  --color-on-tertiary-container: #e8d0ff;
-  --color-inverse-on-surface: #0a0e1a;
-  --color-primary-fixed: #c8eaff;
-  --color-surface-container-low: #0a1121;
-  --color-secondary-container: #183244;
-  --color-primary: #7dd3fc;
-  --color-secondary: #88b4cc;
-  --color-inverse-surface: #dbecfc;
-  --color-onError: #690005;
-  --color-on-secondary-container: #cde5ff;
-  --color-surface: #0a1121;
-  --color-surface-variant: #2a3a48;
-  --color-error: #ffb4ab;
-  --color-on-secondary-fixed-variant: #26485d;
-  --color-on-secondary: #00344b;
-  --color-tertiary-container: #4d2a73;
-  --color-on-tertiary: #330053;
-  --color-on-primary-container: #c8eaff;
-  --color-on-background: #dbecfc;
-  --color-error-container: #93000a;
-  --color-secondary-fixed: #cde5ff;
-  --color-on-primary: #00344d;
-  --color-surface-container-high: #1a2438;
-  --color-background: #0a0e1a;
-  --color-primary-container: #004b6f;
-  --color-on-error: #690005;
-  --color-primary-fixed-dim: #7dd3fc;
-  --color-surface-container-lowest: #060914;
-  --color-on-surface: #dbecfc;
-  --color-inverse-primary: #006493;
+    --color-primary: #f31260;
+    --color-secondary: #5eb5ff;
+    --color-tertiary: #a855f7;
+    --color-background: #0d111c;
+    --color-surface: #141a2a;
+    --color-surface-container: #171f31;
+    --color-surface-variant: #1d263b;
+    --color-on-background: #e8ecfa;
+    --color-on-surface: #e8ecfa;
+    --color-on-surface-variant: #a6b0cc;
+    --color-outline: #2e3a57;
+    --color-outline-variant: #3a4768;
+    --color-primary-fixed: #6b1438;
+    --color-on-primary-fixed: #ffd8e8;
+    --color-inverse-on-surface: #0d111c;
 }
 
-
+html,
+body,
+#root {
+    min-height: 100%;
+    margin: 0;
+    font-family: var(--font-family-base, 'Quicksand', 'Nunito', 'Inter', 'Segoe UI', sans-serif);
+    background-color: var(--color-background);
+    color: var(--color-on-background);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    letter-spacing: 0.015em;
+    transition: background-color 0.4s ease, color 0.4s ease;
 }
 
+:root {
+    --font-family-base: 'Quicksand', 'Nunito', 'Inter', 'Segoe UI', sans-serif;
+    --heroui-radius: 0.75rem;
+}
 
-@layer base {
-    body {
-        @apply bg-background text-on-background font-inter;
+.glass-panel {
+    background: color-mix(in oklab, var(--color-surface) 48%, transparent);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid color-mix(in oklab, var(--color-outline-variant) 50%, transparent);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border-radius: var(--heroui-radius);
+}
+
+.dark .glass-panel {
+    background: color-mix(in oklab, var(--color-surface) 55%, transparent);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.glass-elevated {
+    background: color-mix(in oklab, var(--color-surface) 58%, transparent);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    border: 1px solid color-mix(in oklab, var(--color-outline) 60%, transparent);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    /*border-radius: var(--heroui-radius);*/
+}
+
+.dark .glass-elevated {
+    background: color-mix(in oklab, var(--color-surface) 65%, transparent);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.glass-chip {
+    background: color-mix(in oklab, var(--color-surface) 74%, transparent);
+    border: 1px solid color-mix(in oklab, var(--color-outline) 70%, transparent);
+    color: var(--color-on-surface);
+    border-radius: var(--heroui-radius);
+}
+
+.soft-surface {
+    background: color-mix(in oklab, var(--color-surface-variant) 82%, transparent);
+    border: 1px solid color-mix(in oklab, var(--color-outline-variant) 78%, transparent);
+    border-radius: var(--heroui-radius);
+}
+
+.app-page-enter {
+    animation: page-enter 0.45s ease both;
+}
+
+@keyframes page-enter {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-@layer components {
-    .glass-panel {
-        background: #ffffff;
-        border: 1px solid #f1f5f9;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    .dark .glass-panel {
-        background: rgba(15, 21, 36, 0.6);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(125, 211, 252, 0.1);
-        box-shadow: none;
-    }
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
 
-    .glass-elevated {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-    .dark .glass-elevated {
-        background: rgba(15, 21, 36, 0.75);
-        backdrop-filter: blur(24px);
-        border: 1px solid rgba(125, 211, 252, 0.15);
-        box-shadow: none;
-    }
+.heroui-card {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+::selection {
+    background-color: #ffc4d6;
+    color: #ffffff;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
 }

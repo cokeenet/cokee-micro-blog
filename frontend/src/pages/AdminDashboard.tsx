@@ -1,378 +1,313 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useTheme } from '../hooks/useTheme';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from 'react';
+import { Link } from 'react-router';
+import { Avatar } from '@heroui/react';
+import PageBackground from '../components/PageBackground';
 
 export default function AdminDashboard() {
-  const { theme, toggleTheme } = useTheme();
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [stats, setStats] = useState<any>(null);
-  const [users, setUsers] = useState<any[]>([]);
+    const [activeTab, setActiveTab] = useState('Overview');
+    const [activeMenu, setActiveMenu] = useState('Dashboard');
 
-  useEffect(() => {
-    fetch('http://localhost:5246/api/admin/stats')
-      .then(res => res.json())
-      .then(data => setStats(data))
-      .catch(err => console.error("Failed to load stats", err));
+    const menuItems = [
+        { name: 'Dashboard', icon: 'space_dashboard' },
+        { name: 'Orders', icon: 'shopping_bag' },
+        { name: 'Tracker', icon: 'checklist', badge: 'New' },
+        { name: 'Analytics', icon: 'analytics' },
+        { name: 'Settings', icon: 'settings' }
+    ];
 
-    fetch('http://localhost:5246/api/admin/users')
-      .then(res => res.json())
-      .then(data => setUsers(data))
-      .catch(err => console.error("Failed to load users", err));
-  }, []);
+    const employees = [
+        { id: '#4586932', name: 'Kate Moore', email: 'kate@acme.com', role: 'Chief Executive Officer', type: 'Employee', grad: 'from-cyan-300 to-blue-500' },
+        { id: '#4586933', name: 'John Smith', email: 'john@acme.com', role: 'Chief Technology Officer', type: 'Employee', grad: 'from-blue-400 to-indigo-500' },
+        { id: '#4586934', name: 'Sara Johnson', email: 'sara@acme.com', role: 'Chief Marketing Officer', type: 'Employee', grad: 'from-emerald-300 to-teal-500' },
+        { id: '#4586935', name: 'Mike Wilson', email: 'mike@acme.com', role: 'VP of Engineering', type: 'Employee', grad: 'from-emerald-400 to-lime-500' },
+        { id: '#4586936', name: 'Alex Turner', email: 'alex@acme.com', role: 'Product Manager', type: 'Employee', grad: 'from-purple-400 to-indigo-500' },
+        { id: '#4586937', name: 'Emma Davis', email: 'emma@acme.com', role: 'Senior Designer', type: 'Employee', grad: 'from-pink-400 to-rose-500' }
+    ];
 
-  const pageVariants = {
-    initial: { opacity: 0, y: 10 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -10 }
-  };
+    return (
+        <div className="fixed inset-0 overflow-hidden flex font-body text-on-surface isolate bg-background selection:bg-primary/30">
+            <PageBackground />
 
-  return (
-    <>
-
-
-      <aside className="w-64 h-screen sticky top-0 border-r border-sky-300/10 bg-slate-950/60 backdrop-blur-xl shadow-[0_0_30px_rgba(125,211,252,0.05)] hidden md:flex flex-col py-4 px-6 gap-2">
-        <div className="mb-8 px-2">
-          <h1 className="text-2xl font-black text-sky-300 tracking-tight">Glacier</h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400">@glacier_admin</p>
-        </div>
-        <nav className="flex-1 flex flex-col gap-2">
-          <button onClick={() => setActiveTab('dashboard')} className={`flex items-center text-left gap-3 px-4 py-3 font-bold rounded-full transition-all active:scale-95 ${activeTab === 'dashboard' ? 'text-sky-300 bg-sky-300/10' : 'text-slate-500 dark:text-slate-400 font-regular hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}>
-            <span className="material-symbols-outlined">dashboard</span>
-            <span className="font-inter text-base">概览</span>
-          </button>
-          <button onClick={() => setActiveTab('users')} className={`flex items-center text-left gap-3 px-4 py-3 font-bold rounded-full transition-all active:scale-95 ${activeTab === 'users' ? 'text-sky-300 bg-sky-300/10' : 'text-slate-500 dark:text-slate-400 font-regular hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}>
-            <span className="material-symbols-outlined">group</span>
-            <span className="font-inter text-base">用户</span>
-          </button>
-          <button onClick={() => setActiveTab('moderation')} className={`flex items-center text-left gap-3 px-4 py-3 font-bold rounded-full transition-all active:scale-95 ${activeTab === 'moderation' ? 'text-sky-300 bg-sky-300/10' : 'text-slate-500 dark:text-slate-400 font-regular hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}>
-            <span className="material-symbols-outlined">gavel</span>
-            <span className="font-inter text-base">内容审核</span>
-          </button>
-          <button onClick={() => setActiveTab('settings')} className={`flex items-center text-left gap-3 px-4 py-3 font-bold rounded-full transition-all active:scale-95 ${activeTab === 'settings' ? 'text-sky-300 bg-sky-300/10' : 'text-slate-500 dark:text-slate-400 font-regular hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}>
-            <span className="material-symbols-outlined">settings</span>
-            <span className="font-inter text-base">设置</span>
-          </button>
-        </nav>
-        <div className="mt-auto pt-6 border-t border-sky-300/10 flex items-center gap-3 px-2">
-          <div className="w-10 h-10 rounded-full bg-primary-container overflow-hidden ring-1 ring-sky-300/20">
-            <img alt="员用户头像" className="w-full h-full object-cover" data-alt="close-up portrait of a professional man with a neutral expression in a soft-lit studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqLRq9OVsqnECliTqLmaV5dyTL5xCoq5DZGgEInKePN9gsGS2A6OfY1xsKEJl4ESPH0a7lznsMgNKlLKhbuw7ssDInxiYTdaZZzJM-9TdR1CpouT8lZeitpTkmpeiMt_5AxeENoBoEXSf7oEjhg_zMYjWOSKYLi04Ye25RDZ0F8XC-f07ocF3XadQUo7T6RxmpXrANu7jZbiKCtlW9MV9FCoOazLI1bvbvOQhHegB7kpRA8BP6h4mU0Lxd9RYLrL64ma8GTaYG2Yw" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-on-surface truncate">Admin Core</p>
-            <p className="text-xs text-on-surface-variant truncate">系统级别</p>
-          </div>
-        </div>
-      </aside>
-      <main className="flex-1 flex flex-col min-w-0">
-        <AnimatePresence mode="wait">
-          {activeTab === 'dashboard' && <motion.div key="dashboard" variants={pageVariants} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.2 }}>
-
-            <header className="sticky top-0 z-50 border-b border-sky-300/10 bg-slate-950/75 backdrop-blur-2xl flex justify-between items-center px-6 py-3 w-full">
-              <div className="flex items-center gap-8">
-                <div className="md:hidden">
-                  <h1 className="text-xl font-black text-sky-300">Glacier</h1>
-                </div>
-                <div className="hidden md:flex items-center gap-6">
-                  <button className="text-sky-300 border-b-2 border-sky-300 pb-1 font-inter text-sm font-medium cursor-pointer transition-opacity active:opacity-70">全局视图</button>
-                  <button className="text-slate-500 dark:text-slate-400 pb-1 font-inter text-sm font-medium hover:text-sky-200 cursor-pointer transition-opacity active:opacity-70">区域警报</button>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="relative hidden sm:block">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm" data-icon="search">search</span>
-                  <input className="bg-surface-container-low border border-sky-300/10 rounded-full py-1.5 pl-9 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-sky-300/30 w-64 placeholder:text-slate-500" placeholder="搜索日志、用户..." type="text" />
-                </div>
-                <button className="w-10 h-10 flex items-center justify-center rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:bg-slate-800/50 active:scale-95 transition-all">
-                  <span className="material-symbols-outlined" data-icon="notifications">notifications</span>
-                </button>
-                <button className="w-10 h-10 flex items-center justify-center rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:bg-slate-800/50 active:scale-95 transition-all">
-                  <span className="material-symbols-outlined" data-icon="tune">tune</span>
-                </button>
-              </div>
-            </header>
-
-            <div className="p-6 md:p-10 space-y-8">
-
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-                <div>
-                  <h2 className="text-3xl font-bold tracking-tight text-on-surface">平台概览</h2>
-                  <p className="text-on-surface-variant mt-1">实时系统运行状况与用户参与度指标。</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button className="px-4 py-2 bg-primary-container text-on-primary-container rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-sky-700 transition-colors">
-                    <span className="material-symbols-outlined text-sm" data-icon="download">download</span> 导出报告
-                  </button>
-                  <button className="px-4 py-2 bg-surface-variant border border-sky-300/10 text-on-surface rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-surface-container transition-colors">
-                    <span className="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span> 最近24小时
-                  </button>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-
-                <div className="glass-card p-5 rounded-xl flex flex-col justify-between group">
-                  <div className="flex justify-between items-start">
-                    <div className="w-10 h-10 rounded-lg bg-sky-300/10 flex items-center justify-center text-sky-300">
-                      <span className="material-symbols-outlined" data-icon="person_add">person_add</span>
+            {/* Left Sidebar */}
+            <aside className="w-[260px] h-full glass-panel flex flex-col p-4 z-10 border-r border-outline-variant/40 rounded-none hidden md:flex">
+                {/* Profile Widget */}
+                <div className="glass-chip rounded-panel p-3 mb-8 flex items-center gap-3 cursor-pointer hover:bg-surface-variant/30 transition-colors">
+                    <Avatar className="shrink-0 w-10 h-10 shadow-glow-soft border-none bg-transparent">
+                        <Avatar.Fallback className="bg-gradient-to-tr from-blue-300 to-indigo-400 text-white font-bold">KM</Avatar.Fallback>
+                    </Avatar>
+                    <div className="flex flex-col min-w-0">
+                        <span className="font-bold text-sm truncate">Kate Moore</span>
+                        <span className="text-xs text-on-surface-variant truncate">Admin</span>
                     </div>
-                    <span className="text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">+12.4%</span>
-                  </div>
-                  <div className="mt-4">
-                    <p className="text-sm text-on-surface-variant">新增用户</p>
-                    <h3 className="text-2xl font-bold text-on-surface">2,842</h3>
-                  </div>
-                  <div className="mt-4 h-8 flex items-end gap-1">
-                    <div className="flex-1 bg-sky-300/20 rounded-t-sm h-[40%]"></div>
-                    <div className="flex-1 bg-sky-300/20 rounded-t-sm h-[60%]"></div>
-                    <div className="flex-1 bg-sky-300/20 rounded-t-sm h-[45%]"></div>
-                    <div className="flex-1 bg-sky-300/20 rounded-t-sm h-[80%]"></div>
-                    <div className="flex-1 bg-sky-300/40 rounded-t-sm h-[100%]"></div>
-                  </div>
                 </div>
 
-                <div className="glass-card p-5 rounded-xl flex flex-col justify-between">
-                  <div className="flex justify-between items-start">
-                    <div className="w-10 h-10 rounded-lg bg-tertiary/10 flex items-center justify-center text-tertiary">
-                      <span className="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
-                    </div>
-                    <span className="text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">+8.1%</span>
-                  </div>
-                  <div className="mt-4">
-                    <p className="text-sm text-on-surface-variant">发帖量</p>
-                    <h3 className="text-2xl font-bold text-on-surface">14.2k</h3>
-                  </div>
-                  <div className="mt-4 h-8 flex items-end gap-1">
-                    <div className="flex-1 bg-tertiary/20 rounded-t-sm h-[30%]"></div>
-                    <div className="flex-1 bg-tertiary/20 rounded-t-sm h-[50%]"></div>
-                    <div className="flex-1 bg-tertiary/40 rounded-t-sm h-[70%]"></div>
-                    <div className="flex-1 bg-tertiary/20 rounded-t-sm h-[40%]"></div>
-                    <div className="flex-1 bg-tertiary/20 rounded-t-sm h-[90%]"></div>
-                  </div>
-                </div>
-
-                <div className="glass-card p-5 rounded-xl flex flex-col justify-between">
-                  <div className="flex justify-between items-start">
-                    <div className="w-10 h-10 rounded-lg bg-error/10 flex items-center justify-center text-error">
-                      <span className="material-symbols-outlined" data-icon="report">report</span>
-                    </div>
-                    <span className="text-xs font-bold text-error bg-error/10 px-2 py-0.5 rounded-full">-4.2%</span>
-                  </div>
-                  <div className="mt-4">
-                    <p className="text-sm text-on-surface-variant">被标记内容</p>
-                    <h3 className="text-2xl font-bold text-on-surface">184</h3>
-                  </div>
-                  <div className="mt-4 h-8 flex items-end gap-1">
-                    <div className="flex-1 bg-error/20 rounded-t-sm h-[80%]"></div>
-                    <div className="flex-1 bg-error/20 rounded-t-sm h-[60%]"></div>
-                    <div className="flex-1 bg-error/20 rounded-t-sm h-[50%]"></div>
-                    <div className="flex-1 bg-error/40 rounded-t-sm h-[30%]"></div>
-                    <div className="flex-1 bg-error/20 rounded-t-sm h-[20%]"></div>
-                  </div>
-                </div>
-
-                <div className="glass-card p-5 rounded-xl flex flex-col justify-between">
-                  <div className="flex justify-between items-start">
-                    <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary">
-                      <span className="material-symbols-outlined" data-icon="speed">speed</span>
-                    </div>
-                    <span className="text-xs font-bold text-on-surface-variant bg-surface-variant px-2 py-0.5 rounded-full">最佳</span>
-                  </div>
-                  <div className="mt-4">
-                    <p className="text-sm text-on-surface-variant">服务器负载</p>
-                    <h3 className="text-2xl font-bold text-on-surface">24%</h3>
-                  </div>
-                  <div className="mt-4 flex items-center gap-1.5 overflow-hidden">
-                    <div className="flex-1 h-1.5 bg-sky-300 rounded-full"></div>
-                    <div className="w-1/2 h-1.5 bg-sky-300/20 rounded-full"></div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                <div className="lg:col-span-2 glass-card rounded-2xl overflow-hidden flex flex-col">
-                  <div className="p-6 border-b border-sky-300/10 flex items-center justify-between">
-                    <h3 className="font-bold text-lg">最近用户活动</h3>
-                    <button className="text-xs font-semibold text-sky-300 hover:underline">查看全部日志</button>
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                      <thead className="text-xs uppercase tracking-wider text-on-surface-variant border-b border-sky-300/10">
-                        <tr>
-                          <th className="px-6 py-4 font-semibold">用户</th>
-                          <th className="px-6 py-4 font-semibold">操作</th>
-                          <th className="px-6 py-4 font-semibold">时间戳</th>
-                          <th className="px-6 py-4 font-semibold">状态</th>
-                        </tr>
-                      </thead>
-                      <tbody className="text-sm divide-y divide-sky-300/5">
-                        <tr className="hover:bg-sky-300/5 transition-colors">
-                          <td className="px-6 py-4">
+                {/* Nav Menu */}
+                <nav className="flex flex-col gap-1.5 flex-1">
+                    {menuItems.map(item => (
+                        <button
+                            key={item.name}
+                            onClick={() => setActiveMenu(item.name)}
+                            className={`flex items-center justify-between px-4 py-3 rounded-card transition-all font-semibold text-sm ${activeMenu === item.name
+                                ? 'bg-primary/15 text-primary shadow-glow-soft'
+                                : 'text-on-surface-variant hover:bg-surface-variant/40 hover:text-on-surface'
+                                }`}
+                        >
                             <div className="flex items-center gap-3">
-                              <img className="w-8 h-8 rounded-full object-cover" data-alt="headshot of a smiling young man in a blue denim shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHjtaa2UWkVrxSqwtEgv0X5PN--BoFOKjMIKoSTL_J-dpDyvfo9NPnXobw8e59FxsNmVAtRC_ie-8Man0fKlkJz8SlkUqnP8e5ZF5u_sUgKDfjM8stfxN2GkZn8wjnAAH3g9XUib7lCsfHs3PwOMkdy9iMO8WQEMN8dFlLUByy8RvWrjP7Ef-B6Dg9SDxTMlN2vJQWYXdPFlm_NzSV68mEJNES_s_XIESchfsVi7JZFwWFXzOVksdiwo85By_tMNeC66e7Z9HWNHU" />
-                              <div>
-                                <p className="font-bold">Julian V.</p>
-                                <p className="text-xs text-on-surface-variant">@j_vance</p>
-                              </div>
+                                <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: activeMenu === item.name ? "'FILL' 1" : "'FILL' 0" }}>{item.icon}</span>
+                                <span>{item.name}</span>
                             </div>
-                          </td>
-                          <td className="px-6 py-4">新帖: "Morning in..."</td>
-                          <td className="px-6 py-4 text-on-surface-variant">2 分钟前</td>
-                          <td className="px-6 py-4">
-                            <span className="inline-flex items-center gap-1.5 text-emerald-400">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                              成功
-                            </span>
-                          </td>
-                        </tr>
-                        <tr className="hover:bg-sky-300/5 transition-colors">
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <img className="w-8 h-8 rounded-full object-cover" data-alt="close-up portrait of a woman with curly hair smiling brightly at the camera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB996H392fPjq2MtZAt9EZ1INkLkDvCezhpbPnIs6Er7EJV9pR5dwdRyDnFLapMFhn5TZR2z2nJJeqDeX1trct_8cmSnZrT9WHWcD5K-NFldLtagqzbQ_5qFI_qa32SLdRV0TDDT3iV-TeKq6GugxxQ1HeAX8mZL39K9wwTL-eg4cAdr2Ta5YCQE1O7H2AqMKTCSCAu1jMpKofqsEdqOYMCzwCigvJPD2Ks8Hd-VbcUF-g9oHvdivkVBF_LkQ2-G7cqy_-bhw7gXSg" />
-                              <div>
-                                <p className="font-bold">Sarah K.</p>
-                                <p className="text-xs text-on-surface-variant">@sk_explorer</p>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">登录尝试 (新设备)</td>
-                          <td className="px-6 py-4 text-on-surface-variant">14 分钟前</td>
-                          <td className="px-6 py-4">
-                            <span className="inline-flex items-center gap-1.5 text-sky-300">
-                              <span className="w-1.5 h-1.5 rounded-full bg-sky-300"></span>
-                              已标记
-                            </span>
-                          </td>
-                        </tr>
-                        <tr className="hover:bg-sky-300/5 transition-colors">
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <img className="w-8 h-8 rounded-full object-cover" data-alt="vibrant portrait of a man with spectacles looking thoughtfully into the distance" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT4IjaDh6V9xYEcibGqyqAb3t9zELiQXXTYV59Sv54cj6ycuO-d0sdMp8WUWALgNOZ-uLZEL1KjBt7eFNqe5qu7wM9QLdkffUuK5VMVcU8yBr_p9byS5BYqfoual6bCGirBWbUMRkjHG0djipW3Ar4uSYFaw3k1tXrcUGGP0CCstN0wf14rRtur_3-ANkdR2ySc8sjRXSgbvUP2kGFhVjkuvA-kRTsTlAhAos9wK-CB1seHwwCvdb9EhFvWmHNXpXeEocaIlM9JCc" />
-                              <div>
-                                <p className="font-bold">Marco D.</p>
-                                <p className="text-xs text-on-surface-variant">@marcod_dev</p>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">删除了评论 #492</td>
-                          <td className="px-6 py-4 text-on-surface-variant">32 分钟前</td>
-                          <td className="px-6 py-4">
-                            <span className="inline-flex items-center gap-1.5 text-on-surface-variant">
-                              <span className="w-1.5 h-1.5 rounded-full bg-on-surface-variant"></span>
-                              已删除
-                            </span>
-                          </td>
-                        </tr>
-                        <tr className="hover:bg-sky-300/5 transition-colors">
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <img className="w-8 h-8 rounded-full object-cover" data-alt="professional woman in corporate attire sitting in a bright modern office workspace" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBv4NDkSYN_QAaWdNfHB5cjFt_Cjl50mAejetupMm4u7KLdYUMMuamAYwbxfuVqBmdluyIKEtiyBIB6WCcUbCg7dxWWeIOEiDyPYBbZOhNI0N4pqqDg2YTRr-nGsGg8CFUq1sN4OwVKT12mQYHQoyhbmlemksFhgQgbbVLR31NHCz6zAyNGGFXhU1s3uTGNfvloAYoX_xipmLXKBl4f8JRND1Bs5DcqIgO8VXIKne5EwihXxCxNPm8bkrLKxCrE6Hs-g5wDhMTaqhs" />
-                              <div>
-                                <p className="font-bold">Elena R.</p>
-                                <p className="text-xs text-on-surface-variant">@elena_rocks</p>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">更新了设置</td>
-                          <td className="px-6 py-4 text-on-surface-variant">1 小时前</td>
-                          <td className="px-6 py-4">
-                            <span className="inline-flex items-center gap-1.5 text-emerald-400">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                              成功
-                            </span>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <div className="space-y-6">
-
-                  <div className="glass-card p-6 rounded-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                      <span className="material-symbols-outlined text-6xl" data-icon="gavel">gavel</span>
-                    </div>
-                    <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                      <span className="material-symbols-outlined text-error" data-icon="priority_high">priority_high</span>
-                      待审核项目
-                    </h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3 p-3 rounded-xl bg-surface-container-highest border border-error/20">
-                        <span className="material-symbols-outlined text-error" data-icon="warning">warning</span>
-                        <div className="flex-1">
-                          <p className="text-xs font-bold text-on-surface">检测到垃圾信息波</p>
-                          <p className="text-[10px] text-on-surface-variant uppercase">需要操作：42 个帖子</p>
-                        </div>
-                        <button className="p-1 hover:bg-error/10 rounded-md transition-colors">
-                          <span className="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+                            {item.badge && (
+                                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 font-bold uppercase tracking-wider">{item.badge}</span>
+                            )}
                         </button>
-                      </div>
-                      <div className="flex items-center gap-3 p-3 rounded-xl bg-surface-container border border-sky-300/10">
-                        <span className="material-symbols-outlined text-sky-300" data-icon="report">report</span>
-                        <div className="flex-1">
-                          <p className="text-xs font-bold text-on-surface">用户报告 #9012</p>
-                          <p className="text-[10px] text-on-surface-variant uppercase">身份验证</p>
-                        </div>
-                        <button className="p-1 hover:bg-sky-300/10 rounded-md transition-colors">
-                          <span className="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
-                        </button>
-                      </div>
-                    </div>
-                    <button className="w-full mt-6 py-2 rounded-xl bg-on-surface text-inverse-on-surface text-sm font-bold active:scale-95 transition-all">
-                      查看队列
+                    ))}
+                </nav>
+
+                {/* Footer Links */}
+                <div className="flex flex-col gap-1.5 mt-auto pt-4 border-t border-outline-variant/40">
+                    <button className="flex items-center gap-3 px-4 py-3 rounded-card text-on-surface-variant hover:bg-surface-variant/40 hover:text-on-surface transition-all text-sm font-semibold">
+                        <span className="material-symbols-outlined text-[20px]">help</span>
+                        Help &amp; Information
                     </button>
-                  </div>
-
-                  <div className="glass-card p-6 rounded-2xl">
-                    <h3 className="font-bold text-lg mb-4">系统状态</h3>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-on-surface-variant">API 网关</span>
-                        <span className="text-emerald-400 font-bold">99.98%</span>
-                      </div>
-                      <div className="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
-                        <div className="w-[99%] h-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"></div>
-                      </div>
-                      <div className="flex justify-between items-center text-sm pt-2">
-                        <span className="text-on-surface-variant">图片 CDN</span>
-                        <span className="text-emerald-400 font-bold">正常运行</span>
-                      </div>
-                      <div className="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
-                        <div className="w-full h-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"></div>
-                      </div>
-                      <div className="flex justify-between items-center text-sm pt-2">
-                        <span className="text-on-surface-variant">数据库集群</span>
-                        <span className="text-tertiary font-bold">性能下降</span>
-                      </div>
-                      <div className="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
-                        <div className="w-[75%] h-full bg-tertiary shadow-[0_0_8px_rgba(200,160,240,0.5)]"></div>
-                      </div>
-                    </div>
-                    <div className="mt-6 pt-4 border-t border-sky-300/10 flex items-center justify-between text-xs text-on-surface-variant">
-                      <span>自动刷新中...</span>
-                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 在线</span>
-                    </div>
-                  </div>
+                    <Link to="/" className="flex items-center gap-3 px-4 py-3 rounded-card text-on-surface-variant hover:bg-surface-variant/40 hover:text-on-surface transition-all text-sm font-semibold">
+                        <span className="material-symbols-outlined text-[20px]">logout</span>
+                        Log out
+                    </Link>
                 </div>
-              </div>
-            </div>
-          </motion.div>
-          }
+            </aside>
 
-          {activeTab !== 'dashboard' && (
-            <motion.div key={activeTab} variants={pageVariants} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.2 }} className="p-8 flex flex-col items-center justify-center text-slate-500 h-full w-full col-span-full">
-              <h3>该模块正处于开发中</h3>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </main>
-      <button className="fixed bottom-6 right-6 w-14 h-14 bg-primary text-on-primary rounded-2xl shadow-xl flex items-center justify-center group active:scale-90 transition-transform md:w-auto md:px-6 md:gap-3">
-        <span className="material-symbols-outlined" data-icon="add">add</span>
-        <span className="hidden md:inline font-bold">创建报告</span>
-      </button>
+            {/* Main Content Area */}
+            <main className="flex-1 flex flex-col h-full relative z-0 min-w-0">
+                {/* Header */}
+                <header className="flex justify-between items-center px-8 py-5 border-b border-outline-variant/40 bg-surface/20 backdrop-blur-md sticky top-0 z-20">
+                    <h1 className="text-2xl font-black text-on-surface tracking-tight">Good morning, Kate</h1>
+                    <div className="flex items-center gap-4">
+                        <button className="p-2 rounded-full text-on-surface-variant hover:bg-surface-variant/50 hover:text-on-surface transition-colors flex items-center justify-center">
+                            <span className="material-symbols-outlined">search</span>
+                        </button>
+                        <button className="p-2 rounded-full text-on-surface-variant hover:bg-surface-variant/50 hover:text-on-surface transition-colors flex items-center justify-center">
+                            <span className="material-symbols-outlined">notifications</span>
+                        </button>
+                        <button className="bg-primary text-white shadow-glow-soft px-5 py-2 rounded-card font-bold text-sm flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+                            <span className="material-symbols-outlined text-[18px]">person_add</span>
+                            Invite
+                        </button>
+                    </div>
+                </header>
 
-    </>
-  );
+                <div className="flex-1 overflow-y-auto no-scrollbar p-6 md:p-8 app-page-enter pb-24">
+
+                    {/* Controls Row */}
+                    <div className="flex flex-col xl:flex-row justify-between gap-4 mb-6">
+                        <div className="glass-panel p-1 rounded-full flex gap-1 items-center self-start">
+                            {['Overview', 'Sales', 'Expenses'].map(tab => (
+                                <button
+                                    key={tab}
+                                    onClick={() => setActiveTab(tab)}
+                                    className={`px-5 py-1.5 rounded-full text-sm font-bold transition-all ${activeTab === tab
+                                        ? 'bg-surface-variant text-on-surface shadow-sm'
+                                        : 'text-on-surface-variant hover:text-on-surface'
+                                        }`}
+                                >
+                                    {tab}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="flex gap-3 items-center">
+                            <button className="glass-chip p-2 rounded-full text-sm font-semibold flex items-center justify-center hover:bg-surface-variant/50 transition-colors">
+                                <span className="material-symbols-outlined text-[18px]">autorenew</span>
+                            </button>
+                            <button className="glass-chip px-4 py-1.5 rounded-card text-sm font-semibold flex items-center gap-2 hover:bg-surface-variant/50 transition-colors">
+                                <span className="material-symbols-outlined text-[18px]">calendar_today</span>
+                                Monthly
+                                <span className="material-symbols-outlined text-[18px]">expand_more</span>
+                            </button>
+                            <button className="bg-secondary text-white shadow-glow-soft px-5 py-1.5 rounded-card font-bold text-sm hover:opacity-90 active:scale-95 transition-all">
+                                Download
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Metrics Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <div className="glass-elevated rounded-panel p-5 flex flex-col gap-2">
+                            <div className="flex justify-between items-start">
+                                <span className="text-on-surface-variant text-sm font-semibold">Revenue</span>
+                                <span className="text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                                    <span className="material-symbols-outlined text-[10px]">arrow_upward</span> 3.3%
+                                </span>
+                            </div>
+                            <span className="text-3xl font-black text-on-surface">$228,441</span>
+                        </div>
+                        <div className="glass-elevated rounded-panel p-5 flex flex-col gap-2">
+                            <div className="flex justify-between items-start">
+                                <span className="text-on-surface-variant text-sm font-semibold">Expenses</span>
+                                <span className="text-[10px] bg-rose-500/15 text-rose-600 dark:text-rose-400 font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                                    <span className="material-symbols-outlined text-[10px]">arrow_downward</span> 3.3%
+                                </span>
+                            </div>
+                            <span className="text-3xl font-black text-on-surface">$25,108</span>
+                        </div>
+                        <div className="glass-elevated rounded-panel p-5 flex flex-col gap-2">
+                            <div className="flex justify-between items-start">
+                                <span className="text-on-surface-variant text-sm font-semibold">Sales</span>
+                                <span className="text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                                    <span className="material-symbols-outlined text-[10px]">arrow_upward</span> 3.3%
+                                </span>
+                            </div>
+                            <span className="text-3xl font-black text-on-surface">458</span>
+                        </div>
+                        <div className="glass-elevated rounded-panel p-5 flex flex-col gap-2">
+                            <div className="flex justify-between items-start">
+                                <span className="text-on-surface-variant text-sm font-semibold">Profit</span>
+                                <span className="text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                                    <span className="material-symbols-outlined text-[10px]">arrow_upward</span> 4.1%
+                                </span>
+                            </div>
+                            <span className="text-3xl font-black text-on-surface">$203,133</span>
+                        </div>
+                    </div>
+
+                    {/* Charts Grid */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                        {/* Bar Chart */}
+                        <div className="glass-elevated rounded-panel p-5 flex flex-col">
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="font-bold text-on-surface">Sales Performance</h3>
+                                <button className="glass-chip px-3 py-1 text-xs font-semibold rounded-full flex items-center gap-1 hover:bg-surface-variant/50 transition-colors">
+                                    Last 2 weeks <span className="material-symbols-outlined text-[16px]">expand_more</span>
+                                </button>
+                            </div>
+                            <div className="flex justify-between items-end gap-1 sm:gap-1.5 h-36 mt-auto">
+                                {[30, 80, 45, 20, 60, 30, 25, 40, 20, 70, 60, 40].map((h, i) => (
+                                    <div key={i} className="w-full relative group cursor-pointer flex justify-center h-full items-end pb-5">
+                                        <div
+                                            className="w-full bg-primary/20 group-hover:bg-primary transition-colors rounded-sm"
+                                            style={{ height: `${h}%` }}
+                                        ></div>
+                                        <div className="absolute bottom-0 text-[10px] text-on-surface-variant font-semibold">
+                                            {(i + 1).toString().padStart(2, '0')}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Line Chart */}
+                        <div className="glass-elevated rounded-panel p-5 flex flex-col">
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="font-bold text-on-surface">Traffic Source</h3>
+                                <div className="flex items-center gap-3 text-xs font-semibold">
+                                    <div className="flex items-center gap-1">
+                                        <span className="w-2 h-2 rounded-full bg-secondary"></span> Organic
+                                    </div>
+                                    <div className="flex items-center gap-1 text-on-surface-variant">
+                                        <span className="w-2 h-2 rounded-full bg-outline-variant"></span> Paid Ads
+                                    </div>
+                                    <button className="text-on-surface-variant hover:text-on-surface pr-2">
+                                        <span className="material-symbols-outlined text-[18px]">more_vert</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="mb-2">
+                                <span className="text-2xl font-black text-on-surface">231,856</span>
+                                <p className="text-xs text-on-surface-variant">Sessions</p>
+                            </div>
+                            <div className="h-28 mt-auto relative w-full overflow-hidden">
+                                <svg className="w-full h-full" viewBox="0 0 400 100" preserveAspectRatio="none">
+                                    <line x1="0" y1="30" x2="400" y2="30" stroke="currentColor" className="text-outline-variant/30" strokeWidth="1" />
+                                    <line x1="0" y1="60" x2="400" y2="60" stroke="currentColor" className="text-outline-variant/30" strokeWidth="1" />
+                                    <path d="M0,80 L40,30 L80,60 L120,50 L160,30 L200,80 L240,40 L280,30 L320,50 L360,20 L400,60" fill="none" stroke="currentColor" className="text-secondary drop-shadow-md" strokeWidth="2.5" strokeLinejoin="round" />
+                                    <path d="M0,90 L40,50 L80,20 L120,80 L160,55 L200,95 L240,70 L280,60 L320,80 L360,50 L400,90" fill="none" stroke="currentColor" className="text-outline-variant drop-shadow-md" strokeWidth="2.5" strokeLinejoin="round" />
+                                </svg>
+                                <div className="flex justify-between text-[10px] font-semibold text-on-surface-variant mt-2 px-1">
+                                    <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Data Table */}
+                    {/* Data Table Toolbar */}
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 mt-8">
+                        <div className="flex items-center gap-3">
+                            <h2 className="text-lg font-black text-on-surface">All Employees</h2>
+                            <span className="glass-chip px-2 py-0.5 rounded-full text-xs font-bold text-on-surface-variant">32</span>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                            <button className="glass-chip px-3 py-1.5 rounded-card text-sm font-semibold flex items-center gap-1.5 hover:bg-surface-variant/50 transition-colors">
+                                <span className="material-symbols-outlined text-[16px]">filter_list</span> Filter
+                            </button>
+                            <button className="glass-chip px-3 py-1.5 rounded-card text-sm font-semibold flex items-center gap-1.5 hover:bg-surface-variant/50 transition-colors">
+                                <span className="material-symbols-outlined text-[16px]">sort</span> Sort
+                            </button>
+                            <button className="glass-chip px-3 py-1.5 rounded-card text-sm font-semibold flex items-center gap-1.5 hover:bg-surface-variant/50 transition-colors hidden md:flex">
+                                <span className="material-symbols-outlined text-[16px]">view_column</span> Columns
+                            </button>
+                            <div className="relative flex-1 sm:flex-none">
+                                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant">search</span>
+                                <input type="text" placeholder="Search..." className="glass-chip border-none outline-none py-1.5 pl-9 pr-3 rounded-card text-sm text-on-surface placeholder:text-on-surface-variant w-full sm:w-48" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="glass-elevated rounded-panel overflow-x-auto border-none mb-8">
+                        <table className="w-full text-left text-sm whitespace-nowrap">
+                            <thead className="bg-surface/40 backdrop-blur-md border-b border-outline-variant/40 text-on-surface-variant font-semibold">
+                                <tr>
+                                    <th className="px-6 py-4">Worker ID</th>
+                                    <th className="px-6 py-4">Member</th>
+                                    <th className="px-6 py-4">Role</th>
+                                    <th className="px-6 py-4">Worker Type</th>
+                                    <th className="px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-outline-variant/30">
+                                {employees.map((emp) => (
+                                    <tr key={emp.id} className="hover:bg-white/40 dark:hover:bg-white/5 transition-colors group cursor-pointer">
+                                        <td className="px-6 py-4 font-bold text-on-surface flex items-center gap-2 h-[68px]">
+                                            {emp.id}
+                                            <button className="text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity hover:text-on-surface">
+                                                <span className="material-symbols-outlined text-[14px]">content_copy</span>
+                                            </button>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <Avatar className="shrink-0 w-8 h-8 shadow-glow-soft border-none bg-transparent">
+                                                    <Avatar.Fallback className={`bg-gradient-to-tr ${emp.grad} text-white font-bold text-xs`}>
+                                                        {emp.name.split(' ').map(n => n[0]).join('')}
+                                                    </Avatar.Fallback>
+                                                </Avatar>
+                                                <div className="flex flex-col min-w-0">
+                                                    <span className="font-bold text-on-surface leading-tight text-sm">{emp.name}</span>
+                                                    <span className="text-[12px] text-on-surface-variant leading-tight mt-0.5">{emp.email}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 font-semibold text-on-surface-variant">{emp.role}</td>
+                                        <td className="px-6 py-4 font-semibold text-on-surface-variant">{emp.type}</td>
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-1.5">
+                                                <button className="glass-chip p-1.5 rounded-full hover:bg-surface-variant/80 transition-colors text-on-surface-variant hover:text-on-surface">
+                                                    <span className="material-symbols-outlined text-[16px] block">visibility</span>
+                                                </button>
+                                                <button className="glass-chip p-1.5 rounded-full hover:bg-surface-variant/80 transition-colors text-on-surface-variant hover:text-on-surface">
+                                                    <span className="material-symbols-outlined text-[16px] block">edit</span>
+                                                </button>
+                                                <button className="bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 p-1.5 rounded-full transition-colors ml-1">
+                                                    <span className="material-symbols-outlined text-[16px] block">delete</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    );
 }
