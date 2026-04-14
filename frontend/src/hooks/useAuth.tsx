@@ -5,6 +5,7 @@ interface User {
   username: string;
   displayName: string;
   avatarUrl?: string;
+  bio?: string;
 }
 
 interface AuthContextType {
@@ -21,7 +22,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const savedUser = localStorage.getItem('user');
     return savedUser ? JSON.parse(savedUser) : null;
   });
-  
+
   const [token, setToken] = useState<string | null>(() => {
     return localStorage.getItem('token');
   });

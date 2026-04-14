@@ -112,8 +112,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
                         <div className="mt-auto flex items-center gap-3 p-2 rounded-full hover:bg-white/45 dark:hover:bg-white/5 transition-colors cursor-pointer" onClick={() => navigate(token ? '/profile' : '/login')}>
                             <Avatar className="w-10 h-10">
-                                <Avatar.Image src={user?.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.displayName || 'Guest')}&background=bfdbfe&color=0f172a`} />
-                                <Avatar.Fallback>{(user?.displayName || 'G').charAt(0)}</Avatar.Fallback>
+                                <Avatar.Image src={user?.avatarUrl || undefined} />
+                                <Avatar.Fallback>{(user?.displayName || 'G').charAt(0).toUpperCase()}</Avatar.Fallback>
                             </Avatar>
                             <div className="flex flex-col min-w-0 flex-1">
                                 <span className="text-sm font-bold text-on-surface truncate">{user?.displayName || '未登录'}</span>
@@ -167,9 +167,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="text-sm text-on-surface-variant">
-                                        <div><p className="text-xs text-on-surface-variant">技术·趋势</p><p className="text-sm font-bold text-on-surface hover:text-primary transition-colors">#玻璃拟态</p><p className="text-xs text-on-surface-variant">1.25万 博文</p></div>
-                                        <div className="mt-4"><p className="text-xs text-on-surface-variant">设计·趋势</p><p className="text-sm font-bold text-on-surface hover:text-primary transition-colors">冷光 UI</p><p className="text-xs text-on-surface-variant">8,200 博文</p></div>
+                                    <div className="text-sm text-on-surface-variant py-2">
+                                        暂无趋势数据
                                     </div>
                                 )}
                             </div>
@@ -186,8 +185,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                                         <div key={i} className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
                                                 <Avatar size="sm">
-                                                    <Avatar.Image src={suggestedUser.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(suggestedUser.displayName || 'U')}&background=bfdbfe&color=0f172a`} />
-                                                    <Avatar.Fallback>{(suggestedUser.displayName || 'U').charAt(0)}</Avatar.Fallback>
+                                                    <Avatar.Image src={suggestedUser.avatarUrl || undefined} />
+                                                    <Avatar.Fallback>{(suggestedUser.displayName || 'U').charAt(0).toUpperCase()}</Avatar.Fallback>
                                                 </Avatar>
                                                 <div className="min-w-0 pr-2">
                                                     <p className="text-sm font-bold text-on-surface truncate">{suggestedUser.displayName}</p>
@@ -203,20 +202,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="flex flex-col gap-4">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <Avatar size="sm">
-                                                    <Avatar.Image src="https://ui-avatars.com/api/?name=Crystal+Dev&background=bfdbfe&color=0f172a" />
-                                                    <Avatar.Fallback>C</Avatar.Fallback>
-                                                </Avatar>
-                                                <div className="min-w-0 pr-2">
-                                                    <p className="text-sm font-bold text-on-surface truncate">Crystal Dev</p>
-                                                    <p className="text-xs text-on-surface-variant truncate">@crys_dev</p>
-                                                </div>
-                                            </div>
-                                            <button className="whitespace-nowrap bg-on-surface text-inverse-on-surface px-4 py-1.5 rounded-full text-sm font-bold hover:opacity-90 transition-opacity">关注</button>
-                                        </div>
+                                    <div className="text-sm text-on-surface-variant py-2">
+                                        暂无推荐关注
                                     </div>
                                 )}
                             </div>

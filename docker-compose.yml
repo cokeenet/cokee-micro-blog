@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: microblog-backend
+    ports:
+      - "5253:8080" # 本地 5253 映射到容器 8080 端口
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      # 强制监听 8080 防止 .NET 新版默认配置不匹配暴露端口的问题
+      - ASPNETCORE_URLS=http://+:8080
+    restart: unless-stopped
+    networks:
+      - microblog-net
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: microblog-frontend
+    ports:
+      - "5175:80"  # 映射用户前端
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - microblog-net
+
+  admin-frontend:
+    build:
+      context: .
+      dockerfile: napcat-webui-frontend/Dockerfile
+    container_name: microblog-admin-frontend
+    ports:
+      - "5176:80"  # 映射后台管理前端
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - microblog-net
+
+networks:
+  microblog-net:
+    driver: bridge

@@ -7,6 +7,7 @@ interface PostActionMenuProps {
 
 const ownerActions = [
     { key: 'share', label: '分享' },
+    { key: 'retweet', label: '转发' },
     { key: 'pin', label: '置顶' },
     { key: 'promote', label: '推广' },
     { key: 'followers', label: '转为粉丝可见' },
@@ -17,6 +18,7 @@ const ownerActions = [
 
 const viewerActions = [
     { key: 'special-follow', label: '设为特别关注' },
+    { key: 'retweet', label: '转发' },
     { key: 'favorite', label: '收藏' },
     { key: 'not-interested', label: '对此条不感兴趣' },
     { key: 'mute-author', label: '屏蔽该博主' },

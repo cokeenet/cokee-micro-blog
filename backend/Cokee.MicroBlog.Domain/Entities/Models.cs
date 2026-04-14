@@ -9,6 +9,21 @@ namespace Cokee.MicroBlog.Domain.Entities
         Article      // 长文章（Markdown/富文本）
     }
 
+    public enum PostVisibility
+    {
+        Public,
+        FollowersOnly,
+        MutualFollowersOnly, // 好友圈
+        Private
+    }
+
+    public enum ReplyPermission
+    {
+        Everyone,
+        FollowingOnly,
+        MentionedOnly
+    }
+
     public enum InteractionType
     {
         Like,
@@ -52,6 +67,16 @@ namespace Cokee.MicroBlog.Domain.Entities
         public Guid? ParentPostId { get; set; }
         public Post? ParentPost { get; set; }
         public ICollection<Post> Replies { get; set; } = new List<Post>();
+
+        // 转发支持
+        public Guid? RetweetOriginalPostId { get; set; }
+        public Post? RetweetOriginalPost { get; set; }
+
+        // 权限与数据统计
+        public PostVisibility Visibility { get; set; } = PostVisibility.Public;
+        public ReplyPermission ReplyPermission { get; set; } = ReplyPermission.Everyone;
+        public int ViewCount { get; set; } = 0;
+        public int LikeCount { get; set; } = 0;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
