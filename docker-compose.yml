@@ -13,7 +13,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Server=host.docker.internal;Port=3308;Database=CokeeMicroBlog;User=root;Password=YOUR_MYSQL_PASSWORD
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal;Port=3308;Database=CokeeMicroBlog;User=root;Password=${MYSQL_PASSWORD}
     restart: unless-stopped
     networks:
       - microblog-net

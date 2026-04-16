@@ -1,6 +1,6 @@
 # Cokee.MicroBlog (轻量级社交微客平台)
 
-本项目是一个基于前后端分离架构搭建的轻量级社交媒体平台。致力于打造一个专注碎片化内容分享的极简社交空间，支持动态发布、互动点赞、用户个人主页高度定制以及完善的管理端管控机制（JWT双端隔离）。
+本项目是一个基于前后端分离架构搭建的轻量级社交媒体平台。致力于打造一个专注碎片化内容分享的极简社交空间，支持动态发布、互动点赞、用户个人主页高度定制以及完善的管理端管控机制。
 
 ## 🛠 技术栈
 
@@ -11,9 +11,9 @@
 - **CSS 框架**: Tailwind CSS v4
 
 ### 后端 (Backend)
-- **框架**: C# .NET 9 + Minimal API
+- **框架**: C# .NET 10 + Minimal API
 - **ORM**: Entity Framework Core (Code-First)
-- **数据库**: MySQL 8.0+
+- **数据库**: MySQL 8.0
 - **鉴权**: JWT (JSON Web Token)
 
 ---
@@ -24,7 +24,7 @@
 
 ### 环境要求 (Prerequisites)
 - [Node.js](https://nodejs.org/) (v18+ 推荐)
-- [.NET 9 SDK](https://dotnet.microsoft.com/)
+- [.NET 10 SDK](https://dotnet.microsoft.com/)
 - MySQL Server (本地或远程实例)
 
 ### 1. 后端启动
@@ -42,7 +42,7 @@
    dotnet run --project Cokee.MicroBlog.Api/Cokee.MicroBlog.Api.csproj
    # 或者使用热重载： dotnet watch --project Cokee.MicroBlog.Api/Cokee.MicroBlog.Api.csproj
    ```
-   > 后端默认运行在: http://localhost:5000 或 https://localhost:5001 (以实际 launchSettings.json 为准)
+   > 后端默认运行在: http://localhost:8080
 
 ### 2. 前端启动
 1. 打开一个新的终端，导航至前端目录：
@@ -57,7 +57,7 @@
    ```bash
    npm run dev
    ```
-   > 前端默认运行在: http://localhost:5173
+   > 前端默认运行在: http://localhost:80
 
 ---
 
