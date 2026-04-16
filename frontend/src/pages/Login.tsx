@@ -1,4 +1,4 @@
-import { Button, Card, Tabs } from '@heroui/react';
+﻿import { Button, Card, Tabs } from '@heroui/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
@@ -66,7 +66,7 @@ export default function Login() {
                 transition={{ duration: 0.6, type: 'spring', stiffness: 120, damping: 20 }}
                 className="w-[480px] max-w-full relative z-10"
             >
-                <HoverEffectCard className="glass-elevated rounded-[2rem] text-on-surface border border-white/20 dark:border-white/5 shadow-2xl backdrop-blur-2xl" maxXRotation={2} maxYRotation={2}>
+                <HoverEffectCard className="glass-elevated rounded-[2rem] text-on-surface border border-white/20 dark:border-white/5 shadow-2xl backdrop-blur-xl" maxXRotation={2} maxYRotation={2}>
                     <Card.Header className="flex flex-col items-center gap-1 pt-12 pb-4 px-10 border-b-0">
                         <div className="bg-primary/10 p-4 rounded-full mb-3 shadow-glow-soft">
                             <span className="material-symbols-outlined text-4xl text-primary block">ac_unit</span>
@@ -87,7 +87,7 @@ export default function Login() {
                                 setMode(key as 'login' | 'register');
                                 setMessage('');
                             }}
-                            className="bg-surface-variant/50 w-full backdrop-blur-md p-1 border border-outline-variant/30 flex"
+                            className="bg-surface-variant/50 w-full backdrop-blur-xl p-1 border border-outline-variant/30 flex"
                         >
                             <Tabs.ListContainer>
                                 <Tabs.List>
@@ -182,7 +182,7 @@ export default function Login() {
                                     initial={{ opacity: 0, y: -10, scale: 0.95 }}
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                                    className={`rounded-xl p-4 text-sm font-semibold border backdrop-blur-md flex items-center gap-2 ${message.includes('成功')
+                                    className={`rounded-xl p-4 text-sm font-semibold border backdrop-blur-xl flex items-center gap-2 ${message.includes('成功')
                                         ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400'
                                         : 'bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-400'
                                         }`}
@@ -207,3 +207,4 @@ export default function Login() {
         </div>
     );
 }
+

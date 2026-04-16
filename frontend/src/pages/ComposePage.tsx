@@ -1,5 +1,5 @@
-import { Button, Dropdown, Label, TextArea } from '@heroui/react';
-import { useMemo, useState, useRef } from 'react';
+﻿import { Button, Dropdown, Label, TextArea } from '@heroui/react';
+import { useMemo, useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../hooks/useAuth';
 import { API_BASE_URL, fetchWithAuth } from '../config/api';
@@ -8,10 +8,35 @@ export default function ComposePage() {
     const { token } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+
     const [content, setContent] = useState('');
     const [replyPermission, setReplyPermission] = useState('Everyone');
     const [postVisibility, setPostVisibility] = useState('Public');
     const [submitting, setSubmitting] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [editId, setEditId] = useState<string | null>(null);
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const editIdParam = queryParams.get('edit');
+        if (editIdParam) {
+            setIsEditMode(true);
+            setEditId(editIdParam);
+            // Fetch existing post content
+            fetchWithAuth(`/api/posts/${editIdParam}`).then(res => {
+                if (res.ok) {
+                    res.json().then(data => {
+                        setContent(data.content || '');
+                        setPostVisibility(data.visibility || 'Public');
+                        setReplyPermission(data.replyPermission || 'Everyone');
+                        if (data.imageUrls && data.imageUrls.length > 0) {
+                            setPreviewUrls(data.imageUrls);
+                        }
+                    });
+                }
+            });
+        }
+    }, [location.search]);
 
     const visibilityMap: Record<string, string> = {
         'Public': '公开',
@@ -78,14 +103,14 @@ export default function ComposePage() {
                 }
             }
 
-            const res = await fetchWithAuth('/api/posts', {
-                method: 'POST',
+            const res = await fetchWithAuth(isEditMode ? `/api/posts/${editId}` : '/api/posts', {
+                method: isEditMode ? 'PUT' : 'POST',
                 body: JSON.stringify({
                     content,
                     type: 0,
                     replyPermission,
                     visibility: postVisibility,
-                    imageUrls: uploadedImageUrls
+                    imageUrls: uploadedImageUrls.length > 0 ? uploadedImageUrls : undefined
                 })
             });
 
@@ -103,7 +128,7 @@ export default function ComposePage() {
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex sm:items-start justify-center sm:pt-16 bg-black/40 backdrop-blur-sm app-page-enter px-0 sm:px-4">
+        <div className="fixed inset-0 z-[100] flex sm:items-start justify-center sm:pt-16 bg-black/40 backdrop-blur-xl app-page-enter px-0 sm:px-4">
             <section className="bg-surface text-on-surface w-full h-full sm:h-auto sm:min-h-[300px] sm:max-h-[85vh] sm:rounded-2xl sm:max-w-2xl sm:shadow-2xl flex flex-col relative overflow-hidden transition-all duration-300 border border-outline-variant/30">
                 <div className="flex items-center justify-between p-4 border-b border-outline-variant/30">
                     <button className="p-2 hover:bg-surface-variant/50 rounded-full transition-colors flex items-center justify-center -ml-2" onClick={() => navigate(-1)}>
@@ -111,13 +136,13 @@ export default function ComposePage() {
                     </button>
 
                     <div className="flex gap-4 items-center">
-                        <span className="text-secondary font-medium text-[15px]">草稿</span>
+                        <span className="text-secondary font-medium text-[15px]">{isEditMode ? '修改草稿' : '草稿'}</span>
                         <Button
                             className="bg-[#1d9bf0] text-white px-5 py-4 min-h-0 h-8 rounded-full font-bold text-[14px] opacity-100 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#1a8cd8] transition-colors"
                             onPress={handlePublish}
-                            isDisabled={submitting || (!content.trim() && selectedImages.length === 0)}
+                            isDisabled={submitting || (!content.trim() && selectedImages.length === 0 && previewUrls.length === 0)}
                         >
-                            {submitting ? '发送...' : '发布'}
+                            {submitting ? '发送中...' : (isEditMode ? '保存' : '发布')}
                         </Button>
                     </div>
                 </div>
@@ -133,7 +158,7 @@ export default function ComposePage() {
                                 </Button>
                                 <Dropdown.Popover>
                                     <Dropdown.Menu
-                                        aria-label="帖子可见性"
+                                        aria-label="帖子可见度"
                                         onAction={(key) => setPostVisibility(String(key))}
                                     >
                                         <Dropdown.Item id="Public" textValue="Public">
@@ -158,7 +183,7 @@ export default function ComposePage() {
                                 </Button>
                                 <Dropdown.Popover>
                                     <Dropdown.Menu
-                                        aria-label="可见性"
+                                        aria-label="回复权限"
                                         onAction={(key) => setReplyPermission(String(key))}
                                     >
                                         <Dropdown.Item id="Everyone" textValue="Everyone">
@@ -181,7 +206,7 @@ export default function ComposePage() {
                             <div className="flex flex-wrap gap-2 mt-2">
                                 {previewUrls.map((url, i) => (
                                     <div key={i} className="relative w-24 h-24 rounded-xl overflow-hidden border border-outline-variant/50">
-                                        <img src={url} alt="preview" className="object-cover w-full h-full" />
+                                        <img src={typeof (url) === 'string' ? (url).replace('5253', '8080') : (url)} alt="preview" className="object-cover w-full h-full" />
                                         <button
                                             className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1"
                                             onClick={() => removeImage(i)}
@@ -222,3 +247,7 @@ export default function ComposePage() {
         </div>
     );
 }
+
+
+
+

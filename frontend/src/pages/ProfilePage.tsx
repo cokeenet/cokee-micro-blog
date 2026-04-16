@@ -26,6 +26,7 @@ export default function ProfilePage() {
     const [editForm, setEditForm] = useState({
         displayName: '',
         avatarUrl: '',
+        coverUrl: '',
         bio: ''
     });
 
@@ -83,13 +84,14 @@ export default function ProfilePage() {
         setEditForm({
             displayName: profileUser?.displayName || '',
             avatarUrl: profileUser?.avatarUrl || '',
+            coverUrl: profileUser?.coverUrl || '',
             bio: profileUser?.bio || ''
         });
         setIsEditOpen(true);
     };
 
     const handleToggleFollow = async () => {
-        if (!user) return alert("请先登录！");
+        if (!user) return alert("请先登录");
         const actionUrl = `/api/users/${profileUser.username}/follow`;
         const method = profileUser.isFollowing ? 'DELETE' : 'POST';
 
@@ -157,7 +159,7 @@ export default function ProfilePage() {
             }
         } catch (err) {
             console.error(err);
-            alert('保存异常：' + err);
+            alert('保存异常: ' + err);
         } finally {
             setIsSaving(false);
         }
@@ -186,15 +188,18 @@ export default function ProfilePage() {
                 <h1 className="text-2xl font-extrabold text-on-surface">{profileUser.displayName || profileUser.username}</h1>
             </header>
 
-            <div className="relative h-52 overflow-hidden bg-slate-200 dark:bg-slate-800 soft-surface">
-                {/* Fallback cover image */}
-                <div className="h-full w-full bg-gradient-to-r from-primary/30 to-secondary/30"></div>
+            <div className="relative h-52 overflow-hidden bg-slate-200 dark:bg-slate-800">
+                {profileUser.coverUrl ? (
+                    <img src={profileUser.coverUrl} alt="Cover" className="h-full w-full object-cover" />
+                ) : (
+                    <div className="h-full w-full bg-gradient-to-r from-primary/30 to-secondary/30"></div>
+                )}
             </div>
 
             <div className="px-5 pb-8">
                 <div className="-mt-16 flex items-end justify-between">
                     <Avatar className="h-32 w-32 border-4 border-white shadow-xl dark:border-surface drop-shadow-md">
-                        <Avatar.Image src={profileUser?.avatarUrl || undefined} />
+                        <Avatar.Image src={typeof (profileUser?.avatarUrl || undefined) === 'string' ? (profileUser?.avatarUrl || undefined).replace('5253', '8080') : (profileUser?.avatarUrl || undefined)} />
                         <Avatar.Fallback className="text-4xl bg-surface-variant text-on-surface">{(profileUser?.displayName || profileUser?.username || 'U').charAt(0).toUpperCase()}</Avatar.Fallback>
                     </Avatar>
                     {isOwner ? (
@@ -287,7 +292,7 @@ export default function ProfilePage() {
 
             <Drawer>
                 <Drawer.Backdrop isOpen={isEditOpen} onOpenChange={setIsEditOpen}>
-                    <Drawer.Content placement="right" className="bg-surface/90 backdrop-blur-2xl border-l border-white/10 text-on-surface">
+                    <Drawer.Content placement="right" className="bg-surface/90 backdrop-blur-xl border-l border-white/10 text-on-surface">
                         <Drawer.Dialog className="h-full flex flex-col pt-10">
                             <Drawer.Header className="border-b border-white/10 pb-4 px-6 md:px-8">
                                 <h2 className="text-2xl font-black">编辑个人资料</h2>
@@ -317,6 +322,17 @@ export default function ProfilePage() {
                                     </div>
 
                                     <div className="flex flex-col gap-2 w-full">
+                                        <label className="text-sm font-bold opacity-80">背景图片 URL (Cover)</label>
+                                        <Input
+                                            type="url"
+                                            placeholder="https://example.com/cover.png"
+                                            value={editForm.coverUrl}
+                                            onChange={(e) => setEditForm({ ...editForm, coverUrl: e.target.value })}
+                                            className="bg-surface-variant/40 hover:bg-surface-variant/60 focus-within:!bg-surface-variant/80 border border-outline-variant/30"
+                                        />
+                                    </div>
+
+                                    <div className="flex flex-col gap-2 w-full">
                                         <label className="text-sm font-bold opacity-80">个人签名 (Bio)</label>
                                         <TextArea
                                             placeholder="介绍一下你自己..."
@@ -329,7 +345,7 @@ export default function ProfilePage() {
 
                                     <p className="text-xs text-on-surface-variant mt-2 opacity-70 flex items-center gap-1 bg-primary/10 p-3 rounded-lg border border-primary/20">
                                         <span className="material-symbols-outlined text-[16px] text-primary">info</span>
-                                        <span>放空内容则会保留或清除当前属性。</span>
+                                        <span>留空内容则会保留或清除当前属性。</span>
                                     </p>
                                 </Form>
                             </Drawer.Body>
@@ -356,3 +372,6 @@ function Placeholder({ text }: { text: string }) {
         </Card>
     );
 }
+
+
+

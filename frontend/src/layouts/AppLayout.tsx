@@ -21,9 +21,11 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
     const loadSidebarData = async () => {
         try {
-            const trendRes = await fetch(`${API_BASE_URL}/trends`);
-            const trendData = await trendRes.json();
-            setTrends(trendData);
+            const trendRes = await fetch(`${API_BASE_URL}/api/trends`);
+            if (trendRes.ok) {
+                const trendData = await trendRes.json();
+                setTrends(trendData);
+            }
         } catch {
             setTrends([]);
         }
@@ -32,9 +34,11 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             const headers: Record<string, string> = {};
             if (token) headers.Authorization = `Bearer ${token}`;
 
-            const suggestionRes = await fetch(`${API_BASE_URL}/users/suggestions`, { headers });
-            const suggestionData = await suggestionRes.json();
-            setSuggestions(suggestionData);
+            const suggestionRes = await fetch(`${API_BASE_URL}/api/users/suggestions`, { headers });
+            if (suggestionRes.ok) {
+                const suggestionData = await suggestionRes.json();
+                setSuggestions(suggestionData);
+            }
         } catch {
             setSuggestions([]);
         }
@@ -51,7 +55,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             return;
         }
 
-        const res = await fetch(`${API_BASE_URL}/users/${targetUserId}/follow`, {
+        const res = await fetch(`${API_BASE_URL}/api/users/${targetUserId}/follow`, {
             method: 'POST',
             headers: { Authorization: `Bearer ${token}` }
         });
@@ -112,12 +116,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
                         <div className="mt-auto flex items-center gap-3 p-2 rounded-full hover:bg-white/45 dark:hover:bg-white/5 transition-colors cursor-pointer" onClick={() => navigate(token ? '/profile' : '/login')}>
                             <Avatar className="w-10 h-10">
-                                <Avatar.Image src={user?.avatarUrl || undefined} />
+                                <Avatar.Image src={typeof (user?.avatarUrl || undefined) === 'string' ? (user?.avatarUrl || undefined)?.replace('5253', '8080') : (user?.avatarUrl || undefined)} />
                                 <Avatar.Fallback>{(user?.displayName || 'G').charAt(0).toUpperCase()}</Avatar.Fallback>
                             </Avatar>
                             <div className="flex flex-col min-w-0 flex-1">
                                 <span className="text-sm font-bold text-on-surface truncate">{user?.displayName || '未登录'}</span>
-                                <span className="text-xs text-on-surface-variant truncate">@{user?.username || 'guest'}</span>
+                                < span className="text-xs text-on-surface-variant truncate">@{user?.username || 'guest'}</span>
                             </div>
                         </div>
 
@@ -159,7 +163,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                                             <div>
                                                 <p className="text-xs text-on-surface-variant">热门·趋势</p>
                                                 <p className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors">{trend.name}</p>
-                                                <p className="text-xs text-on-surface-variant">{trend.posts || '1.25万'} 博文</p>
+                                                <p className="text-xs text-on-surface-variant">{trend.postCount || '1.25万'} 博文</p>
                                             </div>
                                             <button className="text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <span className="material-symbols-outlined text-sm">more_horiz</span>
@@ -185,7 +189,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                                         <div key={i} className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
                                                 <Avatar size="sm">
-                                                    <Avatar.Image src={suggestedUser.avatarUrl || undefined} />
+                                                    <Avatar.Image src={typeof (suggestedUser.avatarUrl || undefined) === 'string' ? (suggestedUser.avatarUrl || undefined).replace('5253', '8080') : (suggestedUser.avatarUrl || undefined)} />
                                                     <Avatar.Fallback>{(suggestedUser.displayName || 'U').charAt(0).toUpperCase()}</Avatar.Fallback>
                                                 </Avatar>
                                                 <div className="min-w-0 pr-2">
@@ -215,9 +219,9 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                         <a href="#" className="hover:underline">服务条款</a>
                         <a href="#" className="hover:underline">隐私政策</a>
                         <a href="#" className="hover:underline">Cookie 政策</a>
-                        <a href="#" className="hover:underline">无障碍性</a>
+                        <a href="#" className="hover:underline">无障碍</a>
                         <a href="#" className="hover:underline">广告信息</a>
-                        <span>© 2024 Glacier Corp.</span>
+                        <span>© 2026 Cokee Corp.</span>
                     </div>
                 </aside>
             </div>
@@ -249,3 +253,5 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         </div >
     );
 };
+
+

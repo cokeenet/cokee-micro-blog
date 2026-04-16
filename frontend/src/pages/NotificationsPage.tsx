@@ -61,7 +61,7 @@ export default function NotificationsPage() {
                                 <div className="flex-1 space-y-2">
                                     <div className="flex items-center gap-2">
                                         <Avatar className="h-8 w-8">
-                                            <Avatar.Image src={notif.actorAvatarUrl || undefined} />
+                                            <Avatar.Image src={typeof (notif.actorAvatarUrl || undefined) === 'string' ? (notif.actorAvatarUrl || undefined).replace('5253', '8080') : (notif.actorAvatarUrl || undefined)} />
                                             <Avatar.Fallback className="bg-surface-variant text-on-surface text-xs">{(notif.actorDisplayName || notif.actorUsername).charAt(0).toUpperCase()}</Avatar.Fallback>
                                         </Avatar>
                                         <span className="font-bold text-on-surface">{notif.actorDisplayName || notif.actorUsername}</span>
@@ -82,10 +82,12 @@ export default function NotificationsPage() {
             ) : (
                 <Card className="mt-4 glass-panel rounded-panel text-center py-10">
                     <Card.Content className="text-on-surface-variant">
-                        暂无新通知。
+                        暂无新通知.
                     </Card.Content>
                 </Card>
             )}
         </section>
     );
 }
+
+

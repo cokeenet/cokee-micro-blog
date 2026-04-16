@@ -34,6 +34,7 @@ public static class UserEndpoints
                     u.DisplayName,
                     u.Bio,
                     u.AvatarUrl,
+                    u.CoverUrl,
                     u.CreatedAt,
                     FollowersCount = u.Followers.Count,
                     FollowingCount = u.Following.Count,
@@ -109,13 +110,17 @@ public static class UserEndpoints
             {
                 user.AvatarUrl = dto.AvatarUrl;
             }
+            if (!string.IsNullOrWhiteSpace(dto.CoverUrl))
+            {
+                user.CoverUrl = dto.CoverUrl;
+            }
 
             await db.SaveChangesAsync();
 
             return Results.Ok(new
             {
                 message = "资料已更新",
-                user = new { user.Id, user.Username, user.DisplayName, user.Bio, user.AvatarUrl }
+                user = new { user.Id, user.Username, user.DisplayName, user.Bio, user.AvatarUrl, user.CoverUrl }
             });
         });
 
@@ -234,48 +239,6 @@ public static class UserEndpoints
                 .ToList();
 
             return Results.Ok(allNotifications);
-        });
-
-        group.MapGet("/suggestions", [AllowAnonymous] async (ApplicationDbContext db, ClaimsPrincipal claims) =>
-        {
-            var userIdStr = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            Guid.TryParse(userIdStr, out var userId);
-
-            // Get 3 random users. Excluding current user and users already followed.
-            var query = db.Users.AsQueryable();
-
-            if (userId != Guid.Empty)
-            {
-                var followingIds = await db.Follows.Where(f => f.FollowerId == userId).Select(f => f.FolloweeId).ToListAsync();
-                query = query.Where(u => u.Id != userId && !followingIds.Contains(u.Id));
-            }
-
-            var suggestions = await query
-                .OrderBy(u => Guid.NewGuid()) // Random order
-                .Take(3)
-                .Select(u => new
-                {
-                    u.Id,
-                    u.Username,
-                    u.DisplayName,
-                    u.AvatarUrl,
-                    u.Bio
-                })
-                .ToListAsync();
-
-            return Results.Ok(suggestions);
-        });
-
-        // 简单模拟趋势列表，后续可通过管理端增加/删除趋势，此处暂存于内存或者直接Mock
-        app.MapGet("/api/trends", () =>
-        {
-            var trends = new[]
-            {
-                new { name = "#React19", posts = "5.2万", category = "Tech" },
-                new { name = "#C#", posts = "3.1万", category = "Tech" },
-                new { name = "#MicroBlog", posts = "1.2万", category = "Tech" }
-            };
-            return Results.Ok(trends);
         });
     }
 }

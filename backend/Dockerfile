@@ -20,6 +20,7 @@ RUN dotnet publish "Cokee.MicroBlog.Api.csproj" -c Release -o /app/publish /p:Us
 # 运行时构建最终镜像
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
+ENV ASPNETCORE_HTTP_PORTS=8080
 EXPOSE 8080
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Cokee.MicroBlog.Api.dll"]

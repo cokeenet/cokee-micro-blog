@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { Avatar, Card } from "@heroui/react";
 import { motion } from "framer-motion";
 import { PostActionMenu } from "../components/PostActionMenu";
@@ -46,6 +46,7 @@ interface PostCardProps {
 
 export function PostCard({ post, isOwner, onNavigate, onPostAction, onToggleLike, onToggleRetweet }: PostCardProps) {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleNavigate = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -78,7 +79,7 @@ export function PostCard({ post, isOwner, onNavigate, onPostAction, onToggleLike
                         className="size-10 shrink-0"
                         onClick={(e) => { e.stopPropagation(); navigate(`/user/${post.authorUsername.replace('@', '')}`); }}
                     >
-                        <Avatar.Image src={post.authorAvatarUrl || undefined} />
+                        <Avatar.Image src={typeof (post.authorAvatarUrl || undefined) === 'string' ? (post.authorAvatarUrl || undefined)?.replace('5253', '8080') : (post.authorAvatarUrl || undefined)} />
                         <Avatar.Fallback>{authorName.charAt(0).toUpperCase()}</Avatar.Fallback>
                     </Avatar>
 
@@ -88,13 +89,13 @@ export function PostCard({ post, isOwner, onNavigate, onPostAction, onToggleLike
                                 <span className="font-bold text-foreground text-base truncate">{authorName}</span>
                                 <span className="text-muted text-sm flex items-center gap-1 shrink-0">
                                     <span>{post.authorUsername} · {new Date(post.createdAt || Date.now()).toLocaleDateString()}</span>
-                                    {post.visibility === 'FollowersOnly' && <span className="material-symbols-outlined text-[13px]" title="仅粉丝">lock</span>}
+                                    {post.visibility === 'FollowersOnly' && <span className="material-symbols-outlined text-[13px]" title="仅粉丝可见">lock</span>}
                                     {post.visibility === 'MutualFollowersOnly' && <span className="material-symbols-outlined text-[13px]" title="互关好友">group</span>}
                                     {post.visibility === 'Private' && <span className="material-symbols-outlined text-[13px]" title="私密">visibility_off</span>}
                                 </span>
                             </div>
                             <div onClick={(e) => e.stopPropagation()}>
-                                <PostActionMenu isOwner={isOwner} onAction={(key) => onPostAction?.(String(key), post.id)} />
+                                <PostActionMenu isOwner={isOwner} onAction={(key) => { if (key === 'edit') { navigate('/compose?edit=' + post.id, { state: { backgroundLocation: location } }); } else { onPostAction?.(String(key), post.id); } }} />
                             </div>
                         </div>
 
@@ -120,7 +121,7 @@ export function PostCard({ post, isOwner, onNavigate, onPostAction, onToggleLike
                                         <div className={`grid gap-1 ${post.retweetOriginalPost.imageUrls.length > 1 ? 'grid-cols-2' : 'grid-cols-1 max-w-sm'}`}>
                                             {post.retweetOriginalPost.imageUrls.map((url, i) => (
                                                 <div key={i} className="overflow-hidden rounded-lg border border-border/50">
-                                                    <img src={url} alt={`original post image ${i}`} className="object-cover w-full h-full max-h-40" loading="lazy" />
+                                                    <img src={typeof (url) === 'string' ? (url).replace('5253', '8080') : (url)} alt={`original post image ${i}`} className="object-cover w-full h-full max-h-40" loading="lazy" />
                                                 </div>
                                             ))}
                                         </div>
@@ -134,7 +135,7 @@ export function PostCard({ post, isOwner, onNavigate, onPostAction, onToggleLike
                             <div className={`mt-3 grid gap-2 ${post.imageUrls.length === 1 ? 'grid-cols-1 max-w-lg' : post.imageUrls.length === 2 ? 'grid-cols-2' : post.imageUrls.length === 3 ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-3'}`}>
                                 {post.imageUrls.map((url, i) => (
                                     <div key={i} className={`overflow-hidden rounded-2xl border border-border/50 bg-surface-secondary ${post.imageUrls!.length === 3 && i === 0 ? 'col-span-2 sm:col-span-1' : ''}`}>
-                                        <img src={url} alt={`post image ${i}`} className="object-cover w-full h-full max-h-[300px]" loading="lazy" />
+                                        <img src={typeof (url) === 'string' ? (url).replace('5253', '8080') : (url)} alt={`post image ${i}`} className="object-cover w-full h-full max-h-[300px]" loading="lazy" />
                                     </div>
                                 ))}
                             </div>
@@ -198,3 +199,8 @@ export function PostCard({ post, isOwner, onNavigate, onPostAction, onToggleLike
         </Card>
     );
 }
+
+
+
+
+

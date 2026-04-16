@@ -1,4 +1,4 @@
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5253';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
 /**
  * Standardized fetch wrapper that automatically injects the JWT token
@@ -30,3 +30,7 @@ export async function fetchWithAuth(endpoint: string, options: RequestInit = {})
 
     return response;
 }
+export const getMediaUrl = (url: string | null | undefined): string | undefined => {
+    if (!url) return undefined;
+    return url.replace('5253', '8080');
+};

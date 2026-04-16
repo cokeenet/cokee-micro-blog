@@ -88,24 +88,6 @@ public static class SocialEndpoints
         // ----------------- ADMIN ENDPOINTS -----------------
         var adminGroup = app.MapGroup("/api/admin");
 
-        adminGroup.MapGet("/stats", async (ApplicationDbContext db) =>
-        {
-            var totalUsers = await db.Users.CountAsync();
-            var totalPosts = await db.Posts.CountAsync();
-            var todayLogins = await db.Users.Where(u => u.CreatedAt >= DateTime.UtcNow.Date).CountAsync();
-
-            return Results.Ok(new
-            {
-                TotalUsers = totalUsers,
-                TotalPosts = totalPosts,
-                TodayLogins = todayLogins,
-                ActiveStorage = "192 MB", // Placeholder for actual calculation
-                ApiGateway = "99.98%",
-                CdnStatus = "正常运行",
-                DbCluster = "96%"
-            });
-        });
-
         adminGroup.MapGet("/users", async (ApplicationDbContext db) =>
         {
             return Results.Ok(await db.Users.OrderByDescending(u => u.CreatedAt).Take(20).ToListAsync());
@@ -114,6 +96,8 @@ public static class SocialEndpoints
         // ----------------- SIDEBAR ENDPOINTS -----------------
         app.MapGet("/api/trends", async (ApplicationDbContext db) =>
         {
+            var dbTrends = await db.Trends.Where(t => t.IsActive).ToListAsync();
+
             var posts = await db.Posts
                 .OrderByDescending(p => p.CreatedAt)
                 .Take(300)
@@ -122,23 +106,27 @@ public static class SocialEndpoints
 
             var hashtagRegex = new System.Text.RegularExpressions.Regex("#([\\p{L}\\p{N}_]+)", System.Text.RegularExpressions.RegexOptions.Compiled);
 
-            var trends = posts
+            var dynamicTrends = posts
                 .SelectMany(content => hashtagRegex.Matches(content ?? string.Empty).Select(m => m.Groups[1].Value.ToLowerInvariant()))
                 .GroupBy(tag => tag)
                 .Select(g => new
                 {
                     Category = "热门话题",
                     Name = "#" + g.Key,
-                    Posts = g.Count()
+                    PostCount = g.Count()
                 })
-                .OrderByDescending(x => x.Posts)
+                .ToList();
+
+            var trends = dbTrends.Select(t => new { Category = t.Category, Name = t.Name, PostCount = t.PostCount })
+                .Concat(dynamicTrends.Where(d => !dbTrends.Any(dbItem => string.Equals(dbItem.Name, d.Name, StringComparison.OrdinalIgnoreCase))))
+                .OrderByDescending(x => x.PostCount)
                 .Take(10)
                 .ToList();
 
             return Results.Ok(trends);
         });
 
-        app.MapGet("/api/users/suggestions", [Authorize] async (ApplicationDbContext db, ClaimsPrincipal claims) =>
+        app.MapGet("/api/users/suggestions", [AllowAnonymous] async (ApplicationDbContext db, ClaimsPrincipal claims) =>
         {
             var claimsUserIdStr = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             Guid? currentUserId = null;
@@ -161,6 +149,11 @@ public static class SocialEndpoints
             var query = db.Users.AsQueryable();
             if (excludedIds.Count > 0)
                 query = query.Where(u => !excludedIds.Contains(u.Id));
+
+            if (AdminConfig.RecommendMode == "specific" && AdminConfig.RecommendedUserIds.Count > 0)
+            {
+                query = query.Where(u => AdminConfig.RecommendedUserIds.Contains(u.Id));
+            }
 
             var suggestions = await query
                 .OrderByDescending(u => u.CreatedAt)

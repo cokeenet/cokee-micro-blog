@@ -40,6 +40,7 @@ namespace Cokee.MicroBlog.Domain.Entities
         public string DisplayName { get; set; } = string.Empty;
         public string? Bio { get; set; }
         public string? AvatarUrl { get; set; }
+        public string? CoverUrl { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation properties
@@ -105,6 +106,17 @@ namespace Cokee.MicroBlog.Domain.Entities
         public Guid FolloweeId { get; set; }
         public User Followee { get; set; } = null!;
 
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    }
+
+    public class Trend
+    {
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Name { get; set; } = string.Empty; // e.g. "#HelloWorld"
+        public string Category { get; set; } = "General";
+        public int PostCount { get; set; } = 0;
+        public int SortOrder { get; set; } = 0;
+        public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

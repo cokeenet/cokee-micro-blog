@@ -142,7 +142,7 @@ export default function PostDetailPage() {
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex gap-3 items-center">
                         <Avatar size="md">
-                            <Avatar.Image src={post.authorAvatarUrl || undefined} />
+                            <Avatar.Image src={typeof (post.authorAvatarUrl || undefined) === 'string' ? (post.authorAvatarUrl || undefined).replace('5253', '8080') : (post.authorAvatarUrl || undefined)} />
                             <Avatar.Fallback>{(post.authorDisplayName || post.authorUsername.replace('@', '')).charAt(0).toUpperCase()}</Avatar.Fallback>
                         </Avatar>
                         <div className="flex flex-col">
@@ -165,11 +165,16 @@ export default function PostDetailPage() {
                                 <Dropdown.Item id="report">
                                     举报此帖子
                                 </Dropdown.Item>
-                                {user?.username === post.authorUsername.replace('@', '') && (
-                                    <Dropdown.Item id="delete" className="text-danger">
-                                        删除
-                                    </Dropdown.Item>
-                                )}
+                                {user?.username === post.authorUsername?.replace('@', '') || user?.username === 'admin' ? (
+                                    <>
+                                        <Dropdown.Item id="edit" onClick={() => navigate(`/compose?edit=${post.id}`)}>
+                                            编辑
+                                        </Dropdown.Item>
+                                        <Dropdown.Item id="delete" className="text-danger">
+                                            删除
+                                        </Dropdown.Item>
+                                    </>
+                                ) : null}
                             </Dropdown.Menu>
                         </Dropdown.Popover>
                     </Dropdown>
@@ -188,14 +193,18 @@ export default function PostDetailPage() {
                     <div className={`mt-3 grid gap-2 mb-4 ${post.imageUrls.length === 1 ? 'grid-cols-1' : post.imageUrls.length === 2 ? 'grid-cols-2' : 'grid-cols-2 lg:grid-cols-3'}`}>
                         {post.imageUrls.map((url: string, i: number) => (
                             <div key={i} className={`overflow-hidden rounded-2xl border border-outline-variant/30 bg-surface-variant ${post.imageUrls.length === 3 && i === 0 ? 'col-span-2' : ''}`}>
-                                <img src={url} alt={`post image ${i}`} className="object-cover w-full h-full" loading="lazy" />
+                                <img src={typeof (url) === 'string' ? (url).replace('5253', '8080') : (url)} alt={`post image ${i}`} className="object-cover w-full h-full" loading="lazy" />
                             </div>
                         ))}
                     </div>
                 )}
 
-                <div className="text-on-surface-variant text-sm py-4">
+                <div className="text-on-surface-variant text-sm py-4 flex items-center gap-2 flex-wrap">
                     {new Date(post.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · {new Date(post.createdAt).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })} · <span className="font-bold text-on-surface">{post.viewCount || 0}</span> 查看
+
+                    {post.visibility === 'FollowersOnly' && <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[14px]">lock</span>仅粉丝可见</span>}
+                    {post.visibility === 'MutualFollowersOnly' && <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[14px]">group</span>互关好友可看</span>}
+                    {post.visibility === 'Private' && <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[14px]">visibility_off</span>私密</span>}
                 </div>
 
                 <div className="border-t border-outline-variant/60"></div>
@@ -257,8 +266,8 @@ export default function PostDetailPage() {
             {user ? (
                 <div className="px-4 py-2 border-b border-outline-variant/60 flex items-center gap-3">
                     <Avatar size="sm" className="shrink-0">
-                        <Avatar.Image src={user.avatarUrl || undefined} />
-                        <Avatar.Fallback>{(user.displayName || user.username).charAt(0).toUpperCase()}</Avatar.Fallback>
+                        <Avatar.Image src={typeof user?.avatarUrl === 'string' ? user.avatarUrl.replace('5253', '8080') : user?.avatarUrl} />
+                        <Avatar.Fallback>{(user?.displayName || user?.username || 'U').charAt(0).toUpperCase()}</Avatar.Fallback>
                     </Avatar>
                     <div className="flex-1 flex items-center bg-transparent">
                         <input
@@ -293,7 +302,7 @@ export default function PostDetailPage() {
                     <article key={comment.id} className="p-4 hover:bg-white/45 dark:hover:bg-white/5 transition-colors cursor-pointer app-page-enter">
                         <div className="flex gap-3">
                             <Avatar size="sm" className="shrink-0 mt-1">
-                                <Avatar.Image src={comment.authorAvatarUrl || undefined} />
+                                <Avatar.Image src={typeof (comment.authorAvatarUrl || undefined) === 'string' ? (comment.authorAvatarUrl || undefined).replace('5253', '8080') : (comment.authorAvatarUrl || undefined)} />
                                 <Avatar.Fallback>{(comment.authorDisplayName || comment.authorUsername.replace('@', '')).charAt(0).toUpperCase()}</Avatar.Fallback>
                             </Avatar>
                             <div className="flex-1 min-w-0">
@@ -355,3 +364,4 @@ export default function PostDetailPage() {
         </section>
     );
 }
+

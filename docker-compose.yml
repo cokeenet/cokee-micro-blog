@@ -6,12 +6,14 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     container_name: microblog-backend
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - "5253:8080" # 本地 5253 映射到容器 8080 端口
+      - "8080:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      # 强制监听 8080 防止 .NET 新版默认配置不匹配暴露端口的问题
+      - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal;Port=3308;Database=CokeeMicroBlog;User=root;***REMOVED***
     restart: unless-stopped
     networks:
       - microblog-net
@@ -22,20 +24,7 @@ services:
       dockerfile: frontend/Dockerfile
     container_name: microblog-frontend
     ports:
-      - "5175:80"  # 映射用户前端
-    depends_on:
-      - backend
-    restart: unless-stopped
-    networks:
-      - microblog-net
-
-  admin-frontend:
-    build:
-      context: .
-      dockerfile: napcat-webui-frontend/Dockerfile
-    container_name: microblog-admin-frontend
-    ports:
-      - "5176:80"  # 映射后台管理前端
+      - "80:80"
     depends_on:
       - backend
     restart: unless-stopped

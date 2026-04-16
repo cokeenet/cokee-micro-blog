@@ -14,6 +14,7 @@ namespace Cokee.MicroBlog.Infrastructure.Data
         public DbSet<Post> Posts => Set<Post>();
         public DbSet<Interaction> Interactions => Set<Interaction>();
         public DbSet<Follow> Follows => Set<Follow>();
+        public DbSet<Trend> Trends => Set<Trend>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

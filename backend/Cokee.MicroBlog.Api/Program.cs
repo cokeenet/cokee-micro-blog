@@ -58,7 +58,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
         policy => policy
-            .WithOrigins("http://localhost:5173", "http://127.0.0.1:5173")
+            .WithOrigins(
+                "http://localhost:5173", "http://127.0.0.1:5173",
+                "http://localhost:5176", "http://127.0.0.1:5176",
+                "http://localhost:80", "http://127.0.0.1:80",
+                "http://localhost:8088", "http://127.0.0.1:8088",
+                "http://localhost"
+            )
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials());
@@ -95,7 +101,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection(); // Disable inside Docker to prevent breaking non-HTTPS proxy requests
 app.UseStaticFiles();
 app.UseCors("AllowFrontend");
 
@@ -106,6 +112,7 @@ app.MapAuthEndpoints(secretKey);
 app.MapPostEndpoints();
 app.MapSocialEndpoints();
 app.MapUserEndpoints();
+app.MapAdminEndpoints();
 
 app.Run();
 

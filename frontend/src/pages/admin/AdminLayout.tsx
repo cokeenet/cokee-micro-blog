@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { Link, useNavigate, Outlet, useLocation } from 'react-router';
 import { Avatar } from '@heroui/react';
-import PageBackground from '../components/PageBackground';
-import { useAuth } from '../hooks/useAuth';
+import { motion } from 'framer-motion';
+import PageBackground from '../../components/PageBackground';
+import { useAuth } from '../../hooks/useAuth';
 
 export const AdminLayout = () => {
     const { user } = useAuth();
@@ -21,7 +22,6 @@ export const AdminLayout = () => {
     const activeMenu = getActiveMenu();
 
     useEffect(() => {
-        // 简单拦截非登录用户（如有权限系统可在此扩充，例如检查 isAdmin）
         if (user === null) {
             navigate('/login');
         }
@@ -31,7 +31,7 @@ export const AdminLayout = () => {
         { name: 'Dashboard', label: '仪表盘', icon: 'space_dashboard', path: '/admin' },
         { name: 'Users', label: '用户管理', icon: 'group', path: '/admin/users' },
         { name: 'Posts', label: '内容管理', icon: 'article', badge: 'New', path: '/admin/posts' },
-        { name: 'Trends', label: '趋势标签', icon: 'trending_up', path: '/admin/trends' },
+        { name: 'Trends', label: '热门趋势', icon: 'trending_up', path: '/admin/trends' },
         { name: 'Settings', label: '系统设置', icon: 'settings', path: '/admin/settings' }
     ];
 
@@ -46,7 +46,7 @@ export const AdminLayout = () => {
                 {/* Profile Widget */}
                 <div className="glass-chip rounded-panel p-3 mb-8 flex items-center gap-3 cursor-pointer hover:bg-surface-variant/30 transition-colors">
                     <Avatar className="shrink-0 w-10 h-10 shadow-glow-soft border-none bg-transparent">
-                        {user.avatarUrl && <Avatar.Image src={user.avatarUrl} />}
+                        {user.avatarUrl && <Avatar.Image src={typeof (user.avatarUrl) === 'string' ? (user.avatarUrl).replace('5253', '8080') : (user.avatarUrl)} />}
                         <Avatar.Fallback className="bg-gradient-to-tr from-blue-300 to-indigo-400 text-white font-bold">
                             {user.displayName ? user.displayName.substring(0, 2).toUpperCase() : 'A'}
                         </Avatar.Fallback>
@@ -58,25 +58,33 @@ export const AdminLayout = () => {
                 </div>
 
                 {/* Nav Menu */}
-                <nav className="flex flex-col gap-1.5 flex-1">
-                    {menuItems.map(item => (
-                        <Link
-                            key={item.name}
-                            to={item.path}
-                            className={`flex items-center justify-between px-4 py-3 rounded-card transition-all font-semibold text-sm ${activeMenu === item.name
-                                ? 'bg-primary/15 text-primary shadow-glow-soft'
-                                : 'text-on-surface-variant hover:bg-surface-variant/40 hover:text-on-surface'
-                                }`}
-                        >
-                            <div className="flex items-center gap-3">
-                                <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: activeMenu === item.name ? "'FILL' 1" : "'FILL' 0" }}>{item.icon}</span>
-                                <span>{item.label}</span>
-                            </div>
-                            {item.badge && (
-                                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 font-bold uppercase tracking-wider">{item.badge}</span>
-                            )}
-                        </Link>
-                    ))}
+                <nav className="flex flex-col gap-1.5 flex-1 relative">
+                    {menuItems.map(item => {
+                        const isActive = activeMenu === item.name;
+                        return (
+                            <Link
+                                key={item.name}
+                                to={item.path}
+                                className={`relative flex items-center justify-between px-4 py-3 rounded-card transition-all font-semibold text-sm ${isActive ? 'text-primary' : 'text-on-surface-variant hover:bg-surface-variant/40 hover:text-on-surface'}`}
+                            >
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="adminNavIndicator"
+                                        className="absolute inset-0 bg-primary/15 shadow-glow-soft rounded-card"
+                                        initial={false}
+                                        transition={{ type: 'spring', stiffness: 450, damping: 30 }}
+                                    />
+                                )}
+                                <div className="flex items-center gap-3 relative z-10">
+                                    <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}>{item.icon}</span>
+                                    <span>{item.label}</span>
+                                </div>
+                                {item.badge && (
+                                    <span className="relative z-10 text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 font-bold uppercase tracking-wider">{item.badge}</span>
+                                )}
+                            </Link>
+                        );
+                    })}
                 </nav>
 
                 {/* Footer Links */}
@@ -93,27 +101,8 @@ export const AdminLayout = () => {
             </aside>
 
             {/* Main Content Area */}
-            <main className="flex-1 flex flex-col h-full relative z-0 min-w-0">
-                {/* Header */}
-                <header className="flex justify-between items-center px-8 py-5 border-b border-outline-variant/40 bg-surface/20 backdrop-blur-md sticky top-0 z-20">
-                    <h1 className="text-2xl font-black text-on-surface tracking-tight">你好, {user?.displayName || 'Admin'}</h1>
-                    <div className="flex items-center gap-4">
-                        <button className="p-2 rounded-full text-on-surface-variant hover:bg-surface-variant/50 hover:text-on-surface transition-colors flex items-center justify-center">
-                            <span className="material-symbols-outlined">search</span>
-                        </button>
-                        <button className="p-2 rounded-full text-on-surface-variant hover:bg-surface-variant/50 hover:text-on-surface transition-colors flex items-center justify-center">
-                            <span className="material-symbols-outlined">notifications</span>
-                        </button>
-                        <button className="bg-primary text-white shadow-glow-soft px-5 py-2 rounded-card font-bold text-sm flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all">
-                            <span className="material-symbols-outlined text-[18px]">add</span>
-                            发布公告
-                        </button>
-                    </div>
-                </header>
-
-                <div className="flex-1 overflow-y-auto no-scrollbar p-6 md:p-8 app-page-enter pb-24">
-                    <Outlet />
-                </div>
+            <main className="flex-1 h-full overflow-y-auto p-4 md:p-8 relative z-10">
+                <Outlet />
             </main>
         </div>
     );

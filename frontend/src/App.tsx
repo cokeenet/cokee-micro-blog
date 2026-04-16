@@ -1,4 +1,4 @@
-﻿import { Avatar } from '@heroui/react';
+import { Avatar } from '@heroui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useState, ReactNode } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router';
@@ -7,9 +7,6 @@ import { PostCard } from './components/PostCard';
 import { PostSkeleton } from './components/PostSkeleton';
 import { useAuth } from './hooks/useAuth';
 import { AppLayout } from './layouts/AppLayout';
-import AdminDashboard from './pages/AdminDashboard';
-import AdminPosts from './pages/AdminPosts';
-import { AdminLayout } from './layouts/AdminLayout';
 import AuthPromptPage from './pages/AuthPromptPage';
 import { AuthHeroCard } from './pages/AuthPromptPage';
 import ComposePage from './pages/ComposePage';
@@ -20,6 +17,14 @@ import ProfilePage from './pages/ProfilePage';
 import PostDetailPage from './pages/PostDetailPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { fetchWithAuth } from './config/api';
+
+// Admin imports
+import { AdminLayout } from './pages/admin/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminPosts from './pages/admin/AdminPosts';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminTrends from './pages/admin/AdminTrends';
+import AdminSettings from './pages/admin/AdminSettings';
 
 type FeedType = 'recommended' | 'following';
 
@@ -318,12 +323,16 @@ export default function App() {
                 <Route path="/profile" element={<RequireAuth><PageTransition><AppLayout><ProfilePage /></AppLayout></PageTransition></RequireAuth>} />
                 <Route path="/profile/:username" element={<PageTransition><AppLayout><ProfilePage /></AppLayout></PageTransition>} />
                 <Route path="/compose" element={<RequireAuth><PageTransition><AppLayout><ComposePage /></AppLayout></PageTransition></RequireAuth>} />
-                <Route path="/admin" element={<PageTransition><AdminLayout /></PageTransition>}>
+
+                {/* Admin Routes */}
+                <Route path="/admin" element={<RequireAuth><AdminLayout /></RequireAuth>}>
                     <Route index element={<AdminDashboard />} />
                     <Route path="posts" element={<AdminPosts />} />
-                    {/* Add other admin routes here like users, trends, etc */}
-                    <Route path="*" element={<AdminDashboard />} />
+                    <Route path="users" element={<AdminUsers />} />
+                    <Route path="trends" element={<AdminTrends />} />
+                    <Route path="settings" element={<AdminSettings />} />
                 </Route>
+
                 <Route path="*" element={<PageTransition><AppLayout><NotFoundPage /></AppLayout></PageTransition>} />
             </Routes>
         </AnimatePresence>

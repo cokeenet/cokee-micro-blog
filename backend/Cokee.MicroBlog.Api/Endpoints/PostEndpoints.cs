@@ -186,6 +186,32 @@ public static class PostEndpoints
             return Results.Ok(new { message = "转发成功", id = retweet.Id });
         });
 
+        group.MapPut("/{id:guid}", [Authorize] async (ApplicationDbContext db, Guid id, Post inputPost, ClaimsPrincipal claims) =>
+        {
+            var userIdStr = claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var username = claims.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
+            if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out var userId))
+                return Results.Unauthorized();
+
+            var post = await db.Posts.FindAsync(id);
+            if (post == null) return Results.NotFound(new { message = "推文不存在" });
+
+            if (post.UserId != userId && username != "admin")
+                return Results.Forbid();
+
+            post.Content = inputPost.Content;
+            post.Visibility = inputPost.Visibility;
+            post.ReplyPermission = inputPost.ReplyPermission;
+            if (inputPost.ImageUrls != null)
+            {
+                post.ImageUrls = inputPost.ImageUrls;
+            }
+
+            await db.SaveChangesAsync();
+
+            return Results.Ok(new { message = "修改成功" });
+        });
+
         group.MapPost("/{id:guid}/like", [Authorize] async (ApplicationDbContext db, Guid id, ClaimsPrincipal claims) =>
         {
             var userIdStr = claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
