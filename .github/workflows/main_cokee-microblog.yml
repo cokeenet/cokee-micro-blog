@@ -30,7 +30,7 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           # 修改为您项目实际使用的 .NET 9
-          dotnet-version: '9.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Build with dotnet
         # 指定明确的项目路径进行构建
