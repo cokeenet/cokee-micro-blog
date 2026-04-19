@@ -28,12 +28,14 @@ var connectionString = builder.Configuration.GetConnectionString("localdb");
 if (string.IsNullOrWhiteSpace(connectionString))
 {
     connectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb");
+    connectionString = connectionString?.Replace(':', ',')
+
 }
 
 // 3. 安全检查：如果还是空的，直接报错拦截，防止应用带着空连接启动
 if (string.IsNullOrWhiteSpace(connectionString))
 {
-    throw new InvalidOperationException("未找到数据库连接字符串！请检查 appsettings.json 或 Azure 环境变量 MYSQLCONNSTR_localdb 是否配置正确。");
+    throw new InvalidOperationException("connectionString Notfound:未找到数据库连接字符串！请检查 appsettings.json 或 Azure 环境变量 MYSQLCONNSTR_localdb 是否配置正确。");
 }
 
 // 注册 DbContext
