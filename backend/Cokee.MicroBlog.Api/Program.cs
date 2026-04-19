@@ -115,7 +115,7 @@ builder.Services.AddCors(options =>
                 "http://localhost:5176", "http://127.0.0.1:5176",
                 "http://localhost:80", "http://127.0.0.1:80",
                 "http://localhost:8088", "http://127.0.0.1:8088",
-                "http://localhost"
+                "http://localhost", "https://cokee.ourcraft.club", "https://cokee-microblog.azurewebsites.net/"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()

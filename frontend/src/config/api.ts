@@ -1,4 +1,4 @@
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://cokee-microblog.azurewebsites.net/';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://cokee-microblog.azurewebsites.net';
 
 /**
  * Standardized fetch wrapper that automatically injects the JWT token
