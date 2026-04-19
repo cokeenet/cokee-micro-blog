@@ -62,7 +62,7 @@ public static class AuthEndpoints
             {
                 code = 200,
                 token = tokenHandler.WriteToken(token),
-                user = new { user.Id, user.Username, user.DisplayName, user.AvatarUrl, user.IsAdmin }
+                user = new { user.Id, user.Username, user.DisplayName, user.AvatarUrl }
             });
         });
     }

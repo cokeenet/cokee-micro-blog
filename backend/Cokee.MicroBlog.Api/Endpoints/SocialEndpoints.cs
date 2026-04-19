@@ -81,6 +81,13 @@ public static class SocialEndpoints
             if (!allowedExtensions.Contains(ext))
                 return Results.BadRequest(new { message = "仅支持上传图片文件（jpg、png、gif、webp、avif）" });
 
+            var allowedContentTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "image/jpeg", "image/png", "image/gif", "image/webp", "image/avif"
+            };
+            if (!allowedContentTypes.Contains(file.ContentType))
+                return Results.BadRequest(new { message = "文件类型不合法，请上传图片文件" });
+
             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
             Directory.CreateDirectory(uploadsFolder);
 
