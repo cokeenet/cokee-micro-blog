@@ -15,18 +15,17 @@ public static class AuthEndpoints
     {
         var group = app.MapGroup("/api/auth");
 
-        group.MapPost("/register", async (ApplicationDbContext db, User dto) =>
+        group.MapPost("/register", async (ApplicationDbContext db, RegisterDto dto) =>
         {
             if (await db.Users.AnyAsync(u => u.Username == dto.Username || u.Email == dto.Email))
                 return Results.BadRequest(new { code = 400, message = "用户名或邮箱已存在" });
 
-            // In a real app, hash password: BCrypt.Net.BCrypt.HashPassword(dto.PasswordHash)
             var user = new User
             {
                 Username = dto.Username,
                 Email = dto.Email,
                 DisplayName = string.IsNullOrEmpty(dto.DisplayName) ? dto.Username : dto.DisplayName,
-                PasswordHash = dto.PasswordHash // For demo, assuming clear text / pre-hashed.
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password)
             };
 
             db.Users.Add(user);
@@ -37,18 +36,23 @@ public static class AuthEndpoints
 
         group.MapPost("/login", async (ApplicationDbContext db, LoginDto login) =>
         {
-            var user = await db.Users.FirstOrDefaultAsync(u => u.Username == login.Username && u.PasswordHash == login.Password);
-            if (user == null) return Results.Json(new { code = 401, message = "用户名或密码错误" }, statusCode: 401);
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Username == login.Username);
+            if (user == null || !BCrypt.Net.BCrypt.Verify(login.Password, user.PasswordHash))
+                return Results.Json(new { code = 401, message = "用户名或密码错误" }, statusCode: 401);
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(secretKey);
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username)
+            };
+            if (user.IsAdmin)
+                claims.Add(new Claim("IsAdmin", "true"));
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.Username)
-                }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -58,7 +62,7 @@ public static class AuthEndpoints
             {
                 code = 200,
                 token = tokenHandler.WriteToken(token),
-                user = new { user.Id, user.Username, user.DisplayName, user.AvatarUrl }
+                user = new { user.Id, user.Username, user.DisplayName, user.AvatarUrl, user.IsAdmin }
             });
         });
     }

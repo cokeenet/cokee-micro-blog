@@ -28,8 +28,7 @@ var connectionString = builder.Configuration.GetConnectionString("localdb");
 if (string.IsNullOrWhiteSpace(connectionString))
 {
     connectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb");
-    connectionString = connectionString?.Replace(':', ',')
-
+    connectionString = connectionString?.Replace(':', ',');
 }
 
 // 3. 安全检查：如果还是空的，直接报错拦截，防止应用带着空连接启动
@@ -46,7 +45,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // ----------------- JWT AUTHENTICATION -----------------
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var secretKey = jwtSettings.GetValue<string>("Key") ?? "super_secret_fallback_key_for_dev_only_1234567890";
+var secretKey = jwtSettings.GetValue<string>("Key");
+
+if (string.IsNullOrWhiteSpace(secretKey))
+{
+    throw new InvalidOperationException("JWT key not configured. Please set 'Jwt:Key' in appsettings or environment variables.");
+}
 
 builder.Services.AddAuthentication(options =>
 {
@@ -66,7 +70,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireClaim("IsAdmin", "true"));
+});
 
 // ----------------- CORS -----------------
 builder.Services.AddCors(options =>
@@ -118,7 +125,7 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection(); // Disable inside Docker to prevent breaking non-HTTPS proxy requests
 app.UseStaticFiles();
-//app.UseCors("AllowFrontend");
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();

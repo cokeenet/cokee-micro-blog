@@ -69,10 +69,22 @@ public static class SocialEndpoints
             if (file is null || file.Length == 0)
                 return Results.BadRequest(new { message = "未选择任何文件或文件为空" });
 
+            const long maxFileSize = 10 * 1024 * 1024; // 10 MB
+            if (file.Length > maxFileSize)
+                return Results.BadRequest(new { message = "文件大小不能超过 10 MB" });
+
+            var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ".jpg", ".jpeg", ".png", ".gif", ".webp", ".avif"
+            };
+            var ext = Path.GetExtension(file.FileName);
+            if (!allowedExtensions.Contains(ext))
+                return Results.BadRequest(new { message = "仅支持上传图片文件（jpg、png、gif、webp、avif）" });
+
             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
             Directory.CreateDirectory(uploadsFolder);
 
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            var fileName = $"{Guid.NewGuid()}{ext}";
             var filePath = Path.Combine(uploadsFolder, fileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -86,11 +98,15 @@ public static class SocialEndpoints
         .DisableAntiforgery();
 
         // ----------------- ADMIN ENDPOINTS -----------------
-        var adminGroup = app.MapGroup("/api/admin");
+        var adminGroup = app.MapGroup("/api/admin").RequireAuthorization("AdminOnly");
 
         adminGroup.MapGet("/users", async (ApplicationDbContext db) =>
         {
-            return Results.Ok(await db.Users.OrderByDescending(u => u.CreatedAt).Take(20).ToListAsync());
+            return Results.Ok(await db.Users
+                .OrderByDescending(u => u.CreatedAt)
+                .Take(20)
+                .Select(u => new { u.Id, u.Username, u.DisplayName, u.AvatarUrl, u.CreatedAt })
+                .ToListAsync());
         });
 
         // ----------------- SIDEBAR ENDPOINTS -----------------
