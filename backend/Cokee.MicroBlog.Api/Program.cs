@@ -22,8 +22,21 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("localdb");
 
+// 2. 如果没读到，直接读取 Azure 的原生环境变量 MYSQLCONNSTR_localdb
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    connectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb");
+}
+
+// 3. 安全检查：如果还是空的，直接报错拦截，防止应用带着空连接启动
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("未找到数据库连接字符串！请检查 appsettings.json 或 Azure 环境变量 MYSQLCONNSTR_localdb 是否配置正确。");
+}
+
+// 注册 DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
@@ -103,7 +116,7 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection(); // Disable inside Docker to prevent breaking non-HTTPS proxy requests
 app.UseStaticFiles();
-app.UseCors("AllowFrontend");
+//app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
