@@ -28,8 +28,7 @@ var connectionString = builder.Configuration.GetConnectionString("localdb");
 if (string.IsNullOrWhiteSpace(connectionString))
 {
     connectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb");
-    connectionString = connectionString?.Replace(':', ',')
-
+    connectionString = connectionString?.Replace(':', ',');
 }
 
 // 3. 安全检查：如果还是空的，直接报错拦截，防止应用带着空连接启动
