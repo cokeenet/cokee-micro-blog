@@ -155,7 +155,7 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection(); // Disable inside Docker to prevent breaking non-HTTPS proxy requests
 app.UseStaticFiles();
-//app.UseCors("AllowFrontend");
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
