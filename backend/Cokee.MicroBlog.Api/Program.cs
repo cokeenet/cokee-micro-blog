@@ -44,13 +44,30 @@ if (string.IsNullOrWhiteSpace(connectionString))
         connectionString = File.ReadAllText(txtFilePath).Trim();
     }
 }
-// 4. 如果读到了字符串，执行你的自定义处理逻辑
+// 4. 重点：清洗和转换 Azure 特殊格式的连接字符串，适配 MySqlConnector
 if (!string.IsNullOrWhiteSpace(connectionString))
 {
-    // 【注意】如果你用的是 MySQL，连接字符串里写端口通常是 "Port=3306" 格式。
-    // 如果 txt 里的内容类似 "Data Source=127.0.0.1:55553"，替换成逗号(,)可能并不被 MySQLConnector 支持。
-    // 如果连接依然报错，请检查这一行 Replace 逻辑。
-    connectionString = connectionString.Replace(':', ',');
+    try
+    {
+        // 使用 MySqlConnector 提供的类来安全修改连接字符串
+        var csb = new MySqlConnectionStringBuilder(connectionString);
+
+        // Azure 经常把端口写进 Server(Data Source) 里，如 "127.0.0.1:55553"
+        // MySQL 驱动需要把它们拆开：Server="127.0.0.1", Port=55553
+        if (csb.Server.Contains(":"))
+        {
+            var parts = csb.Server.Split(':');
+            csb.Server = parts[0];
+            csb.Port = uint.Parse(parts[1]);
+        }
+
+        // 重新生成标准 MySQL 格式的连接字符串
+        connectionString = csb.ConnectionString;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"清洗连接字符串时发生异常: {ex.Message}");
+    }
 }
 
 // 5. 安全检查：如果还是空的，直接报错拦截
