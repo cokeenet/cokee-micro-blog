@@ -31,12 +31,33 @@ if (string.IsNullOrWhiteSpace(connectionString))
     connectionString = connectionString?.Replace(':', ',');
 }
 
-// 3. 安全检查：如果还是空的，直接报错拦截，防止应用带着空连接启动
+// 3. 如果还是空的，读取 Azure MySQL In-App 的物理文本文件
 if (string.IsNullOrWhiteSpace(connectionString))
 {
-    throw new InvalidOperationException("connectionString Notfound:未找到数据库连接字符串！请检查 appsettings.json 或 Azure 环境变量 MYSQLCONNSTR_localdb 是否配置正确。");
+    // 使用 %HOME% 环境变量兼容 C:\home 或 D:\home Environment.GetEnvironmentVariable("HOME") ??
+    var homePath = @"C:\home";
+    var txtFilePath = Path.Combine(homePath, @"data\mysql\MYSQLCONNSTR_localdb.txt");
+
+    if (File.Exists(txtFilePath))
+    {
+        // 读取文件内容并去掉多余的换行/空格
+        connectionString = File.ReadAllText(txtFilePath).Trim();
+    }
+}
+// 4. 如果读到了字符串，执行你的自定义处理逻辑
+if (!string.IsNullOrWhiteSpace(connectionString))
+{
+    // 【注意】如果你用的是 MySQL，连接字符串里写端口通常是 "Port=3306" 格式。
+    // 如果 txt 里的内容类似 "Data Source=127.0.0.1:55553"，替换成逗号(,)可能并不被 MySQLConnector 支持。
+    // 如果连接依然报错，请检查这一行 Replace 逻辑。
+    connectionString = connectionString.Replace(':', ',');
 }
 
+// 5. 安全检查：如果还是空的，直接报错拦截
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("connectionString Notfound: 未找到数据库连接字符串！请检查 appsettings.json、环境变量或 MYSQLCONNSTR_localdb.txt 文件。");
+}
 // 注册 DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
