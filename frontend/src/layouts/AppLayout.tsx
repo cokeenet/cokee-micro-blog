@@ -144,7 +144,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
                 {/* Right Column: Trends & Suggestions */}
                 <aside className="hidden w-80 px-4 py-4 flex-col gap-6 sticky top-0 h-screen xl:flex">
-                    <SearchField className="w-full relative group">
+                    <SearchField className="w-full relative group" onSubmit={(value) => { if (value.trim()) navigate(`/explore?q=${encodeURIComponent(value.trim())}`); }}>
                         <SearchField.Group className="w-full border border-outline-variant focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/20 rounded-full text-sm transition-all glass-panel">
                             <span className="material-symbols-outlined pl-4 text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
                             {/* <SearchField.SearchIcon /> */}

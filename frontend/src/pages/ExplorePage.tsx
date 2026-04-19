@@ -1,6 +1,6 @@
 import { Card, Avatar } from '@heroui/react';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { API_BASE_URL, fetchWithAuth } from '../config/api';
 import { PostCard } from '../components/PostCard';
 import { PostSkeleton } from '../components/PostSkeleton';
@@ -9,9 +9,10 @@ import { useAuth } from '../hooks/useAuth';
 export default function ExplorePage() {
     const navigate = useNavigate();
     const { user, token } = useAuth();
+    const [searchParams] = useSearchParams();
 
-    const [searchQuery, setSearchQuery] = useState('');
-    const [debouncedQuery, setDebouncedQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(() => searchParams.get('q') || '');
+    const [debouncedQuery, setDebouncedQuery] = useState(() => searchParams.get('q') || '');
 
     const [popularPosts, setPopularPosts] = useState<any[]>([]);
     const [isLoadingPosts, setIsLoadingPosts] = useState(true);
