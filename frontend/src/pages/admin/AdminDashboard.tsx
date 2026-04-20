@@ -15,7 +15,7 @@ export default function AdminDashboard() {
                 const statsRes = await fetchWithAuth('/api/admin/stats').catch(() => null);
                 if (statsRes && statsRes.ok) setStats(await statsRes.json());
 
-                const usersRes = await fetchWithAuth('/api/users').catch(() => null);
+                const usersRes = await fetchWithAuth('/api/admin/users').catch(() => null);
                 if (usersRes && usersRes.ok) setUsers(await usersRes.json());
 
                 const dockerRes = await fetchWithAuth('/api/admin/docker-status');

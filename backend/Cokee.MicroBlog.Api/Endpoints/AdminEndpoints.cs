@@ -15,6 +15,11 @@ public class AdminConfigDto
     public List<Guid> Users { get; set; } = new List<Guid>();
 }
 
+public class RoleUpdateDto
+{
+    public string[]? Roles { get; set; }
+}
+
 public static class AdminConfig
 {
     public static string RecommendMode { get; set; } = "random";
@@ -73,7 +78,7 @@ public static class AdminEndpoints
         adminGroup.MapGet("/users", async (ApplicationDbContext db) =>
         {
             var users = await db.Users
-                .Select(u => new { u.Id, u.Username, u.DisplayName, u.Email, u.AvatarUrl, u.Bio, u.CreatedAt })
+                .Select(u => new { u.Id, u.Username, u.DisplayName, u.Email, u.AvatarUrl, u.Bio, u.CreatedAt, u.IsAdmin, Roles = u.IsAdmin ? new[] { "Admin", "User" } : new[] { "User" } })
                 .OrderByDescending(u => u.CreatedAt)
                 .ToListAsync();
             return Results.Ok(users);
@@ -272,6 +277,17 @@ public static class AdminEndpoints
             db.Users.Remove(user);
             await db.SaveChangesAsync();
             return Results.Ok();
+        });
+
+        adminGroup.MapPost("/users/{id:guid}/roles", async (ApplicationDbContext db, Guid id, RoleUpdateDto input) =>
+        {
+            var user = await db.Users.FindAsync(id);
+            if (user == null) return Results.NotFound(new { message = "用户不存在" });
+
+            // Set IsAdmin based on roles
+            user.IsAdmin = input.Roles?.Contains("Admin") ?? false;
+            await db.SaveChangesAsync();
+            return Results.Ok(new { message = "权限已更新", isAdmin = user.IsAdmin, roles = user.IsAdmin ? new[] { "Admin", "User" } : new[] { "User" } });
         });
 
         adminGroup.MapGet("/admin/docker-status", async () =>
