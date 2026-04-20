@@ -2,12 +2,14 @@
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../hooks/useAuth';
+import { useUserSearch } from '../hooks/useUserSearch';
 import { API_BASE_URL, fetchWithAuth } from '../config/api';
 
 export default function ComposePage() {
     const { token } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+    const { users, isLoading, search } = useUserSearch();
 
     const [content, setContent] = useState('');
     const [replyPermission, setReplyPermission] = useState('Everyone');
@@ -17,6 +19,11 @@ export default function ComposePage() {
     const [editId, setEditId] = useState<string | null>(null);
     const [parentPostId, setParentPostId] = useState<string | null>(null);
     const [parentPost, setParentPost] = useState<any>(null);
+
+    // Mention and hashtag states
+    const [showMentionSuggestions, setShowMentionSuggestions] = useState(false);
+    const [mentionStartPos, setMentionStartPos] = useState(-1);
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
@@ -87,6 +94,38 @@ export default function ComposePage() {
     };
 
     const canSubmit = useMemo(() => (content.trim().length > 0 || selectedImages.length > 0) && !submitting, [content, submitting, selectedImages]);
+
+    const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const newContent = e.target.value;
+        setContent(newContent);
+
+        // Check for @ mention
+        const cursorPos = e.target.selectionStart;
+        const lastAt = newContent.lastIndexOf('@', cursorPos - 1);
+        const lastSpace = newContent.lastIndexOf(' ', lastAt - 1);
+
+        if (lastAt !== -1 && (lastSpace === -1 || lastAt > lastSpace)) {
+            const mentionText = newContent.substring(lastAt + 1, cursorPos);
+            if (mentionText.length > 0 && !mentionText.includes(' ')) {
+                setMentionStartPos(lastAt);
+                search(mentionText);
+                setShowMentionSuggestions(true);
+            } else if (mentionText.includes(' ')) {
+                setShowMentionSuggestions(false);
+            }
+        } else {
+            setShowMentionSuggestions(false);
+        }
+    };
+
+    const insertMention = (username: string) => {
+        const beforeAt = content.substring(0, mentionStartPos);
+        const afterCursor = content.substring(content.indexOf(' ', mentionStartPos) === -1 ? content.length : content.indexOf(' ', mentionStartPos));
+        const newContent = beforeAt + '@' + username + ' ' + afterCursor;
+        setContent(newContent);
+        setShowMentionSuggestions(false);
+        textAreaRef.current?.focus();
+    };
 
     const handlePublish = async () => {
         if (!token) {
@@ -226,7 +265,25 @@ export default function ComposePage() {
                             )}
                         </div>
 
-                        <TextArea className="text-lg bg-transparent text-on-surface placeholder:text-on-surface-variant resize-none h-40 border-none outline-none focus:ring-0 px-0" placeholder="有什么新鲜事？" value={content} onChange={(e) => setContent(e.target.value)} />
+                        <TextArea className="text-lg bg-transparent text-on-surface placeholder:text-on-surface-variant resize-none h-40 border-none outline-none focus:ring-0 px-0 relative z-10" placeholder="有什么新鲜事？" value={content} onChange={handleContentChange} ref={textAreaRef} />
+
+                        {showMentionSuggestions && users.length > 0 && (
+                            <div className="absolute bg-surface border border-outline-variant/50 rounded-lg shadow-lg mt-1 max-h-48 overflow-y-auto z-20">
+                                {users.map(user => (
+                                    <button
+                                        key={user.username}
+                                        className="w-full px-4 py-2 text-left hover:bg-surface-variant/50 transition-colors flex items-center gap-2"
+                                        onClick={() => insertMention(user.username)}
+                                    >
+                                        <img src={user.avatarUrl?.replace('5253', '8080')} alt={user.username} className="w-8 h-8 rounded-full" />
+                                        <div>
+                                            <div className="font-semibold text-sm">{user.displayName}</div>
+                                            <div className="text-xs text-muted">@{user.username}</div>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
 
                         {previewUrls.length > 0 && (
                             <div className="flex flex-wrap gap-2 mt-2">
