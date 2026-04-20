@@ -343,6 +343,83 @@ public static class PostEndpoints
             return Results.Ok(new { message = "已取消点赞" });
         });
 
+        group.MapPost("/{id:guid}/bookmark", [Authorize] async (ApplicationDbContext db, Guid id, ClaimsPrincipal claims) =>
+        {
+            var userIdStr = claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out var userId))
+                return Results.Unauthorized();
+
+            var post = await db.Posts.FindAsync(id);
+            if (post == null) return Results.NotFound(new { message = "推文不存在" });
+
+            var existingBookmark = await db.Bookmarks.FirstOrDefaultAsync(b => b.PostId == id && b.UserId == userId);
+            if (existingBookmark != null) return Results.Ok(new { message = "已收藏" });
+
+            db.Bookmarks.Add(new Bookmark
+            {
+                PostId = id,
+                UserId = userId
+            });
+
+            await db.SaveChangesAsync();
+            return Results.Ok(new { message = "收藏成功" });
+        });
+
+        group.MapDelete("/{id:guid}/bookmark", [Authorize] async (ApplicationDbContext db, Guid id, ClaimsPrincipal claims) =>
+        {
+            var userIdStr = claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out var userId))
+                return Results.Unauthorized();
+
+            var bookmark = await db.Bookmarks.FirstOrDefaultAsync(b => b.PostId == id && b.UserId == userId);
+            if (bookmark == null) return Results.NotFound(new { message = "未收藏该推文" });
+
+            db.Bookmarks.Remove(bookmark);
+            await db.SaveChangesAsync();
+
+            return Results.Ok(new { message = "取消收藏成功" });
+        });
+
+        group.MapGet("/bookmarks", [Authorize] async (ApplicationDbContext db, ClaimsPrincipal claims, int page = 1, int pageSize = 20) =>
+        {
+            var userIdStr = claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out var userId))
+                return Results.Unauthorized();
+
+            const int maxPageSize = 100;
+            if (pageSize > maxPageSize) pageSize = maxPageSize;
+            if (page < 1) page = 1;
+
+            var posts = await db.Bookmarks
+                .Where(b => b.UserId == userId)
+                .OrderByDescending(b => b.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Include(b => b.Post).ThenInclude(p => p.User)
+                .Include(b => b.Post).ThenInclude(p => p.RetweetOriginalPost).ThenInclude(op => op!.User)
+                .Select(b => new
+                {
+                    b.Post.Id,
+                    b.Post.Content,
+                    AuthorUsername = "@" + b.Post.User.Username,
+                    AuthorDisplayName = b.Post.User.DisplayName,
+                    AuthorAvatarUrl = b.Post.User.AvatarUrl,
+                    b.Post.ImageUrls,
+                    b.Post.ParentPostId,
+                    b.Post.Visibility,
+                    RetweetOriginalPostId = b.Post.RetweetOriginalPostId,
+                    RepliesCount = b.Post.Replies.Count,
+                    b.Post.CreatedAt,
+                    b.Post.LikeCount,
+                    b.Post.ViewCount,
+                    IsLikedByMe = b.Post.Interactions.Any(i => i.UserId == userId && i.Type == InteractionType.Like),
+                    IsBookmarkedByMe = true
+                })
+                .ToListAsync();
+
+            return Results.Ok(new { page, pageSize, data = posts });
+        });
+
         group.MapDelete("/{id:guid}", [Authorize] async (ApplicationDbContext db, Guid id, ClaimsPrincipal claims) =>
         {
             var userIdStr = claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;

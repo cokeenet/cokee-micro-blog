@@ -14,6 +14,7 @@ namespace Cokee.MicroBlog.Infrastructure.Data
         public DbSet<Post> Posts => Set<Post>();
         public DbSet<Interaction> Interactions => Set<Interaction>();
         public DbSet<Follow> Follows => Set<Follow>();
+        public DbSet<Bookmark> Bookmarks => Set<Bookmark>();
         public DbSet<Trend> Trends => Set<Trend>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -97,6 +98,25 @@ namespace Cokee.MicroBlog.Infrastructure.Data
 
                 // Helper index for inverse query
                 entity.HasIndex(f => new { f.FolloweeId, f.CreatedAt }).IsDescending(false, true);
+            });
+
+            // 5. Bookmark
+            modelBuilder.Entity<Bookmark>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.User)
+                      .WithMany()
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Post)
+                      .WithMany()
+                      .HasForeignKey(e => e.PostId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                // Unique bookmark constraint
+                entity.HasIndex(e => new { e.UserId, e.PostId }).IsUnique();
             });
         }
     }
