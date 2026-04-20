@@ -77,7 +77,7 @@ export function PostCard({ post, isOwner, onNavigate, onPostAction, onToggleLike
                     <Avatar
                         aria-label={`${authorName}'s profile picture`}
                         className="size-10 shrink-0"
-                        onClick={(e) => { e.stopPropagation(); navigate(`/user/${post.authorUsername.replace('@', '')}`); }}
+                        onClick={(e) => { e.stopPropagation(); navigate(`/profile/${post.authorUsername.replace('@', '')}`); }}
                     >
                         <Avatar.Image src={typeof (post.authorAvatarUrl || undefined) === 'string' ? (post.authorAvatarUrl || undefined)?.replace('5253', '8080') : (post.authorAvatarUrl || undefined)} />
                         <Avatar.Fallback>{authorName.charAt(0).toUpperCase()}</Avatar.Fallback>

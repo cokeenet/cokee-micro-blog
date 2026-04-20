@@ -4,6 +4,7 @@ using System.Text;
 using Cokee.MicroBlog.Application.DTOs.Auth;
 using Cokee.MicroBlog.Domain.Entities;
 using Cokee.MicroBlog.Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -64,6 +65,27 @@ public static class AuthEndpoints
                 token = tokenHandler.WriteToken(token),
                 user = new { user.Id, user.Username, user.DisplayName, user.AvatarUrl }
             });
+        });
+
+        group.MapPut("/change-password", [Authorize] async (ApplicationDbContext db, ClaimsPrincipal claims, ChangePasswordDto dto) =>
+        {
+            var userIdStr = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out var userId))
+                return Results.Unauthorized();
+
+            if (string.IsNullOrWhiteSpace(dto.NewPassword) || dto.NewPassword.Length < 6)
+                return Results.BadRequest(new { message = "新密码至少需要 6 个字符" });
+
+            var user = await db.Users.FindAsync(userId);
+            if (user == null) return Results.NotFound(new { message = "用户不存在" });
+
+            if (user.PasswordHash != dto.OldPassword)
+                return Results.BadRequest(new { message = "原密码错误" });
+
+            user.PasswordHash = dto.NewPassword;
+            await db.SaveChangesAsync();
+
+            return Results.Ok(new { message = "密码修改成功" });
         });
     }
 }

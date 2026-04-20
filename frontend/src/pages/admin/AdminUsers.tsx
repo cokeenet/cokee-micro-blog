@@ -26,7 +26,7 @@ export default function AdminUsers() {
         const newEmail = window.prompt('编辑邮箱', user.email) || user.email;
 
         try {
-            const res = await fetchWithAuth(`/api/admin/users/${user.id}`, {
+            const res = await fetchWithAuth(`/api/users/${user.id}`, {
                 method: 'PUT',
                 body: JSON.stringify({ ...user, displayName: newDisplayName, username: newUsername, email: newEmail })
             });
@@ -40,7 +40,7 @@ export default function AdminUsers() {
     const handleDeleteUser = async (userId: string) => {
         if (!window.confirm('警告：此操作不可逆！确认删除用户？')) return;
         try {
-            const res = await fetchWithAuth(`/api/admin/users/${userId}`, { method: 'DELETE' });
+            const res = await fetchWithAuth(`/api/users/${userId}`, { method: 'DELETE' });
             if (res.ok) fetchUsers();
             else alert('删除失败');
         } catch (err) {
@@ -74,7 +74,7 @@ export default function AdminUsers() {
         const email = window.prompt('请输入邮箱 (可选)', '') || '';
 
         try {
-            const res = await fetchWithAuth('/api/admin/users', {
+            const res = await fetchWithAuth('/api/users', {
                 method: 'POST',
                 body: JSON.stringify({ username, passwordHash, displayName, email, roles: ['User'] })
             });

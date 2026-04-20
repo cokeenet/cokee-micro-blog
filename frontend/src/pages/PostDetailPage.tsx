@@ -109,6 +109,34 @@ export default function PostDetailPage() {
         } catch { }
     };
 
+    const handleDeletePost = async () => {
+        if (!window.confirm('确定要删除这条动态吗？')) return;
+        try {
+            const res = await fetchWithAuth(`/api/posts/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                navigate(-1);
+            } else {
+                alert('删除失败，请稍后重试');
+            }
+        } catch {
+            alert('操作失败');
+        }
+    };
+
+    const handleDeleteComment = async (commentId: string) => {
+        if (!window.confirm('确定要删除这条评论吗？')) return;
+        try {
+            const res = await fetchWithAuth(`/api/posts/${commentId}`, { method: 'DELETE' });
+            if (res.ok) {
+                setComments(prev => prev.filter((c: any) => c.id !== commentId));
+            } else {
+                alert('删除失败，请稍后重试');
+            }
+        } catch {
+            alert('操作失败');
+        }
+    };
+
     if (isLoading) {
         return (
             <section className="app-page-enter max-w-2xl mx-auto border-x border-outline-variant/60 min-h-screen bg-surface">
@@ -170,7 +198,7 @@ export default function PostDetailPage() {
                                         <Dropdown.Item id="edit" onClick={() => navigate(`/compose?edit=${post.id}`)}>
                                             编辑
                                         </Dropdown.Item>
-                                        <Dropdown.Item id="delete" className="text-danger">
+                                        <Dropdown.Item id="delete" className="text-danger" onClick={handleDeletePost}>
                                             删除
                                         </Dropdown.Item>
                                     </>
@@ -329,7 +357,7 @@ export default function PostDetailPage() {
                                                     举报
                                                 </Dropdown.Item>
                                                 {user?.username === comment.authorUsername.replace('@', '') && (
-                                                    <Dropdown.Item id="delete" textValue="Delete" className="text-danger">
+                                                    <Dropdown.Item id="delete" textValue="Delete" className="text-danger" onClick={() => handleDeleteComment(comment.id)}>
                                                         删除
                                                     </Dropdown.Item>
                                                 )}
