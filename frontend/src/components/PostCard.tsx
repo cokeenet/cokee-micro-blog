@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router";
 import { Avatar, Card } from "@heroui/react";
 import { motion } from "framer-motion";
 import { PostActionMenu } from "../components/PostActionMenu";
+import { formatLocalTime, formatFullLocalDateTime } from "../utils/dateFormatter";
 
 export interface PostOwner {
     id: string;
@@ -114,7 +115,7 @@ export function PostCard({ post, isOwner, onNavigate, onPostAction, onToggleLike
                             <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 truncate">
                                 <span className="font-bold text-foreground text-base truncate">{authorName}</span>
                                 <span className="text-muted text-sm flex items-center gap-1 shrink-0">
-                                    <span>{post.authorUsername} · {new Date(post.createdAt || Date.now()).toLocaleDateString()}</span>
+                                    <span title={formatFullLocalDateTime(post.createdAt)}>{post.authorUsername} · {formatLocalTime(post.createdAt)}</span>
                                     {post.visibility === 'FollowersOnly' && <span className="material-symbols-outlined text-[13px]" title="仅粉丝可见">lock</span>}
                                     {post.visibility === 'MutualFollowersOnly' && <span className="material-symbols-outlined text-[13px]" title="互关好友">group</span>}
                                     {post.visibility === 'Private' && <span className="material-symbols-outlined text-[13px]" title="私密">visibility_off</span>}
