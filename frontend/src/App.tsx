@@ -156,6 +156,36 @@ const Home = () => {
         }
     };
 
+    const handleToggleBookmark = async (postId: string, isCurrentlyBookmarked: boolean) => {
+        if (!token) {
+            handleProtectedEntry();
+            return;
+        }
+
+        const originalPosts = [...posts];
+        setPosts(posts.map(p => {
+            if (p.id === postId) {
+                return {
+                    ...p,
+                    isBookmarkedByMe: !isCurrentlyBookmarked
+                };
+            }
+            return p;
+        }));
+
+        try {
+            const res = await fetchWithAuth(`/api/posts/${postId}/bookmark`, {
+                method: isCurrentlyBookmarked ? 'DELETE' : 'POST'
+            });
+            if (!res.ok) {
+                throw new Error('操作失败');
+            }
+        } catch (e) {
+            console.error('Bookmark failed', e);
+            setPosts(originalPosts); // 回退状态
+        }
+    };
+
     const handleHomeCompose = async () => {
         if (!homeComposeText.trim()) return;
         try {
@@ -271,6 +301,7 @@ const Home = () => {
                                     onPostAction={handlePostAction}
                                     onToggleRetweet={(postId) => handlePostAction('retweet', postId)}
                                     onToggleLike={handleToggleLike}
+                                    onToggleBookmark={handleToggleBookmark}
                                 />
                             </div>
                         );

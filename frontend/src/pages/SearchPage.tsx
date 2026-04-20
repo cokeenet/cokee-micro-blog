@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router';
+import { useSearchParams, useNavigate } from 'react-router';
 import { Input, Card } from '@heroui/react';
 import { PostCard } from '../components/PostCard';
+import { useAuth } from '../hooks/useAuth';
 import { fetchWithAuth } from '../config/api';
 
 export default function SearchPage() {
     const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const { token } = useAuth();
     const query = searchParams.get('q') || '';
     const [posts, setPosts] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -53,6 +56,67 @@ export default function SearchPage() {
 
     const hasNextPage = totalResults === pageSize;
 
+    const handleToggleLike = async (postId: string, isCurrentlyLiked: boolean) => {
+        if (!token) {
+            navigate('/login');
+            return;
+        }
+
+        const originalPosts = [...posts];
+        setPosts(posts.map(p => {
+            if (p.id === postId) {
+                return {
+                    ...p,
+                    isLikedByMe: !isCurrentlyLiked,
+                    likeCount: (p.likeCount || 0) + (isCurrentlyLiked ? -1 : 1)
+                };
+            }
+            return p;
+        }));
+
+        try {
+            const res = await fetchWithAuth(`/api/posts/${postId}/like`, {
+                method: isCurrentlyLiked ? 'DELETE' : 'POST'
+            });
+            if (!res.ok) {
+                throw new Error('操作失败');
+            }
+        } catch (e) {
+            console.error('Like failed', e);
+            setPosts(originalPosts);
+        }
+    };
+
+    const handleToggleBookmark = async (postId: string, isCurrentlyBookmarked: boolean) => {
+        if (!token) {
+            navigate('/login');
+            return;
+        }
+
+        const originalPosts = [...posts];
+        setPosts(posts.map(p => {
+            if (p.id === postId) {
+                return {
+                    ...p,
+                    isBookmarkedByMe: !isCurrentlyBookmarked
+                };
+            }
+            return p;
+        }));
+
+        try {
+            const res = await fetchWithAuth(`/api/posts/${postId}/bookmark`, {
+                method: isCurrentlyBookmarked ? 'DELETE' : 'POST'
+            });
+            if (!res.ok) {
+                throw new Error('操作失败');
+            }
+        } catch (e) {
+            console.error('Bookmark failed', e);
+            setPosts(originalPosts);
+        }
+    };
+
     return (
         <div className="w-full max-w-2xl mx-auto">
             {/* Search Header */}
@@ -99,6 +163,8 @@ export default function SearchPage() {
                                 post={post}
                                 isOwner={false}
                                 onPostAction={() => {}}
+                                onToggleLike={handleToggleLike}
+                                onToggleBookmark={handleToggleBookmark}
                             />
                         ))}
                         {hasNextPage && (
