@@ -24,7 +24,7 @@ public static class AdminEndpoints
 {
     public static void MapAdminEndpoints(this IEndpointRouteBuilder app)
     {
-        var adminGroup = app.MapGroup("/api");
+        var adminGroup = app.MapGroup("/api").RequireAuthorization("AdminOnly");
 
         // Admin Recommendation settings
         adminGroup.MapGet("/admin/recommend-config", async (ApplicationDbContext db) =>

@@ -83,7 +83,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // ----------------- JWT AUTHENTICATION -----------------
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var secretKey = jwtSettings.GetValue<string>("Key") ?? "super_secret_fallback_key_for_dev_only_1234567890";
+var secretKey = jwtSettings.GetValue<string>("Key");
+
+if (string.IsNullOrWhiteSpace(secretKey))
+{
+    throw new InvalidOperationException("JWT key not configured. Please set 'Jwt:Key' in appsettings or environment variables.");
+}
 
 builder.Services.AddAuthentication(options =>
 {
@@ -103,7 +108,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireClaim("IsAdmin", "true"));
+});
 
 // ----------------- CORS -----------------
 builder.Services.AddCors(options =>

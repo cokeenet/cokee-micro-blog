@@ -41,6 +41,7 @@ namespace Cokee.MicroBlog.Domain.Entities
         public string? Bio { get; set; }
         public string? AvatarUrl { get; set; }
         public string? CoverUrl { get; set; }
+        public bool IsAdmin { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation properties
