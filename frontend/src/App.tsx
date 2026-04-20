@@ -17,6 +17,7 @@ import ProfilePage from './pages/ProfilePage';
 import PostDetailPage from './pages/PostDetailPage';
 import SearchPage from './pages/SearchPage';
 import BookmarksPage from './pages/BookmarksPage';
+import TrendPage from './pages/TrendPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { fetchWithAuth } from './config/api';
 
@@ -386,6 +387,7 @@ export default function App() {
                 <Route path="/explore" element={<PageTransition><AppLayout><ExplorePage /></AppLayout></PageTransition>} />
                 <Route path="/search" element={<PageTransition><AppLayout><SearchPage /></AppLayout></PageTransition>} />
                 <Route path="/bookmarks" element={<RequireAuth><PageTransition><AppLayout><BookmarksPage /></AppLayout></PageTransition></RequireAuth>} />
+                <Route path="/trend/:hashtag" element={<PageTransition><AppLayout><TrendPage /></AppLayout></PageTransition>} />
                 <Route path="/post/:id" element={<PageTransition><AppLayout><PostDetailPage /></AppLayout></PageTransition>} />
                 <Route path="/notifications" element={<RequireAuth><PageTransition><AppLayout><NotificationsPage /></AppLayout></PageTransition></RequireAuth>} />
                 <Route path="/profile" element={<RequireAuth><PageTransition><AppLayout><ProfilePage /></AppLayout></PageTransition></RequireAuth>} />
