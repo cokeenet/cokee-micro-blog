@@ -29,7 +29,7 @@ export default function Login() {
 
         try {
             const endpoint = isRegister ? '/api/auth/register' : '/api/auth/login';
-            const body = isRegister ? { username, email, passwordHash: password } : { username, password };
+            const body = isRegister ? { username, email, password } : { username, password };
 
             const res = await fetch(`${API_BASE_URL}${endpoint}`, {
                 method: 'POST',

@@ -88,6 +88,27 @@ public static class SocialEndpoints
             if (!allowedContentTypes.Contains(file.ContentType))
                 return Results.BadRequest(new { message = "文件类型不合法，请上传图片文件" });
 
+            // Magic Bytes验证
+            var magicBytes = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase)
+            {
+                { ".jpg", new byte[] { 0xFF, 0xD8, 0xFF } },
+                { ".jpeg", new byte[] { 0xFF, 0xD8, 0xFF } },
+                { ".png", new byte[] { 0x89, 0x50, 0x4E, 0x47 } },
+                { ".gif", new byte[] { 0x47, 0x49, 0x46 } },
+                { ".webp", new byte[] { 0x52, 0x49, 0x46, 0x46 } },
+                { ".avif", new byte[] { 0x00, 0x00, 0x00, 0x20, 0x66, 0x74, 0x79, 0x70 } }
+            };
+
+            if (magicBytes.TryGetValue(ext, out var expectedBytes))
+            {
+                using var stream = file.OpenReadStream();
+                var buffer = new byte[Math.Max(expectedBytes.Length, 8)];
+                await stream.ReadAsync(buffer, 0, buffer.Length);
+
+                if (!buffer.Take(expectedBytes.Length).SequenceEqual(expectedBytes))
+                    return Results.BadRequest(new { message = "文件格式不匹配，请上传真实的图片文件" });
+            }
+
             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
             Directory.CreateDirectory(uploadsFolder);
 

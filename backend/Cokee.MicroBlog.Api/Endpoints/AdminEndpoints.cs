@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using Cokee.MicroBlog.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using BCrypt.Net;
 
 namespace Cokee.MicroBlog.Api.Endpoints;
 
@@ -216,24 +217,51 @@ public static class AdminEndpoints
         // User CRUD specifics for Admin
         adminGroup.MapPost("/users", async (ApplicationDbContext db, Cokee.MicroBlog.Domain.Entities.User input) =>
         {
+            if (string.IsNullOrWhiteSpace(input.Username) || string.IsNullOrWhiteSpace(input.Email) || string.IsNullOrWhiteSpace(input.PasswordHash))
+                return Results.BadRequest(new { message = "用户名、邮箱和密码不能为空" });
+
+            if (await db.Users.AnyAsync(u => u.Username == input.Username))
+                return Results.BadRequest(new { message = "用户名已存在" });
+
+            if (await db.Users.AnyAsync(u => u.Email == input.Email))
+                return Results.BadRequest(new { message = "邮箱已存在" });
+
             input.Id = Guid.NewGuid();
             input.CreatedAt = DateTime.UtcNow;
+            input.PasswordHash = BCrypt.HashPassword(input.PasswordHash);
             db.Users.Add(input);
             await db.SaveChangesAsync();
-            return Results.Ok(input);
+            return Results.Ok(new { id = input.Id, username = input.Username, email = input.Email });
         });
 
         adminGroup.MapPut("/users/{id:guid}", async (ApplicationDbContext db, Guid id, Cokee.MicroBlog.Domain.Entities.User input) =>
         {
             var user = await db.Users.FindAsync(id);
-            if (user == null) return Results.NotFound();
+            if (user == null) return Results.NotFound(new { message = "用户不存在" });
 
-            user.DisplayName = input.DisplayName;
-            user.Username = input.Username;
-            user.Email = input.Email;
-            user.Bio = input.Bio;
+            // Check uniqueness for username and email
+            if (!string.IsNullOrWhiteSpace(input.Username) && input.Username != user.Username)
+            {
+                if (await db.Users.AnyAsync(u => u.Username == input.Username))
+                    return Results.BadRequest(new { message = "用户名已存在" });
+                user.Username = input.Username;
+            }
+
+            if (!string.IsNullOrWhiteSpace(input.Email) && input.Email != user.Email)
+            {
+                if (await db.Users.AnyAsync(u => u.Email == input.Email))
+                    return Results.BadRequest(new { message = "邮箱已存在" });
+                user.Email = input.Email;
+            }
+
+            if (!string.IsNullOrWhiteSpace(input.DisplayName))
+                user.DisplayName = input.DisplayName;
+
+            if (input.Bio != null)
+                user.Bio = input.Bio;
+
             await db.SaveChangesAsync();
-            return Results.Ok();
+            return Results.Ok(new { message = "用户已更新" });
         });
 
         adminGroup.MapDelete("/users/{id:guid}", async (ApplicationDbContext db, Guid id) =>

@@ -79,10 +79,10 @@ public static class AuthEndpoints
             var user = await db.Users.FindAsync(userId);
             if (user == null) return Results.NotFound(new { message = "用户不存在" });
 
-            if (user.PasswordHash != dto.OldPassword)
+            if (!BCrypt.Net.BCrypt.Verify(dto.OldPassword, user.PasswordHash))
                 return Results.BadRequest(new { message = "原密码错误" });
 
-            user.PasswordHash = dto.NewPassword;
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
             await db.SaveChangesAsync();
 
             return Results.Ok(new { message = "密码修改成功" });

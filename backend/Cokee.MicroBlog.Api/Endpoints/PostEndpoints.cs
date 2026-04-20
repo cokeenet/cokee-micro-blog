@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Text.RegularExpressions;
 using Cokee.MicroBlog.Domain.Entities;
 using Cokee.MicroBlog.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -69,6 +70,74 @@ public static class PostEndpoints
             return Results.Ok(await query.ToListAsync());
         });
 
+        group.MapGet("/search", async (ApplicationDbContext db, string q, int page = 1, int pageSize = 20, ClaimsPrincipal claims) =>
+        {
+            if (string.IsNullOrWhiteSpace(q) || q.Length < 2)
+                return Results.BadRequest(new { message = "搜索词至少需要2个字符" });
+
+            const int maxPageSize = 100;
+            if (pageSize > maxPageSize) pageSize = maxPageSize;
+            if (page < 1) page = 1;
+
+            Guid? currentUserId = null;
+            var userIdStr = claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (Guid.TryParse(userIdStr, out var u)) currentUserId = u;
+
+            List<Guid> followingIds = new();
+            List<Guid> mutualIds = new();
+
+            if (currentUserId.HasValue)
+            {
+                followingIds = await db.Follows.Where(f => f.FollowerId == currentUserId).Select(f => f.FolloweeId).ToListAsync();
+                var followerIds = await db.Follows.Where(f => f.FolloweeId == currentUserId).Select(f => f.FollowerId).ToListAsync();
+                mutualIds = followingIds.Intersect(followerIds).ToList();
+            }
+
+            var searchLower = q.ToLower();
+            var posts = await db.Posts
+                .Include(p => p.User)
+                .Include(p => p.RetweetOriginalPost).ThenInclude(op => op!.User)
+                .Where(p => p.ParentPostId == null)
+                .Where(p => p.Content.ToLower().Contains(searchLower) || p.User.Username.ToLower().Contains(searchLower) || p.User.DisplayName.ToLower().Contains(searchLower))
+                .Where(p =>
+                    p.Visibility == PostVisibility.Public ||
+                    (currentUserId.HasValue && p.UserId == currentUserId.Value) ||
+                    (currentUserId.HasValue && p.Visibility == PostVisibility.FollowersOnly && followingIds.Contains(p.UserId)) ||
+                    (currentUserId.HasValue && p.Visibility == PostVisibility.MutualFollowersOnly && mutualIds.Contains(p.UserId)))
+                .OrderByDescending(p => p.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Content,
+                    AuthorUsername = "@" + p.User.Username,
+                    AuthorDisplayName = p.User.DisplayName,
+                    AuthorAvatarUrl = p.User.AvatarUrl,
+                    p.ImageUrls,
+                    p.ParentPostId,
+                    p.Visibility,
+                    RetweetOriginalPostId = p.RetweetOriginalPostId,
+                    RetweetOriginalPost = p.RetweetOriginalPost != null ? new
+                    {
+                        p.RetweetOriginalPost.Id,
+                        p.RetweetOriginalPost.Content,
+                        AuthorUsername = "@" + p.RetweetOriginalPost.User.Username,
+                        AuthorDisplayName = p.RetweetOriginalPost.User.DisplayName,
+                        AuthorAvatarUrl = p.RetweetOriginalPost.User.AvatarUrl,
+                        p.RetweetOriginalPost.ImageUrls
+                    } : null,
+                    RepliesCount = p.Replies.Count,
+                    p.CreatedAt,
+                    p.LikeCount,
+                    p.ViewCount,
+                    IsLikedByMe = currentUserId.HasValue && p.Interactions.Any(i => i.UserId == currentUserId && i.Type == InteractionType.Like)
+                })
+                .ToListAsync();
+
+            return Results.Ok(new { page, pageSize, data = posts });
+        });
+
         group.MapGet("/following", [Authorize] async (ApplicationDbContext db, ClaimsPrincipal claims) =>
         {
             var userIdStr = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -133,6 +202,26 @@ public static class PostEndpoints
             var userIdStr = claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out var userId))
                 return Results.Unauthorized();
+
+            // Content validation
+            const int maxContentLength = 5000;
+            const int maxImageUrls = 4;
+
+            if (post.RetweetOriginalPostId == null)
+            {
+                if (string.IsNullOrWhiteSpace(post.Content) && (post.ImageUrls == null || post.ImageUrls.Count == 0))
+                    return Results.BadRequest(new { message = "推文内容或图片不能为空" });
+
+                if (post.Content != null && post.Content.Length > maxContentLength)
+                    return Results.BadRequest(new { message = $"内容长度不能超过{maxContentLength}字" });
+
+                // XSS防护：检测危险的HTML标签
+                if (post.Content != null && Regex.IsMatch(post.Content, @"<script|onerror=|onclick=|<iframe|<object|<embed", RegexOptions.IgnoreCase))
+                    return Results.BadRequest(new { message = "内容包含非法字符" });
+            }
+
+            if (post.ImageUrls?.Count > maxImageUrls)
+                return Results.BadRequest(new { message = $"图片数量不能超过{maxImageUrls}张" });
 
             post.UserId = userId;
             post.CreatedAt = DateTime.UtcNow;
@@ -320,6 +409,64 @@ public static class PostEndpoints
                 .ToListAsync();
 
             return Results.Ok(comments);
+        });
+
+        group.MapPost("/{id:guid}/comments", [Authorize] async (ApplicationDbContext db, Guid id, Post comment, ClaimsPrincipal claims) =>
+        {
+            var userIdStr = claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out var userId))
+                return Results.Unauthorized();
+
+            // Verify parent post exists
+            var parentPost = await db.Posts.FindAsync(id);
+            if (parentPost == null)
+                return Results.NotFound(new { message = "被评论的推文不存在" });
+
+            // Check reply permission
+            if (parentPost.ReplyPermission == ReplyPermission.FollowingOnly)
+            {
+                var isFollowing = await db.Follows.AnyAsync(f => f.FollowerId == userId && f.FolloweeId == parentPost.UserId);
+                if (!isFollowing && userId != parentPost.UserId)
+                    return Results.Forbid();
+            }
+            else if (parentPost.ReplyPermission == ReplyPermission.MentionedOnly)
+            {
+                var isMentioned = comment.Content != null && comment.Content.Contains($"@{parentPost.User.Username}");
+                if (!isMentioned && userId != parentPost.UserId)
+                    return Results.Forbid();
+            }
+
+            // Validation
+            const int maxCommentLength = 1000;
+            if (string.IsNullOrWhiteSpace(comment.Content))
+                return Results.BadRequest(new { message = "评论内容不能为空" });
+
+            if (comment.Content.Length > maxCommentLength)
+                return Results.BadRequest(new { message = $"评论长度不能超过{maxCommentLength}字" });
+
+            comment.UserId = userId;
+            comment.ParentPostId = id;
+            comment.CreatedAt = DateTime.UtcNow;
+            comment.Visibility = PostVisibility.Public;
+
+            db.Posts.Add(comment);
+            await db.SaveChangesAsync();
+
+            await db.Entry(comment).Reference(p => p.User).LoadAsync();
+
+            return Results.Created($"/api/posts/{comment.Id}", new
+            {
+                comment.Id,
+                comment.Content,
+                AuthorUsername = "@" + comment.User.Username,
+                AuthorDisplayName = comment.User.DisplayName,
+                AuthorAvatarUrl = comment.User.AvatarUrl,
+                comment.ImageUrls,
+                comment.ParentPostId,
+                RepliesCount = 0,
+                comment.CreatedAt,
+                comment.LikeCount
+            });
         });
     }
 }
