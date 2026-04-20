@@ -8,7 +8,7 @@ import { fetchWithAuth } from '../config/api';
 export default function TrendPage() {
     const { hashtag } = useParams<{ hashtag: string }>();
     const navigate = useNavigate();
-    const { token } = useAuth();
+    const { token, user } = useAuth();
     const [posts, setPosts] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [page, setPage] = useState(1);
@@ -152,8 +152,8 @@ export default function TrendPage() {
                             <PostCard
                                 key={post.id}
                                 post={post}
-                                isOwner={false}
-                                onPostAction={() => {}}
+                                isOwner={user?.username === post.authorUsername}
+                                onPostAction={() => { }}
                                 onToggleLike={handleToggleLike}
                                 onToggleBookmark={handleToggleBookmark}
                                 onToggleRetweet={(postId) => handleToggleRetweet(postId, !!post.isRetweetedByMe)}
