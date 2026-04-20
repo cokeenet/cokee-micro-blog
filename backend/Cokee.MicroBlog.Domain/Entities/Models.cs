@@ -84,6 +84,7 @@ namespace Cokee.MicroBlog.Domain.Entities
 
         // Navigation properties
         public ICollection<Interaction> Interactions { get; set; } = new List<Interaction>();
+        public ICollection<Bookmark> Bookmarks { get; set; } = new List<Bookmark>();
     }
 
     public class Interaction

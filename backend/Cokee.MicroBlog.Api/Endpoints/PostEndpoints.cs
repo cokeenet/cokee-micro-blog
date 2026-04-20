@@ -70,7 +70,7 @@ public static class PostEndpoints
             return Results.Ok(await query.ToListAsync());
         });
 
-        group.MapGet("/search", async (ApplicationDbContext db, string q, int page = 1, int pageSize = 20, ClaimsPrincipal claims) =>
+        group.MapGet("/search", async (ApplicationDbContext db, ClaimsPrincipal claims, string q, int page = 1, int pageSize = 20) =>
         {
             if (string.IsNullOrWhiteSpace(q) || q.Length < 2)
                 return Results.BadRequest(new { message = "搜索词至少需要2个字符" });

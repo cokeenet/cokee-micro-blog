@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 using Cokee.MicroBlog.Domain.Entities;
 using Cokee.MicroBlog.Infrastructure.Data;
@@ -33,7 +34,7 @@ public static class TrendEndpoints
         });
 
         // Get posts by trend/hashtag
-        group.MapGet("/{hashtag}/posts", async (ApplicationDbContext db, string hashtag, int page = 1, int pageSize = 20) =>
+        group.MapGet("/{hashtag}/posts", async (ApplicationDbContext db, ClaimsPrincipal claims, string hashtag, int page = 1, int pageSize = 20) =>
         {
             if (string.IsNullOrWhiteSpace(hashtag) || hashtag.Length < 2)
                 return Results.BadRequest(new { message = "话题名称无效" });
@@ -46,9 +47,15 @@ public static class TrendEndpoints
             var cleanHashtag = hashtag.StartsWith("#") ? hashtag : "#" + hashtag;
             var searchPattern = cleanHashtag.ToLower();
 
+            Guid? currentUserId = null;
+            var userIdStr = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (Guid.TryParse(userIdStr, out var u)) currentUserId = u;
+
             var posts = await db.Posts
                 .Include(p => p.User)
                 .Include(p => p.RetweetOriginalPost).ThenInclude(op => op!.User)
+                .Include(p => p.Interactions)
+                .Include(p => p.Bookmarks)
                 .Where(p => p.ParentPostId == null)
                 .Where(p => p.Visibility == PostVisibility.Public || p.Visibility == PostVisibility.FollowersOnly || p.Visibility == PostVisibility.MutualFollowersOnly)
                 .Where(p => EF.Functions.Like(p.Content.ToLower(), $"%{searchPattern}%"))
@@ -65,14 +72,63 @@ public static class TrendEndpoints
                     p.ImageUrls,
                     p.ParentPostId,
                     p.Visibility,
+                    RetweetOriginalPostId = p.RetweetOriginalPostId,
+                    RetweetOriginalPost = p.RetweetOriginalPost != null ? new
+                    {
+                        p.RetweetOriginalPost.Id,
+                        p.RetweetOriginalPost.Content,
+                        AuthorUsername = "@" + p.RetweetOriginalPost.User.Username,
+                        AuthorDisplayName = p.RetweetOriginalPost.User.DisplayName,
+                        AuthorAvatarUrl = p.RetweetOriginalPost.User.AvatarUrl,
+                        p.RetweetOriginalPost.ImageUrls
+                    } : null,
+                    RepliesCount = p.Replies.Count,
                     p.CreatedAt,
                     p.LikeCount,
                     p.ViewCount,
-                    RepliesCount = p.Replies.Count
+                    IsLikedByMe = currentUserId.HasValue && p.Interactions.Any(i => i.UserId == currentUserId && i.Type == InteractionType.Like),
+                    IsBookmarkedByMe = currentUserId.HasValue && p.Bookmarks.Any(b => b.UserId == currentUserId)
                 })
                 .ToListAsync();
 
-            return Results.Ok(new { page, pageSize, hashtag = cleanHashtag, data = posts });
+            // Get retweet counts and states after initial query
+            var retweetCounts = await db.Posts
+                .Where(rp => posts.Select(p => p.Id).Contains(rp.RetweetOriginalPostId!.Value))
+                .GroupBy(rp => rp.RetweetOriginalPostId)
+                .Select(g => new { PostId = g.Key, Count = g.Count() })
+                .ToListAsync();
+
+            var retweetedByMe = currentUserId.HasValue
+                ? await db.Posts
+                    .Where(rp => posts.Select(p => p.Id).Contains(rp.RetweetOriginalPostId!.Value) && rp.UserId == currentUserId)
+                    .Select(rp => rp.RetweetOriginalPostId!.Value)
+                    .ToListAsync()
+                : new List<Guid>();
+
+            // Merge retweet data into posts
+            var postsWithRetweets = posts.Select(p => new
+            {
+                p.Id,
+                p.Content,
+                p.AuthorUsername,
+                p.AuthorDisplayName,
+                p.AuthorAvatarUrl,
+                p.ImageUrls,
+                p.ParentPostId,
+                p.Visibility,
+                p.RetweetOriginalPostId,
+                p.RetweetOriginalPost,
+                p.RepliesCount,
+                p.CreatedAt,
+                p.LikeCount,
+                p.ViewCount,
+                RetweetCount = retweetCounts.FirstOrDefault(rc => rc.PostId == p.Id)?.Count ?? 0,
+                p.IsLikedByMe,
+                IsRetweetedByMe = retweetedByMe.Contains(p.Id),
+                p.IsBookmarkedByMe
+            }).ToList();
+
+            return Results.Ok(new { page, pageSize, hashtag = cleanHashtag, data = postsWithRetweets });
         });
 
         // Search trends

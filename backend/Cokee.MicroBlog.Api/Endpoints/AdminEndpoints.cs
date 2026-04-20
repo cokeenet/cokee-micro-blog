@@ -228,7 +228,7 @@ public static class AdminEndpoints
 
             input.Id = Guid.NewGuid();
             input.CreatedAt = DateTime.UtcNow;
-            input.PasswordHash = BCrypt.HashPassword(input.PasswordHash);
+            input.PasswordHash = BCrypt.Net.BCrypt.HashPassword(input.PasswordHash);
             db.Users.Add(input);
             await db.SaveChangesAsync();
             return Results.Ok(new { id = input.Id, username = input.Username, email = input.Email });
