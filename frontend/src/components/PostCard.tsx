@@ -25,6 +25,7 @@ export interface PostData {
     retweetCount?: number;
     isLikedByMe?: boolean; // We might need this for local state
     isBookmarkedByMe?: boolean;
+    isRetweetedByMe?: boolean;
     visibility?: string; // 'Public', 'FollowersOnly', 'MutualFollowersOnly', 'Private'
     retweetOriginalPostId?: string;
     retweetOriginalPost?: {
@@ -183,11 +184,14 @@ export function PostCard({ post, isOwner, onNavigate, onPostAction, onToggleLike
                     </button>
 
                     <button
-                        className="flex items-center gap-1.5 group focus:outline-none"
+                        className={`flex items-center gap-1.5 group focus:outline-none ${post.isRetweetedByMe ? 'text-emerald-500' : ''}`}
                         onClick={(e) => { e.stopPropagation(); onToggleRetweet?.(post.id); }}
+                        title={post.isRetweetedByMe ? "取消转发" : "转发"}
                     >
-                        <span className="material-symbols-outlined text-[20px] group-hover:text-emerald-500 group-hover:bg-emerald-500/10 p-1.5 -ml-1.5 rounded-full transition-colors">repeat</span>
-                        <span className="text-[13px] group-hover:text-emerald-500">{post.retweetCount || 0}</span>
+                        <span className={`material-symbols-outlined text-[20px] group-hover:text-emerald-500 group-hover:bg-emerald-500/10 p-1.5 -ml-1.5 rounded-full transition-colors ${post.isRetweetedByMe ? 'text-emerald-500' : ''}`}>
+                            repeat
+                        </span>
+                        <span className={`text-[13px] ${post.isRetweetedByMe ? '' : 'group-hover:text-emerald-500'}`}>{post.retweetCount || 0}</span>
                     </button>
 
                     <button

@@ -186,6 +186,39 @@ const Home = () => {
         }
     };
 
+    const handleToggleRetweet = async (postId: string, isCurrentlyRetweeted: boolean) => {
+        if (!token) {
+            handleProtectedEntry();
+            return;
+        }
+
+        if (!window.confirm('确定要转发这条推文吗？')) return;
+
+        const originalPosts = [...posts];
+        setPosts(posts.map(p => {
+            if (p.id === postId) {
+                return {
+                    ...p,
+                    isRetweetedByMe: !isCurrentlyRetweeted,
+                    retweetCount: (p.retweetCount || 0) + (isCurrentlyRetweeted ? -1 : 1)
+                };
+            }
+            return p;
+        }));
+
+        try {
+            const res = await fetchWithAuth(`/api/posts/${postId}/retweet`, {
+                method: 'POST'
+            });
+            if (!res.ok) {
+                throw new Error('操作失败');
+            }
+        } catch (e) {
+            console.error('Retweet failed', e);
+            setPosts(originalPosts);
+        }
+    };
+
     const handleHomeCompose = async () => {
         if (!homeComposeText.trim()) return;
         try {
@@ -299,7 +332,7 @@ const Home = () => {
                                     post={post}
                                     isOwner={isOwner}
                                     onPostAction={handlePostAction}
-                                    onToggleRetweet={(postId) => handlePostAction('retweet', postId)}
+                                    onToggleRetweet={(postId) => handleToggleRetweet(postId, !!post.isRetweetedByMe)}
                                     onToggleLike={handleToggleLike}
                                     onToggleBookmark={handleToggleBookmark}
                                 />

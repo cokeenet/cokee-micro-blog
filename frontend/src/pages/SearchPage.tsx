@@ -117,6 +117,39 @@ export default function SearchPage() {
         }
     };
 
+    const handleToggleRetweet = async (postId: string, isCurrentlyRetweeted: boolean) => {
+        if (!token) {
+            navigate('/login');
+            return;
+        }
+
+        if (!window.confirm('确定要转发这条推文吗？')) return;
+
+        const originalPosts = [...posts];
+        setPosts(posts.map(p => {
+            if (p.id === postId) {
+                return {
+                    ...p,
+                    isRetweetedByMe: !isCurrentlyRetweeted,
+                    retweetCount: (p.retweetCount || 0) + (isCurrentlyRetweeted ? -1 : 1)
+                };
+            }
+            return p;
+        }));
+
+        try {
+            const res = await fetchWithAuth(`/api/posts/${postId}/retweet`, {
+                method: 'POST'
+            });
+            if (!res.ok) {
+                throw new Error('操作失败');
+            }
+        } catch (e) {
+            console.error('Retweet failed', e);
+            setPosts(originalPosts);
+        }
+    };
+
     return (
         <div className="w-full max-w-2xl mx-auto">
             {/* Search Header */}
@@ -165,6 +198,7 @@ export default function SearchPage() {
                                 onPostAction={() => {}}
                                 onToggleLike={handleToggleLike}
                                 onToggleBookmark={handleToggleBookmark}
+                                onToggleRetweet={(postId) => handleToggleRetweet(postId, !!post.isRetweetedByMe)}
                             />
                         ))}
                         {hasNextPage && (
