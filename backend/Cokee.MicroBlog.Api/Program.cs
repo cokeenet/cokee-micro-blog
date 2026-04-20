@@ -172,6 +172,7 @@ app.MapAuthEndpoints(secretKey);
 app.MapPostEndpoints();
 app.MapSocialEndpoints();
 app.MapUserEndpoints();
+app.MapTrendEndpoints();
 app.MapAdminEndpoints();
 
 app.Run();

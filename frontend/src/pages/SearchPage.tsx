@@ -195,7 +195,7 @@ export default function SearchPage() {
                                 key={post.id}
                                 post={post}
                                 isOwner={false}
-                                onPostAction={() => {}}
+                                onPostAction={() => { }}
                                 onToggleLike={handleToggleLike}
                                 onToggleBookmark={handleToggleBookmark}
                                 onToggleRetweet={(postId) => handleToggleRetweet(postId, !!post.isRetweetedByMe)}

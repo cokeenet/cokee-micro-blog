@@ -214,53 +214,53 @@ export default function ComposePage() {
                             {!parentPostId && (
                                 <>
                                     <Dropdown>
-                                <Button variant="secondary" className="px-3 flex items-center gap-1 rounded-full border border-outline-variant/50 bg-transparent hover:bg-on-surface/5 text-[#1d9bf0] text-sm h-7 min-h-0">
-                                    <span className="material-symbols-outlined text-[16px]">public</span>
-                                    {visibilityMap[postVisibility]}
-                                    <span className="material-symbols-outlined text-[16px] ml-0.5">expand_more</span>
-                                </Button>
-                                <Dropdown.Popover>
-                                    <Dropdown.Menu
-                                        aria-label="帖子可见度"
-                                        onAction={(key) => setPostVisibility(String(key))}
-                                    >
-                                        <Dropdown.Item id="Public" textValue="Public">
-                                            <Label>公开</Label>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item id="FollowersOnly" textValue="FollowersOnly">
-                                            <Label>粉丝</Label>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item id="MutualFollowersOnly" textValue="MutualFollowersOnly">
-                                            <Label>好友圈</Label>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item id="Private" textValue="Private">
-                                            <Label>仅自己可见</Label>
-                                        </Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown.Popover>
-                            </Dropdown>
+                                        <Button variant="secondary" className="px-3 flex items-center gap-1 rounded-full border border-outline-variant/50 bg-transparent hover:bg-on-surface/5 text-[#1d9bf0] text-sm h-7 min-h-0">
+                                            <span className="material-symbols-outlined text-[16px]">public</span>
+                                            {visibilityMap[postVisibility]}
+                                            <span className="material-symbols-outlined text-[16px] ml-0.5">expand_more</span>
+                                        </Button>
+                                        <Dropdown.Popover>
+                                            <Dropdown.Menu
+                                                aria-label="帖子可见度"
+                                                onAction={(key) => setPostVisibility(String(key))}
+                                            >
+                                                <Dropdown.Item id="Public" textValue="Public">
+                                                    <Label>公开</Label>
+                                                </Dropdown.Item>
+                                                <Dropdown.Item id="FollowersOnly" textValue="FollowersOnly">
+                                                    <Label>粉丝</Label>
+                                                </Dropdown.Item>
+                                                <Dropdown.Item id="MutualFollowersOnly" textValue="MutualFollowersOnly">
+                                                    <Label>好友圈</Label>
+                                                </Dropdown.Item>
+                                                <Dropdown.Item id="Private" textValue="Private">
+                                                    <Label>仅自己可见</Label>
+                                                </Dropdown.Item>
+                                            </Dropdown.Menu>
+                                        </Dropdown.Popover>
+                                    </Dropdown>
 
-                            <Dropdown>
-                                <Button variant="secondary" className="px-3 flex items-center gap-1 rounded-full border border-outline-variant/50 bg-transparent hover:bg-on-surface/5 text-[#1d9bf0] text-sm h-7 min-h-0">
-                                    {replyMap[replyPermission]}
-                                </Button>
-                                <Dropdown.Popover>
-                                    <Dropdown.Menu
-                                        aria-label="回复权限"
-                                        onAction={(key) => setReplyPermission(String(key))}
-                                    >
-                                        <Dropdown.Item id="Everyone" textValue="Everyone">
-                                            <Label>所有人可以回复</Label>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item id="FollowingOnly" textValue="FollowingOnly">
-                                            <Label>我关注的人可以回复</Label>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item id="MentionedOnly" textValue="MentionedOnly">
-                                            <Label>仅提及的人可以回复</Label>
-                                        </Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown.Popover>
-                            </Dropdown>
+                                    <Dropdown>
+                                        <Button variant="secondary" className="px-3 flex items-center gap-1 rounded-full border border-outline-variant/50 bg-transparent hover:bg-on-surface/5 text-[#1d9bf0] text-sm h-7 min-h-0">
+                                            {replyMap[replyPermission]}
+                                        </Button>
+                                        <Dropdown.Popover>
+                                            <Dropdown.Menu
+                                                aria-label="回复权限"
+                                                onAction={(key) => setReplyPermission(String(key))}
+                                            >
+                                                <Dropdown.Item id="Everyone" textValue="Everyone">
+                                                    <Label>所有人可以回复</Label>
+                                                </Dropdown.Item>
+                                                <Dropdown.Item id="FollowingOnly" textValue="FollowingOnly">
+                                                    <Label>我关注的人可以回复</Label>
+                                                </Dropdown.Item>
+                                                <Dropdown.Item id="MentionedOnly" textValue="MentionedOnly">
+                                                    <Label>仅提及的人可以回复</Label>
+                                                </Dropdown.Item>
+                                            </Dropdown.Menu>
+                                        </Dropdown.Popover>
+                                    </Dropdown>
                                 </>
                             )}
                         </div>

@@ -229,6 +229,12 @@ public static class PostEndpoints
             db.Posts.Add(post);
             await db.SaveChangesAsync();
 
+            // Update trends if not a retweet or reply
+            if (post.RetweetOriginalPostId == null && post.ParentPostId == null)
+            {
+                await TrendEndpoints.UpdateTrendsFromPost(db, post);
+            }
+
             await db.Entry(post).Reference(p => p.User).LoadAsync();
 
             var result = new
