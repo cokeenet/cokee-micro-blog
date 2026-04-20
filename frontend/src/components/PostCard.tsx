@@ -4,6 +4,7 @@ import { Avatar, Card } from "@heroui/react";
 import { motion } from "framer-motion";
 import { PostActionMenu } from "../components/PostActionMenu";
 import { formatLocalTime, formatFullLocalDateTime } from "../utils/dateFormatter";
+import { ParseHashtagsAndMentions } from "../utils/parseContent";
 
 export interface PostOwner {
     id: string;
@@ -127,7 +128,9 @@ export function PostCard({ post, isOwner, onNavigate, onPostAction, onToggleLike
                             </div>
                         </div>
 
-                        <p className="text-foreground mt-1 text-base leading-relaxed whitespace-pre-wrap break-words">{post.content}</p>
+                        <p className="text-foreground mt-1 text-base leading-relaxed whitespace-pre-wrap break-words">
+                            <ParseHashtagsAndMentions content={post.content} navigate={navigate} />
+                        </p>
 
                         {/* Original Post (Quote/Retweet) */}
                         {post.retweetOriginalPost && (
