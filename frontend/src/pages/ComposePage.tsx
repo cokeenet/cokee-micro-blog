@@ -15,10 +15,25 @@ export default function ComposePage() {
     const [submitting, setSubmitting] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editId, setEditId] = useState<string | null>(null);
+    const [parentPostId, setParentPostId] = useState<string | null>(null);
+    const [parentPost, setParentPost] = useState<any>(null);
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
         const editIdParam = queryParams.get('edit');
+        const replyIdParam = queryParams.get('reply');
+
+        if (replyIdParam) {
+            setParentPostId(replyIdParam);
+            fetchWithAuth(`/api/posts/${replyIdParam}`).then(res => {
+                if (res.ok) {
+                    res.json().then(data => {
+                        setParentPost(data);
+                    });
+                }
+            });
+        }
+
         if (editIdParam) {
             setIsEditMode(true);
             setEditId(editIdParam);
@@ -103,13 +118,13 @@ export default function ComposePage() {
                 }
             }
 
-            const res = await fetchWithAuth(isEditMode ? `/api/posts/${editId}` : '/api/posts', {
+            const res = await fetchWithAuth(isEditMode ? `/api/posts/${editId}` : (parentPostId ? `/api/posts/${parentPostId}/comments` : '/api/posts'), {
                 method: isEditMode ? 'PUT' : 'POST',
                 body: JSON.stringify({
                     content,
                     type: 0,
-                    replyPermission,
-                    visibility: postVisibility,
+                    replyPermission: isEditMode ? replyPermission : undefined,
+                    visibility: isEditMode ? postVisibility : undefined,
                     imageUrls: uploadedImageUrls.length > 0 ? uploadedImageUrls : undefined
                 })
             });
@@ -148,9 +163,18 @@ export default function ComposePage() {
                 </div>
 
                 <div className="flex flex-col flex-1 overflow-y-auto px-4 pt-3 pb-6 hide-scrollbar bg-surface">
+                    {parentPost && (
+                        <div className="mb-4 p-3 bg-surface-variant/30 rounded-lg border border-outline-variant/30">
+                            <div className="text-xs text-muted mb-2">回复用户：{parentPost.authorDisplayName || parentPost.authorUsername}</div>
+                            <p className="text-sm text-foreground">{parentPost.content}</p>
+                        </div>
+                    )}
+
                     <div className="flex flex-col gap-2 mb-4">
                         <div className="flex flex-wrap gap-2">
-                            <Dropdown>
+                            {!parentPostId && (
+                                <>
+                                    <Dropdown>
                                 <Button variant="secondary" className="px-3 flex items-center gap-1 rounded-full border border-outline-variant/50 bg-transparent hover:bg-on-surface/5 text-[#1d9bf0] text-sm h-7 min-h-0">
                                     <span className="material-symbols-outlined text-[16px]">public</span>
                                     {visibilityMap[postVisibility]}
@@ -198,6 +222,8 @@ export default function ComposePage() {
                                     </Dropdown.Menu>
                                 </Dropdown.Popover>
                             </Dropdown>
+                                </>
+                            )}
                         </div>
 
                         <TextArea className="text-lg bg-transparent text-on-surface placeholder:text-on-surface-variant resize-none h-40 border-none outline-none focus:ring-0 px-0" placeholder="有什么新鲜事？" value={content} onChange={(e) => setContent(e.target.value)} />
