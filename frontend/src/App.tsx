@@ -15,6 +15,7 @@ import Login from './pages/Login';
 import NotificationsPage from './pages/NotificationsPage';
 import ProfilePage from './pages/ProfilePage';
 import PostDetailPage from './pages/PostDetailPage';
+import SearchPage from './pages/SearchPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { fetchWithAuth } from './config/api';
 
@@ -318,6 +319,7 @@ export default function App() {
                 <Route path="/auth-required" element={<PageTransition><AppLayout><AuthPromptPage /></AppLayout></PageTransition>} />
                 <Route path="/" element={<PageTransition><AppLayout><Home /></AppLayout></PageTransition>} />
                 <Route path="/explore" element={<PageTransition><AppLayout><ExplorePage /></AppLayout></PageTransition>} />
+                <Route path="/search" element={<PageTransition><AppLayout><SearchPage /></AppLayout></PageTransition>} />
                 <Route path="/post/:id" element={<PageTransition><AppLayout><PostDetailPage /></AppLayout></PageTransition>} />
                 <Route path="/notifications" element={<RequireAuth><PageTransition><AppLayout><NotificationsPage /></AppLayout></PageTransition></RequireAuth>} />
                 <Route path="/profile" element={<RequireAuth><PageTransition><AppLayout><ProfilePage /></AppLayout></PageTransition></RequireAuth>} />
