@@ -124,15 +124,15 @@ export default function AdminUsers() {
                             <tr key={user.id} className="hover:bg-white/40 dark:hover:bg-white/5 transition-colors group">
                                 <td className="px-6 py-4 flex items-center gap-3">
                                     {user.avatarUrl ? (
-                                        <img src={user.avatarUrl.replace('5253', '8080')} alt={user.userName} className="w-10 h-10 rounded-full object-cover shadow-soft" />
+                                        <img src={user.avatarUrl.replace('5253', '8080')} alt={user.username} className="w-10 h-10 rounded-full object-cover shadow-soft" />
                                     ) : (
                                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-soft">
-                                            {user.displayName ? user.displayName.substring(0, 1).toUpperCase() : user.userName.substring(0, 1).toUpperCase()}
+                                            {user.displayName ? user.displayName.substring(0, 1).toUpperCase() : user.username.substring(0, 1).toUpperCase()}
                                         </div>
                                     )}
                                     <div className="flex flex-col">
-                                        <span className="font-bold text-on-surface text-base">{user.displayName || user.userName}</span>
-                                        <span className="text-xs text-on-surface-variant">@{user.userName} • {user.email}</span>
+                                        <span className="font-bold text-on-surface text-base">{user.displayName || user.username}</span>
+                                        <span className="text-xs text-on-surface-variant">@{user.username} • {user.email}</span>
                                     </div>
                                 </td>
                                 <td className="px-6 py-4">
