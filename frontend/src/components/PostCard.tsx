@@ -23,6 +23,7 @@ export interface PostData {
     likeCount?: number;
     retweetCount?: number;
     isLikedByMe?: boolean; // We might need this for local state
+    isBookmarkedByMe?: boolean;
     visibility?: string; // 'Public', 'FollowersOnly', 'MutualFollowersOnly', 'Private'
     retweetOriginalPostId?: string;
     retweetOriginalPost?: {
@@ -42,9 +43,10 @@ interface PostCardProps {
     onPostAction?: (key: string, postId: string) => void;
     onToggleLike?: (postId: string, isCurrentlyLiked: boolean) => void;
     onToggleRetweet?: (postId: string) => void;
+    onToggleBookmark?: (postId: string, isCurrentlyBookmarked: boolean) => void;
 }
 
-export function PostCard({ post, isOwner, onNavigate, onPostAction, onToggleLike, onToggleRetweet }: PostCardProps) {
+export function PostCard({ post, isOwner, onNavigate, onPostAction, onToggleLike, onToggleRetweet, onToggleBookmark }: PostCardProps) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -59,6 +61,21 @@ export function PostCard({ post, isOwner, onNavigate, onPostAction, onToggleLike
 
     const authorName = post.authorDisplayName || post.authorUsername.replace("@", "");
 
+    const getVisibilityLabel = (visibility?: string) => {
+        switch (visibility) {
+            case 'FollowersOnly':
+                return '仅粉丝可见';
+            case 'MutualFollowersOnly':
+                return '好友可见';
+            case 'Private':
+                return '私密';
+            default:
+                return null;
+        }
+    };
+
+    const visibilityLabel = getVisibilityLabel(post.visibility);
+
     return (
         <Card
             className="w-full hover:bg-surface-secondary/50 transition-colors cursor-pointer"
@@ -66,6 +83,15 @@ export function PostCard({ post, isOwner, onNavigate, onPostAction, onToggleLike
             onClick={handleNavigate}
         >
             <Card.Content className="pt-4 px-4 pb-0">
+                {visibilityLabel && (
+                    <div className="flex items-center gap-1.5 mb-3 text-xs text-muted font-medium">
+                        {post.visibility === 'FollowersOnly' && <span className="material-symbols-outlined text-sm">lock</span>}
+                        {post.visibility === 'MutualFollowersOnly' && <span className="material-symbols-outlined text-sm">group</span>}
+                        {post.visibility === 'Private' && <span className="material-symbols-outlined text-sm">visibility_off</span>}
+                        <span>{visibilityLabel}</span>
+                    </div>
+                )}
+
                 {post.retweetOriginalPostId && (
                     <div className="flex items-center gap-2 mb-3 text-sm text-muted font-medium ml-12">
                         <span className="material-symbols-outlined text-sm">repeat</span>
@@ -186,6 +212,19 @@ export function PostCard({ post, isOwner, onNavigate, onPostAction, onToggleLike
                             </motion.span>
                         </div>
                         <span className={`text-[13px] ${post.isLikedByMe ? '' : 'group-hover:text-rose-500'}`}>{post.likeCount || 0}</span>
+                    </button>
+
+                    <button
+                        className={`flex items-center gap-1.5 group focus:outline-none ${post.isBookmarkedByMe ? 'text-primary' : ''}`}
+                        onClick={(e) => { e.stopPropagation(); onToggleBookmark?.(post.id, !!post.isBookmarkedByMe); }}
+                        title={post.isBookmarkedByMe ? "取消收藏" : "收藏"}
+                    >
+                        <span
+                            className={`material-symbols-outlined text-[20px] group-hover:bg-primary/10 p-1.5 -ml-1.5 rounded-full transition-colors ${post.isBookmarkedByMe ? 'text-primary' : 'group-hover:text-primary'}`}
+                            style={post.isBookmarkedByMe ? { fontVariationSettings: "'FILL' 1" } : {}}
+                        >
+                            bookmark
+                        </span>
                     </button>
 
                     <button
