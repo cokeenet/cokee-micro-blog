@@ -23,18 +23,8 @@ jobs:
           submodules: true
           lfs: false
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v6.4.0
-        # with:
-         # node-version: '25'
-
-      - name: Install frontend dependencies
-        run: cd frontend && npm install
-
-      - name: Build frontend
-        run: cd frontend && npm run build
-
-      - name: Install OIDC Client from Core Package
+      # 这一步是 OIDC 验证必须的，用来获取 Azure 访问令牌
+      - name: Install OIDC Client
         run: npm install @actions/core@1.6.0 @actions/http-client
 
       - name: Get Id Token
@@ -50,16 +40,22 @@ jobs:
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
+          # 使用你仓库中保存的 Secret 名称
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GRAY_HILL_044A27700 }}
           action: "upload"
-          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "./frontend" # App source code path
-          api_location: "" # Api source code path - optional
-          output_location: "frontend/dist" # 直接指向打包后的位置skip_app_build: true
+          
+          ###### 构建配置 ######
+          app_location: "/frontend"   # 源代码在仓库的 frontend 目录下
+          api_location: ""            # 如果没有后端 API 则留空
+          output_location: "dist"     # 编译产物在 frontend/dist 目录下（相对于 app_location）
+          
+          # 开启 Oryx 自动构建（设为 false 或删除 skip 行）
+          skip_app_build: false
           skip_api_build: true
+          
+          # 传递 OIDC 身份令牌
           github_id_token: ${{ steps.idtoken.outputs.result }}
-          ###### End of Repository/Build Configurations ######
+          ###### 构建配置结束 ######
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -70,4 +66,5 @@ jobs:
         id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GRAY_HILL_044A27700 }}
           action: "close"
