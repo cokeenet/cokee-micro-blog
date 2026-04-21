@@ -58,6 +58,8 @@
   },
   "mimeTypes": {
     ".json": "application/json",
+    ".js": "application/javascript",
+    ".mjs": "application/javascript",
     ".woff2": "font/woff2",
     ".woff": "font/woff"
   }
