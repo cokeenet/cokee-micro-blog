@@ -70,5 +70,12 @@
     ".mjs": "application/javascript",
     ".woff2": "font/woff2",
     ".woff": "font/woff"
+  },
+  "build": {
+    "appLocation": "./frontend",
+    "apiLocation": "",
+    "outputLocation": "dist",
+    "appBuildCommand": "npm run build",
+    "apiBuildCommand": ""
   }
 }
