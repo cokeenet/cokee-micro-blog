@@ -9,7 +9,7 @@ export default function ComposePage() {
     const { token } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
-    const { users, isLoading, search } = useUserSearch();
+    const { users, search } = useUserSearch();
 
     const [content, setContent] = useState('');
     const [replyPermission, setReplyPermission] = useState('Everyone');

@@ -11,7 +11,7 @@ export default function BookmarksPage() {
     const [posts, setPosts] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(20);
+    const [pageSize] = useState(20);
     const [hasMore, setHasMore] = useState(false);
 
     useEffect(() => {

@@ -157,15 +157,11 @@ export default function SearchPage() {
                 <Card.Content className="p-4">
                     <form onSubmit={handleSearch} className="flex gap-2">
                         <Input
-                            isClearable
                             type="text"
                             placeholder="搜索推文..."
                             value={searchInput}
                             onChange={(e) => setSearchInput(e.target.value)}
                             className="flex-1"
-                            startContent={
-                                <span className="material-symbols-outlined text-muted text-[20px]">search</span>
-                            }
                         />
                         <button
                             type="submit"

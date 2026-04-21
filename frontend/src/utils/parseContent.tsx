@@ -1,6 +1,3 @@
-import React from 'react';
-import { useNavigate } from 'react-router';
-
 /**
  * 解析内容中的#话题并换成可点击的链接
  */
